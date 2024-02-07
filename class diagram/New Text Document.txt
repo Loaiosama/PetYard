@@ -1,0 +1,13 @@
+classes:
+1- user => name, email, phonenumber, password, bio, (date of birth), setters, getters.
+1.1- user controller => (list of users), sign up, sign in, sign out, forget password, edit info. 
+1.2- pet owner => # (--- pet profile).
+1.3- service provider => type, list of accepted pets. 
+sitter - groomer - walker - clinics - (store) - boarders 
+1.4 pet profile => type, breed, name, date of birth, gender, weight, setters, getters.
+2- services => name, description, price, (book), payment, search, calculate.
+grooming, sitting, vet, walking, selling , boarding.
+3- reservation => id, user, service provider, price, date, status(completed, ), location.
+3.1 reservation manager => list of reservations, view, cancel, update.
+4. rating => owner id, service provider id, rating id, value, reveiw, submit rating, update, delete, get. 
+4.1 rating controller => 
