@@ -1,15 +1,13 @@
 const express =require('express');
 const app = express();
-//const cors =require('cors');
 const morgan = require('morgan');
-const pool = require('./db');
+const PetOwnerRoutes = require('./Routes/PetOwner');
+const ProviderRoutes = require('./Routes/Provider');
 
 app.use(morgan('dev'));
-
-
-//Middleware 
-//app.use(core());
 app.use(express.json());
 
+app.use('/PetOwner',PetOwnerRoutes);
+app.use('/Provider',ProviderRoutes);
 
 module.exports=app;
