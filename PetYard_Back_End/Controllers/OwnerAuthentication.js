@@ -74,9 +74,44 @@ const signIn = async(req,res)=>{
 
 }
 
+const deleteAccount = async (req, res) => {
+    const { Email, Password } = req.body;
+
+    try {
+        if (!Email || !Password) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide email and password"
+            });
+        }
+
+        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1 AND password = $2', [Email, Password]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Incorrect email or password"
+            });
+        }
+
+        const deleteQuery = 'DELETE FROM Petowner WHERE email = $1';
+        await pool.query(deleteQuery, [Email]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Account deleted successfully"
+        });
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
 
 module.exports = {
     signUp,
-    signIn
-
+    signIn,
+    deleteAccount
 }
