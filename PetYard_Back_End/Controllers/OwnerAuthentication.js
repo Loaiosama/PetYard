@@ -139,5 +139,5 @@ const deleteAccount = async (req, res) => {
 module.exports = {
     signUp,
     signIn,
-    deleteAccount,
+    deleteAccount
 }
