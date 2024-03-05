@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
+import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/signup.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
 
@@ -12,7 +13,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           Future.delayed(const Duration(seconds: 3), () {
             appRouter.go(
-              Routes.kSignupScreen,
+              Routes.kOnBoardingScreen,
             );
           });
           return const SplashView();
@@ -22,6 +23,12 @@ abstract class AppRouter {
         path: Routes.kSignupScreen,
         builder: (BuildContext context, GoRouterState state) {
           return const SignUpScreen();
+        },
+      ),
+      GoRoute(
+        path: Routes.kOnBoardingScreen,
+        builder: (BuildContext context, GoRouterState state) {
+          return const OnBoardingScreen();
         },
       ),
     ],

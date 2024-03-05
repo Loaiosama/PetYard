@@ -29,7 +29,7 @@ class SignUpTextFieldColumn extends StatelessWidget {
           padding: EdgeInsets.only(left: 9.0.w),
           child: Text(
             labelText,
-            style: Styles.styles18,
+            style: Styles.styles16,
           ),
         ),
         SizedBox(height: 6.h),
