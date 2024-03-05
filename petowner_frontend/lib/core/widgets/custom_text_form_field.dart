@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0),
@@ -27,12 +28,16 @@ class CustomRegistrationTextField extends StatefulWidget {
     this.hintText = 'HINT',
     this.keyboardType,
     required this.width,
+    this.height = 60,
+    this.isPassword = false,
     // required this.focusNode,
   });
 
   final String hintText;
   final TextInputType? keyboardType;
   final double width;
+  final double height;
+  final bool? isPassword;
   // final FocusNode focusNode;
   @override
   State<CustomRegistrationTextField> createState() =>
@@ -41,7 +46,8 @@ class CustomRegistrationTextField extends StatefulWidget {
 
 class _CustomRegistrationTextFieldState
     extends State<CustomRegistrationTextField> {
-  bool flag = false;
+  bool textFieldColor = false;
+  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,24 +55,46 @@ class _CustomRegistrationTextFieldState
       // focusNode: widget.focusNode,
       onTapOutside: (event) {
         setState(() {
-          flag = false;
+          textFieldColor = false;
           FocusManager.instance.primaryFocus?.unfocus();
         });
       },
       onTap: () {
         setState(() {
-          flag = !flag;
+          textFieldColor = !textFieldColor;
         });
       },
       onFieldSubmitted: (value) {
         setState(() {
-          flag = false;
+          textFieldColor = false;
         });
       },
+      obscureText: isVisible ? true : false,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         hintText: widget.hintText,
-        constraints: BoxConstraints.tightForFinite(width: widget.width),
+        constraints: BoxConstraints.tightForFinite(
+          width: widget.width,
+          // height: widget.height,
+        ),
+        suffixIcon: (widget.isPassword!)
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    isVisible = !isVisible;
+                  });
+                },
+                icon: !isVisible
+                    ? Icon(
+                        Icons.remove_red_eye_outlined,
+                        color: Colors.black.withOpacity(0.5),
+                      )
+                    : const Icon(
+                        Icons.visibility_off_outlined,
+                        color: kPrimaryGreen,
+                      ),
+              )
+            : null,
         hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.5),
           // color: widget.focusNode.hasFocus
