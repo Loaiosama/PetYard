@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10.0),
+  borderRadius: BorderRadius.circular(10.0.r),
   borderSide: BorderSide(
     color: Colors.black.withOpacity(0.2),
     width: 2.0,
@@ -11,7 +12,7 @@ InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
 );
 
 InputBorder customFocusedOutlinedBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10.0),
+  borderRadius: BorderRadius.circular(10.0.r),
   borderSide: const BorderSide(
     color: Color.fromRGBO(0, 170, 91, 1),
     width: 2.0,
@@ -19,7 +20,7 @@ InputBorder customFocusedOutlinedBorder = OutlineInputBorder(
 );
 
 InputBorder customBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(10.0),
+  borderRadius: BorderRadius.circular(10.0.r),
 );
 
 class CustomRegistrationTextField extends StatefulWidget {
@@ -75,7 +76,6 @@ class _CustomRegistrationTextFieldState
         hintText: widget.hintText,
         constraints: BoxConstraints.tightForFinite(
           width: widget.width,
-          // height: widget.height,
         ),
         suffixIcon: (widget.isPassword!)
             ? IconButton(
@@ -97,10 +97,7 @@ class _CustomRegistrationTextFieldState
             : null,
         hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.5),
-          // color: widget.focusNode.hasFocus
-          //     ? const Color.fromRGBO(0, 170, 91, 1)
-          //     : Colors.black.withOpacity(0.5),
-          fontSize: 18,
+          fontSize: 14.sp,
         ),
         border: customBorder,
         enabledBorder: customEnabledOutlinedBorder,

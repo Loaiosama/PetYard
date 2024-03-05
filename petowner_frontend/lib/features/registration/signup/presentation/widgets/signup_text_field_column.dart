@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
@@ -25,13 +26,13 @@ class SignUpTextFieldColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: EdgeInsets.only(left: 9.0.w),
           child: Text(
             labelText,
             style: Styles.styles18,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         CustomRegistrationTextField(
           hintText: hintText,
           width: width,

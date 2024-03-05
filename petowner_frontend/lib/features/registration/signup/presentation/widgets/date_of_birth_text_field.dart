@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
@@ -49,7 +50,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
                 )),
             hintStyle: TextStyle(
               color: Colors.black.withOpacity(0.5),
-              fontSize: 18,
+              fontSize: 14.sp,
             ),
             border: customBorder,
             enabledBorder: customEnabledOutlinedBorder,

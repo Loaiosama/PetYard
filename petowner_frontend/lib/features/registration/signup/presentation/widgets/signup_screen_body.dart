@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'first_section.dart';
 import 'second_section.dart';
 import 'third_section.dart';
@@ -9,20 +10,19 @@ class SignUpScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding:
-          EdgeInsets.only(right: 12.0, left: 20.0, top: 20.0, bottom: 20.0),
+    return Padding(
+      padding: EdgeInsets.only(right: 12.0.w, left: 14.0.w, top: 18.0.h),
       child: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FirstSection(),
-              SizedBox(height: 8),
-              SecondSection(),
-              SizedBox(height: 8),
-              ThirdSection(),
+              const FirstSection(),
+              SizedBox(height: 8.h),
+              const SecondSection(),
+              SizedBox(height: 8.h),
+              const ThirdSection(),
             ],
           ),
         ),

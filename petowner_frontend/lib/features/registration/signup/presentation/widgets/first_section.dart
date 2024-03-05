@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -16,7 +17,7 @@ class FirstSection extends StatelessWidget {
           'Let\'s get started!',
           style: Styles.styles24.copyWith(color: kPrimaryGreen),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 8.h),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.7,
           child: Text(
@@ -24,7 +25,7 @@ class FirstSection extends StatelessWidget {
             style: Styles.styles14,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 14.h),
         const SignUpUserNameWidget(),
       ],
     );

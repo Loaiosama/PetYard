@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'alternative_signup_option.dart';
@@ -13,11 +14,11 @@ class ThirdSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const DateOfBirthColumn(),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         PetYardTextButton(
           style: Styles.styles18.copyWith(color: Colors.white),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 6.h),
         const ALternativeSignupOptionColumn(),
       ],
     );
