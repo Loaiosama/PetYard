@@ -23,7 +23,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        controller.text = '${picked.month}/${picked.day}/${picked.year}';
+        controller.text = '${picked.month}-${picked.day}-${picked.year}';
       });
     }
   }
@@ -38,7 +38,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
           controller: controller,
           readOnly: true,
           decoration: InputDecoration(
-            hintText: '26/1/2003',
+            hintText: '26-1-2003',
             suffixIcon: IconButton(
                 onPressed: () {
                   selectDate(context);

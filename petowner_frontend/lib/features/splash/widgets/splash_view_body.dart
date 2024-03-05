@@ -12,6 +12,7 @@ class SplashViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Image.asset('assets/images/test.png'),
+      // nextScreen: GoRouter.of(context).pushNamed(Routes.kSignupScreen),
       nextScreen: const SignUpScreen(),
       splashTransition: SplashTransition.fadeTransition,
       backgroundColor: kPrimaryGreen,
