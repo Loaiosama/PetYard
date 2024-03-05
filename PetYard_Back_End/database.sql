@@ -32,12 +32,13 @@ CREATE TYPE PetType AS ENUM ('Dog', 'Cat');
 
 CREATE TABLE Pet (
     Pet_Id SERIAL PRIMARY KEY,
-    Type PetType,
+    Type VARCHAR(50),
     Name VARCHAR(50),
     Gender VARCHAR(50),
     Breed VARCHAR(50),
     Date_of_birth DATE,
     Adoption_Date DATE,
+    Weight DOUBLE PRECISION, 
     Image VARCHAR(255), 
     Owner_Id INTEGER,
     FOREIGN KEY (Owner_Id) REFERENCES PetOwner(Owner_Id)

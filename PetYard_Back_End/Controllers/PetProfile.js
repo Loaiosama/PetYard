@@ -3,11 +3,11 @@ const pool = require('../db');
 
 const AddPet=async(req,res)=>
 {
-    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Image}=req.body;
+    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Image,Weight}=req.body;
     const owner_id = req.Owner_Id; 
     try 
     {
-        if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image) 
+        if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight) 
         {
             return res.status(400).json({
                 status: "Fail",
