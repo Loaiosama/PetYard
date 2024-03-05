@@ -25,7 +25,7 @@ const authMiddleware = (req, res, next) => {
 
         // Attach the Owner ID to the request object for future use
         req.Owner_Id = ownerId;
-        console.log( req.Owner_Id );
+       
 
         // Call the next middleware in the chain
         next();

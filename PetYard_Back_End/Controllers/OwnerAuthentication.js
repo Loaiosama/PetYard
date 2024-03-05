@@ -48,7 +48,6 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
     const { email, password } = req.body;
-
     try {
         // Check if both email and password are provided
         if (!email || !password) {
@@ -83,7 +82,6 @@ const signIn = async (req, res) => {
 
         // Extract the owner ID from the query result
         const ownerId = user.owner_id;
-
         // Generate a JWT token based on the owner ID
         const token = jwt.sign({ owner_id: ownerId }, 'your_secret_key', { expiresIn: '24h' });
 
@@ -92,6 +90,7 @@ const signIn = async (req, res) => {
             status: "Success",
             token
         });
+
     } catch (error) {
         console.error("Error signing in:", error);
         res.status(500).json({

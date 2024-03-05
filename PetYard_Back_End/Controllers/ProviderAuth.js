@@ -54,8 +54,8 @@ const signUp = async (req, res) => {
 }
 
 
-
 const signIn = async (req, res) => {
+
     const { email, password } = req.body;
 
     try {
@@ -80,6 +80,7 @@ const signIn = async (req, res) => {
 
         // Check if the password matches
         const user = result.rows[0];
+        
         const isPasswordMatch = await bcrypt.compare(password, user.password); 
        
 
@@ -91,8 +92,8 @@ const signIn = async (req, res) => {
         }
 
         // Extract the Provider ID from the query result
-        const ProviderId = user.ProviderId;
-
+        const ProviderId = user.provider_id;
+     
         // Generate a JWT token based on the ProviderId ID
         const token = jwt.sign({ Provider_Id: ProviderId }, 'your_secret_key', { expiresIn: '24h' });
 
@@ -111,6 +112,8 @@ const signIn = async (req, res) => {
         });
     }
 }
+
+
 
 const deleteAccount = async (req, res) => {
     const { Email, Password } = req.body;
