@@ -1,5 +1,7 @@
 const pool = require('../db');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth} = req.body;
@@ -23,11 +25,12 @@ const signUp = async (req, res) => {
             console.log("User already exists");
             res.status(400).json({message : "User already exists, try another Email."})
         }
-        else{
+        else
+        {
+            const hashedPassword = await bcrypt.hash(pass, saltRounds);
 
-           
             const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth]);
+            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth]);
 
             res.json({ message: "Sign up successful" })
         }
@@ -41,6 +44,7 @@ const signUp = async (req, res) => {
         res.status(500).json({ error: "Internal server error"});
     }
 }
+
 
 const signIn = async (req, res) => {
     const { email, password } = req.body;
@@ -67,7 +71,8 @@ const signIn = async (req, res) => {
 
         // Check if the password matches
         const user = result.rows[0];
-        const isPasswordMatch = user.password === password; // You should use bcrypt for secure password comparison
+        const isPasswordMatch = await bcrypt.compare(password, user.password); 
+       
 
         if (!isPasswordMatch) {
             return res.status(401).json({
@@ -80,7 +85,7 @@ const signIn = async (req, res) => {
         const ownerId = user.owner_id;
 
         // Generate a JWT token based on the owner ID
-        const token = jwt.sign({ owner_id: ownerId }, 'your_secret_key ', { expiresIn: '24h' });
+        const token = jwt.sign({ owner_id: ownerId }, 'your_secret_key', { expiresIn: '24h' });
 
         // Send the token back to the client
         res.status(200).json({
@@ -131,9 +136,6 @@ const deleteAccount = async (req, res) => {
         });
     }
 };
-
-
-
 
 
 module.exports = {

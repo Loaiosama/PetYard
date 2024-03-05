@@ -15,11 +15,13 @@ const authMiddleware = (req, res, next) => {
         const tokenParts = token.split(' ');
         const jwtToken = tokenParts[1]; // Get the actual JWT token
 
+
         // Verify the token and extract the payload
-        const decoded = jwt.verify(jwtToken, 'your_secret_key ');
+        const decoded = jwt.verify(jwtToken,'your_secret_key');
+
 
         // Extract the Owner ID from the decoded token
-        const ownerId = decoded.Owner_Id;
+        const ownerId = decoded.owner_id;
 
         // Attach the Owner ID to the request object for future use
         req.Owner_Id = ownerId;
