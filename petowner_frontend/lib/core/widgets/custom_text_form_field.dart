@@ -47,7 +47,7 @@ class CustomRegistrationTextField extends StatefulWidget {
 class _CustomRegistrationTextFieldState
     extends State<CustomRegistrationTextField> {
   bool textFieldColor = false;
-  bool isVisible = false;
+  bool isVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +85,13 @@ class _CustomRegistrationTextFieldState
                   });
                 },
                 icon: !isVisible
-                    ? Icon(
+                    ? const Icon(
                         Icons.remove_red_eye_outlined,
-                        color: Colors.black.withOpacity(0.5),
-                      )
-                    : const Icon(
-                        Icons.visibility_off_outlined,
                         color: kPrimaryGreen,
+                      )
+                    : Icon(
+                        Icons.visibility_off_outlined,
+                        color: Colors.black.withOpacity(0.5),
                       ),
               )
             : null,
