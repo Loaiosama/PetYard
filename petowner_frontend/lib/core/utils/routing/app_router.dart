@@ -7,6 +7,7 @@ import 'package:petowner_frontend/features/splash/splash_view.dart';
 
 abstract class AppRouter {
   static final GoRouter appRouter = GoRouter(
+    initialLocation: Routes.kSplashScreen,
     routes: [
       GoRoute(
         path: Routes.kSplashScreen,
@@ -24,6 +25,21 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           return const SignUpScreen();
         },
+        // pageBuilder: (context, state) {
+        //   return CustomTransitionPage(
+        //     key: state.pageKey,
+        //     child: const SignUpScreen(),
+        //     transitionsBuilder:
+        //         (context, animation, secondaryAnimation, child) {
+        //       // Change the opacity of the screen using a Curve based on the the animation's
+        //       // value
+        //       return FadeTransition(
+        //         opacity: CurveTween(curve: Curves.ease).animate(animation),
+        //         child: child,
+        //       );
+        //     },
+        //   );
+        // },
       ),
       GoRoute(
         path: Routes.kOnBoardingScreen,

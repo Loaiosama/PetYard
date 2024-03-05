@@ -16,6 +16,7 @@ class ThirdSection extends StatelessWidget {
         const DateOfBirthColumn(),
         SizedBox(height: 16.h),
         PetYardTextButton(
+          onPressed: () {},
           style: Styles.styles16.copyWith(color: Colors.white),
         ),
         SizedBox(height: 6.h),
