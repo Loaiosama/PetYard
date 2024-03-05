@@ -10,10 +10,10 @@ abstract class AppRouter {
       GoRoute(
         path: Routes.kSplashScreen,
         builder: (BuildContext context, GoRouterState state) {
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 3), () {
             appRouter.go(
               Routes.kSignupScreen,
-            ); // Replace '/home' with your main route
+            );
           });
           return const SplashView();
         },
