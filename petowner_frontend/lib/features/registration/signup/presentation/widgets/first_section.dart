@@ -15,14 +15,14 @@ class FirstSection extends StatelessWidget {
       children: [
         Text(
           'Let\'s get started!',
-          style: Styles.styles24.copyWith(color: kPrimaryGreen),
+          style: Styles.styles22.copyWith(color: kPrimaryGreen),
         ),
         SizedBox(height: 8.h),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.7,
           child: Text(
             'Create an account now to use all of PetYard services.',
-            style: Styles.styles14,
+            style: Styles.styles12,
           ),
         ),
         SizedBox(height: 14.h),
