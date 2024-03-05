@@ -5,7 +5,6 @@ const AddPet=async(req,res)=>
 {
     const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Image}=req.body;
     const owner_id = req.Owner_Id; 
-   // console.log(owner_id);
     try 
     {
         if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image) 
@@ -30,8 +29,6 @@ const AddPet=async(req,res)=>
     }
 
 }
-
-
 
 module.exports = {
     AddPet

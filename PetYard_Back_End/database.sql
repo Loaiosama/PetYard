@@ -14,14 +14,14 @@ CREATE TABLE Petowner (
 
 CREATE TABLE ServiceProvider (
     Provider_Id SERIAL PRIMARY KEY,
-    First_name VARCHAR(15),
-    Last_name VARCHAR(15),
-    Password VARCHAR(15),
-    Phone VARCHAR(15) UNIQUE, -- Making Phone unique
+    First_name VARCHAR(225),
+    Last_name VARCHAR(225),
+    Password VARCHAR(225),
+    Phone VARCHAR(225) UNIQUE, -- Making Phone unique
     Email VARCHAR(225) UNIQUE, -- Making Email unique
     Bio VARCHAR(350) ,
     Date_of_birth DATE,
-    Location VARCHAR(100),
+    Location VARCHAR(225),
     Image VARCHAR(255) -- Assuming 255 characters for the image path or URL
 );
 
