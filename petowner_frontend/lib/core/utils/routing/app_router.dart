@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:petowner_frontend/features/registration/signin/presentation/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/signup.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
 
@@ -40,6 +41,12 @@ abstract class AppRouter {
         //     },
         //   );
         // },
+      ),
+      GoRoute(
+        path: Routes.kSigninScreen,
+        builder: (BuildContext context, GoRouterState state) {
+          return const SignInScreen();
+        },
       ),
       GoRoute(
         path: Routes.kOnBoardingScreen,
