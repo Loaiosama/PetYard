@@ -36,7 +36,9 @@ class DescriptionTextAndButtonsColumn extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            GoRouter.of(context).push(Routes.kChooseType);
+          },
           child: Text(
             'Sign up later',
             style: Styles.styles14.copyWith(

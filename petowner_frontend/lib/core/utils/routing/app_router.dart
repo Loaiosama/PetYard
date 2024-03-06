@@ -16,7 +16,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           Future.delayed(const Duration(seconds: 3), () {
             appRouter.go(
-              Routes.kChooseType,
+              Routes.kOnBoardingScreen,
             );
           });
           return const SplashView();
