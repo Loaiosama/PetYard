@@ -16,7 +16,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           Future.delayed(const Duration(seconds: 3), () {
             appRouter.go(
-              Routes.KChooseType,
+              Routes.kChooseType,
             );
           });
           return const SplashView();
@@ -45,6 +45,19 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.kSigninScreen,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const SignInScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: CurveTween(curve: Curves.ease).animate(animation),
+                child: child,
+              );
+            },
+          );
+        },
         builder: (BuildContext context, GoRouterState state) {
           return const SignInScreen();
         },
@@ -56,7 +69,7 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
-        path: Routes.KChooseType,
+        path: Routes.kChooseType,
         builder: (BuildContext context, GoRouterState state) {
           return const ChooseType();
         },

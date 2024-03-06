@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
+// import 'package:go_router/go_router.dart';
 
 class PetTypeBar extends StatelessWidget {
   const PetTypeBar({super.key});
@@ -6,56 +9,54 @@ class PetTypeBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: (){},
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.grey
-                    ) , 
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: () {
+              // GoRouter.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back, color: Colors.grey),
+          ),
+          Column(
+            children: [
+              Text(
+                'Add Pet Profile',
+                style: Styles.styles16w600,
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                'Type',
+                style: Styles.styles12,
+              ),
+            ],
+          ),
+          const Column(
+            children: [
+              Text(
+                'Steps',
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  Text('1'),
+                  Text(
+                    '/5',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
                   ),
-                    const Column(
-                    children: [
-                       Text('Add Pet Profile'), 
-                      SizedBox(
-                        height: 5,
-                      ),
-                       Text(
-                        'Type',
-                        style: TextStyle(
-                          color : Colors.grey , 
-                        ) ,
-                      ),
-                    ],
-                  ),
-                  const Column(
-                    children: [
-                      Text(
-                        'Steps',
-                        
-                        ) , 
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          Text('1'),
-                          Text(
-                            '/5' ,
-                            style: TextStyle(
-                              color : Colors.grey , 
-                            ),
-                            ),
-                        ],
-                      )
-                    ],
-                  )
-               
-              ],
-            ),
-          );
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
