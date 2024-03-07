@@ -74,7 +74,9 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  GoRouter.of(context).push(Routes.kSigninScreen);
+                  isSignUp
+                      ? GoRouter.of(context).push(Routes.kSigninScreen)
+                      : GoRouter.of(context).push(Routes.kSignupScreen);
                 },
                 child: Text(
                   isSignUp ? 'Sign in!' : 'Sign up!',

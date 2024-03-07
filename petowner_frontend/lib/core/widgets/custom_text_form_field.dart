@@ -26,9 +26,8 @@ InputBorder customErrorOutlinedBorder = OutlineInputBorder(
   ),
 );
 
-// ignore: must_be_immutable
 class CustomRegistrationTextField extends StatelessWidget {
-  CustomRegistrationTextField({
+  const CustomRegistrationTextField({
     super.key,
     this.hintText = 'HINT',
     this.keyboardType,
@@ -39,7 +38,6 @@ class CustomRegistrationTextField extends StatelessWidget {
     required this.controller,
     this.validator,
     this.suffixIcon,
-    // required this.focusNode,
   });
 
   final String hintText;
@@ -47,17 +45,15 @@ class CustomRegistrationTextField extends StatelessWidget {
   final double width;
   final double height;
   final bool? isPassword;
-  bool? isObsecure;
+  final bool? isObsecure;
   final TextEditingController controller;
-  String? Function(String?)? validator;
+  final String? Function(String?)? validator;
   final Widget? suffixIcon;
-  // final FocusNode focusNode;
-  bool isVisible = false;
+  final bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // focusNode: widget.focusNode,
       controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -78,6 +74,7 @@ class CustomRegistrationTextField extends StatelessWidget {
         isDense: true,
         // contentPadding:
         //     const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+
         hintText: hintText,
         constraints: BoxConstraints.tightForFinite(
           width: width,
