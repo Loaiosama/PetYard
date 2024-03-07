@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petowner_frontend/features/registration/signin/presentation/widgets/signin_screen_body.dart';
+import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/signin_screen_body.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/pet_type.dart';
-import 'package:petowner_frontend/features/registration/signin/presentation/signin.dart';
+import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/signup.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
 

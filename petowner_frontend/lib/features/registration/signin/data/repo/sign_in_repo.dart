@@ -18,6 +18,8 @@ class SignInRepo {
       if (response.data['status'] == 'Success') {
         final token = response.data['token'];
         await _storage.write(key: 'token', value: token);
+        debugPrint(
+            "=============================== ${response.data['status']}");
       } else {
         // Handle error response
         throw Exception('Failed to sign in');
@@ -25,7 +27,7 @@ class SignInRepo {
     } catch (e) {
       // Handle other errors
       debugPrint('Login error: $e');
-      throw e;
+      rethrow;
     }
   }
 }

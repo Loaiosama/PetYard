@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/registration/signin/presentation/widgets/first_section.dart';
+import 'package:petowner_frontend/features/home/home.dart';
+import 'package:petowner_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
+import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/first_section.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/widgets/alternative_signup_option.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/widgets/signup_text_field_column.dart';
 
@@ -19,7 +23,8 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
   TextEditingController passwordController = TextEditingController();
   bool isObsecure = true;
   final formKey = GlobalKey<FormState>();
-
+  SignInRepo signInRepo = SignInRepo(api: ApiService(dio: Dio()));
+  ApiService apiService = ApiService(dio: Dio());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -75,8 +80,11 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                 ),
                 SizedBox(height: 36.h),
                 PetYardTextButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {}
+                  onPressed: () async {
+                    // await _signIn();
+                    if (formKey.currentState!.validate()) {
+                      await _signIn();
+                    }
                   },
                   text: 'Login!',
                   style: Styles.styles16.copyWith(color: Colors.white),
@@ -91,5 +99,28 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
         ),
       ),
     );
+  }
+
+  Future<void> _signIn() async {
+    try {
+      await signInRepo.login(
+        password: passwordController.text,
+        email: emailController.text,
+      );
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ));
+      // await apiService.login();
+      // Navigate to the next screen upon successful login
+    } catch (error) {
+      // Handle sign-in error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Sign-in failed(Incorrect email or password). Please try again.')),
+      );
+    }
   }
 }
