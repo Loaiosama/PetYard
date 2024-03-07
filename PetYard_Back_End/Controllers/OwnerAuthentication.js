@@ -4,12 +4,11 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const signUp = async (req, res) => {
-    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth} = req.body;
+    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
 
     try {
 
-        if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth)
-        {
+        if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
@@ -20,13 +19,11 @@ const signUp = async (req, res) => {
         const existQuery = 'Select * FROM Petowner WHERE Email = $1';
         const result = await client.query(existQuery, [email]);
 
-        if(result.rows.length === 1)
-        {
+        if (result.rows.length === 1) {
             console.log("User already exists");
-            res.status(400).json({message : "User already exists, try another Email."})
+            res.status(400).json({ message: "User already exists, try another Email." })
         }
-        else
-        {
+        else {
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
 
             const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
@@ -36,12 +33,11 @@ const signUp = async (req, res) => {
         }
 
         client.release();
-        
+
     }
-    catch(e)
-    {
+    catch (e) {
         console.error("Error during signUp", e);
-        res.status(500).json({ error: "Internal server error"});
+        res.status(500).json({ error: "Internal server error" });
     }
 }
 
@@ -70,8 +66,8 @@ const signIn = async (req, res) => {
 
         // Check if the password matches
         const user = result.rows[0];
-        const isPasswordMatch = await bcrypt.compare(password, user.password); 
-       
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+
 
         if (!isPasswordMatch) {
             return res.status(401).json({

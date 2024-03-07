@@ -4,7 +4,8 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'date_of_birth_text_field.dart';
 
 class DateOfBirthColumn extends StatelessWidget {
-  const DateOfBirthColumn({super.key});
+  const DateOfBirthColumn({super.key, required this.controller});
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +18,25 @@ class DateOfBirthColumn extends StatelessWidget {
             'Date of Birth',
             style: Styles.styles16,
           ),
+          // child: RichText(
+          //   text: TextSpan(
+          //     style: Styles.styles16,
+          //     children: [
+          //       const TextSpan(text: 'Date of Birth'),
+          //       TextSpan(
+          //         text: '*',
+          //         style: Styles.styles14.copyWith(
+          //           color: Colors.red,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ),
         SizedBox(height: 6.h),
-        const DateOfBirthTexTField(),
+        DateOfBirthTexTField(
+          controller: controller,
+        ),
       ],
     );
   }

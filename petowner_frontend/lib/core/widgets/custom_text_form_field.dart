@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0.r),
@@ -18,12 +18,15 @@ InputBorder customFocusedOutlinedBorder = OutlineInputBorder(
     width: 2.0,
   ),
 );
-
-InputBorder customBorder = OutlineInputBorder(
+InputBorder customErrorOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0.r),
+  borderSide: const BorderSide(
+    color: Colors.red,
+    width: 2.0,
+  ),
 );
 
-class CustomRegistrationTextField extends StatefulWidget {
+class CustomRegistrationTextField extends StatelessWidget {
   const CustomRegistrationTextField({
     super.key,
     this.hintText = 'HINT',
@@ -31,7 +34,10 @@ class CustomRegistrationTextField extends StatefulWidget {
     required this.width,
     this.height = 60,
     this.isPassword = false,
-    // required this.focusNode,
+    this.isObsecure,
+    required this.controller,
+    this.validator,
+    this.suffixIcon,
   });
 
   final String hintText;
@@ -39,69 +45,49 @@ class CustomRegistrationTextField extends StatefulWidget {
   final double width;
   final double height;
   final bool? isPassword;
-  // final FocusNode focusNode;
-  @override
-  State<CustomRegistrationTextField> createState() =>
-      _CustomRegistrationTextFieldState();
-}
-
-class _CustomRegistrationTextFieldState
-    extends State<CustomRegistrationTextField> {
-  bool textFieldColor = false;
-  bool isVisible = true;
+  final bool? isObsecure;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final Widget? suffixIcon;
+  final bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // focusNode: widget.focusNode,
-      onTapOutside: (event) {
-        setState(() {
-          textFieldColor = false;
-          FocusManager.instance.primaryFocus?.unfocus();
-        });
+      controller: controller,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field can\'t be empty';
+        }
+        return null;
       },
-      onTap: () {
-        setState(() {
-          textFieldColor = !textFieldColor;
-        });
-      },
-      onFieldSubmitted: (value) {
-        setState(() {
-          textFieldColor = false;
-        });
-      },
-      obscureText: isVisible ? true : false,
-      keyboardType: widget.keyboardType,
+      obscureText: isObsecure ?? false,
+      style:
+          Styles.styles14.copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
+      keyboardType: keyboardType,
       decoration: InputDecoration(
-        hintText: widget.hintText,
+        // backgroud color to textformfield (in consider)
+        // fillColor: Colors.grey.shade100,
+        // filled: true,
+
+        //is Dense is like the padding inside of the field
+        isDense: true,
+        // contentPadding:
+        //     const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+
+        hintText: hintText,
         constraints: BoxConstraints.tightForFinite(
-          width: widget.width,
+          width: width,
         ),
-        suffixIcon: (widget.isPassword!)
-            ? IconButton(
-                onPressed: () {
-                  setState(() {
-                    isVisible = !isVisible;
-                  });
-                },
-                icon: !isVisible
-                    ? const Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: kPrimaryGreen,
-                      )
-                    : Icon(
-                        Icons.visibility_off_outlined,
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-              )
-            : null,
+        suffixIcon: suffixIcon,
         hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.5),
           fontSize: 14.sp,
         ),
-        border: customBorder,
         enabledBorder: customEnabledOutlinedBorder,
         focusedBorder: customFocusedOutlinedBorder,
+        errorBorder: customErrorOutlinedBorder,
+        border: customEnabledOutlinedBorder,
       ),
     );
   }

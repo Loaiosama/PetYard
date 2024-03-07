@@ -4,14 +4,15 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
 class DateOfBirthTexTField extends StatefulWidget {
-  const DateOfBirthTexTField({super.key});
+  const DateOfBirthTexTField({super.key, required this.controller});
+
+  final TextEditingController controller;
 
   @override
   State<DateOfBirthTexTField> createState() => _DateOfBirthTexTFieldState();
 }
 
 class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
-  TextEditingController controller = TextEditingController();
   DateTime? _selectedDate;
 
   Future<void> selectDate(BuildContext context) async {
@@ -24,7 +25,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        controller.text = '${picked.month}-${picked.day}-${picked.year}';
+        widget.controller.text = '${picked.month}-${picked.day}-${picked.year}';
       });
     }
   }
@@ -36,7 +37,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
       child: AbsorbPointer(
         absorbing: true,
         child: TextFormField(
-          controller: controller,
+          controller: widget.controller,
           readOnly: true,
           decoration: InputDecoration(
             hintText: '26-1-2003',
@@ -52,7 +53,6 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
               color: Colors.black.withOpacity(0.5),
               fontSize: 14.sp,
             ),
-            border: customBorder,
             enabledBorder: customEnabledOutlinedBorder,
           ),
         ),

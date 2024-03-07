@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-
-import 'signup_username_widget.dart';
 
 class FirstSection extends StatelessWidget {
   const FirstSection({super.key});
@@ -14,19 +11,18 @@ class FirstSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Let\'s get started!',
-          style: Styles.styles22.copyWith(color: kPrimaryGreen),
+          'Welcome Back',
+          style: Styles.styles22BoldGreen,
         ),
         SizedBox(height: 8.h),
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.7,
           child: Text(
-            'Create an account now to use all of PetYard services.',
+            'We\'re excited to have you back, can\'t wait to see what you\'ve been to since you last logged in.',
             style: Styles.styles12,
           ),
         ),
         SizedBox(height: 14.h),
-        const SignUpUserNameWidget(),
       ],
     );
   }
