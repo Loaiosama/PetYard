@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 // import 'package:go_router/go_router.dart';
 
@@ -15,7 +16,7 @@ class PetTypeBar extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              // GoRouter.of(context).pop();
+              GoRouter.of(context).pop();
             },
             icon: const Icon(Icons.arrow_back, color: Colors.grey),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class Styles {
   static TextStyle styles22 = TextStyle(
@@ -7,7 +8,11 @@ class Styles {
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );
-
+  static TextStyle styles22BoldGreen = TextStyle(
+    fontSize: 22.sp,
+    fontWeight: FontWeight.bold,
+    color: kPrimaryGreen,
+  );
   static TextStyle styles20 = TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.bold,

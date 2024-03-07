@@ -58,9 +58,9 @@ abstract class AppRouter {
             },
           );
         },
-        builder: (BuildContext context, GoRouterState state) {
-          return const SignInScreen();
-        },
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const SignInScreen();
+        // },
       ),
       GoRoute(
         path: Routes.kOnBoardingScreen,

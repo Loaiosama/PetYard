@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/constants/constants.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 // import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class RPetImageButton extends StatelessWidget {
@@ -15,10 +16,13 @@ class RPetImageButton extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
         onTap: () {},
-        splashColor: Colors.black26,
+        //changed the color here to our green with opacity still the same in the dog one
+        splashColor: kPrimaryGreen.withOpacity(0.3),
         child: Row(children: [
           Ink.image(
-            image: AssetImage('${Constants.assetsImage}/cat4.png'),
+            //resized the image to fix the loading part and it worked quite well
+            //(better than before)
+            image: AssetImage('${Constants.assetsImage}/cat_copy.png'),
             height: 150,
             width: 150,
             fit: BoxFit.fill,
@@ -62,7 +66,7 @@ class LPetImageButton extends StatelessWidget {
             width: 30.w,
           ),
           Ink.image(
-            image: AssetImage('${Constants.assetsImage}/dog1.png'),
+            image: AssetImage('${Constants.assetsImage}/dog_copy.png'),
             height: 150,
             width: 150,
             fit: BoxFit.fill,
