@@ -6,7 +6,12 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class ALternativeSignupOptionColumn extends StatelessWidget {
-  const ALternativeSignupOptionColumn({super.key});
+  const ALternativeSignupOptionColumn({
+    super.key,
+    this.isSignUp = true,
+  });
+
+  final bool isSignUp;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Text(
-                'Or sign up with',
+                isSignUp ? 'Or sign up with' : 'Or sign in with',
                 style: Styles.styles12,
               ),
             ),
@@ -63,15 +68,16 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Already have an account?',
-              style: Styles.styles12,
+              isSignUp ? 'Already have an account?' : "Don't have an account?",
+              style: Styles.styles12
+                  .copyWith(decoration: TextDecoration.underline),
             ),
             TextButton(
                 onPressed: () {
                   GoRouter.of(context).push(Routes.kSigninScreen);
                 },
                 child: Text(
-                  'Sign in!',
+                  isSignUp ? 'Sign in!' : 'Sign up!',
                   style: Styles.styles12.copyWith(
                     color: Colors.blue,
                   ),
