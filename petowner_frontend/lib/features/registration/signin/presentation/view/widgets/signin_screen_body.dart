@@ -8,8 +8,8 @@ import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/home/home.dart';
 import 'package:petowner_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/first_section.dart';
-import 'package:petowner_frontend/features/registration/signup/presentation/widgets/alternative_signup_option.dart';
-import 'package:petowner_frontend/features/registration/signup/presentation/widgets/signup_text_field_column.dart';
+import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/alternative_signup_option.dart';
+import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/signup_text_field_column.dart';
 
 class SignInScreenBody extends StatefulWidget {
   const SignInScreenBody({super.key});
@@ -24,7 +24,6 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
   bool isObsecure = true;
   final formKey = GlobalKey<FormState>();
   SignInRepo signInRepo = SignInRepo(api: ApiService(dio: Dio()));
-  ApiService apiService = ApiService(dio: Dio());
   @override
   Widget build(BuildContext context) {
     return SafeArea(

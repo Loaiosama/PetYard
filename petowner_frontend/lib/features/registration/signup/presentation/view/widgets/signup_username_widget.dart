@@ -4,9 +4,11 @@ import 'signup_text_field_column.dart';
 class SignUpUserNameWidget extends StatelessWidget {
   const SignUpUserNameWidget({
     super.key,
+    required this.fnameController,
+    required this.lnameController,
   });
-  static TextEditingController fnameController = TextEditingController();
-  static TextEditingController lnameController = TextEditingController();
+  final TextEditingController fnameController;
+  final TextEditingController lnameController;
   @override
   Widget build(BuildContext context) {
     return Row(

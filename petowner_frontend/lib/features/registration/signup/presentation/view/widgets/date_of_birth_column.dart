@@ -4,7 +4,8 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'date_of_birth_text_field.dart';
 
 class DateOfBirthColumn extends StatelessWidget {
-  const DateOfBirthColumn({super.key});
+  const DateOfBirthColumn({super.key, required this.controller});
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,9 @@ class DateOfBirthColumn extends StatelessWidget {
           // ),
         ),
         SizedBox(height: 6.h),
-        const DateOfBirthTexTField(),
+        DateOfBirthTexTField(
+          controller: controller,
+        ),
       ],
     );
   }

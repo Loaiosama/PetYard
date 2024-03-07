@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
   final baseUrl = 'http://192.168.1.3:3000/';
 
   Dio dio;
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  // final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   ApiService({
     required this.dio,
