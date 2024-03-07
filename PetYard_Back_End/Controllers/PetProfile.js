@@ -4,7 +4,7 @@ const pool = require('../db');
 const AddPet = async(req,res)=>
 {
     const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Image,Weight}=req.body;
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
     try 
     {
         if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight) 
@@ -31,7 +31,7 @@ const AddPet = async(req,res)=>
 }
 const GetAllPet = async(req,res)=>{
 
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
 
     try {
         if(!owner_id)
@@ -64,7 +64,7 @@ const GetAllPet = async(req,res)=>{
 const GetPet = async(req,res)=>{
 
     const {Pet_Id} =req.params;  
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
 
     try
     {
@@ -96,7 +96,7 @@ const GetPet = async(req,res)=>{
 
 const RemoveAllPet = async(req,res)=>{
 
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
     
 
  try {
@@ -129,7 +129,7 @@ const RemoveAllPet = async(req,res)=>{
 
 const RemovePet = async(req,res)=>{
     const {Pet_Id} =req.params;  
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
  
     try {
 
@@ -164,7 +164,7 @@ const RemovePet = async(req,res)=>{
 const updatePetProfile = async(req,res)=>{
     const {Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image} = req.body;
     const {Pet_Id}=req.params;
-    const owner_id = req.Owner_Id; 
+    const owner_id = req.ID; 
 
     try {
         if(!Pet_Id || !owner_id)

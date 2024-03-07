@@ -1,15 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const PetOwnerController = require('../Controllers/OwnerAuthentication');
-const  authMiddleware=require('./../Controllers/autMiddleware');
+const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
+const  authMiddleware=require('../Controllers/AuthMiddle');
 const PetProfileController = require('../Controllers/PetProfile');
-require('./../Controllers/GoogleAuth');
+require('../Controllers/Owner/GoogleAuth');
 const passport = require('passport');
 
 
 router.post('/SignUp', PetOwnerController.signUp);
+
 router.post('/SignIn', PetOwnerController.signIn);
-router.delete('/deleteAcc',PetOwnerController.deleteAccount);
+
+router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
 router.post('/addPet',authMiddleware, PetProfileController.AddPet);
 

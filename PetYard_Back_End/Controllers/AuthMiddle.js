@@ -21,10 +21,9 @@ const authMiddleware = (req, res, next) => {
 
 
         // Extract the Owner ID from the decoded token
-        const ownerId = decoded.owner_id;
-
+        const ID = decoded.ID;
         // Attach the Owner ID to the request object for future use
-        req.Owner_Id = ownerId;
+        req.ID = ID;
        
 
         // Call the next middleware in the chain
