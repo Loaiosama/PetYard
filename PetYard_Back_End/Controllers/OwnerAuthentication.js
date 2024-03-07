@@ -16,12 +16,26 @@ const signUp = async (req, res) => {
         }
 
         const client = await pool.connect();
-        const existQuery = 'Select * FROM Petowner WHERE Email = $1 OR Phone = $2';
-        const result = await client.query(existQuery, [email, phoneNumber]);
+        const emailExists = 'Select * FROM Petowner WHERE Email = $1';
+        const phoneExists = 'Select * FROM Petowner WHERE Phone = $1';
+        const resultEmail = await client.query(emailExists, [email]);
+        const resultPhone = await client.query(phoneExists, [phoneNumber]);
 
-        if (result.rows.length === 1) {
+        if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
+            console.log("User already exists");
+            res.status(400).json({ message: "User already exists, try another Email and Phone number." })
+        }
+        else if(resultPhone.rows.length === 1)
+        {  
+            console.log("User already exists");
+            res.status(400).json({ message: "User already exists, try another Phone number." })
+
+        }
+        else if(resultEmail.rows.length === 1)
+        {  
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another Email." })
+
         }
         else {
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
