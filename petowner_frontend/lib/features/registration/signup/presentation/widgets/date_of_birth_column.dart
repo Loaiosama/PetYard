@@ -17,6 +17,20 @@ class DateOfBirthColumn extends StatelessWidget {
             'Date of Birth',
             style: Styles.styles16,
           ),
+          // child: RichText(
+          //   text: TextSpan(
+          //     style: Styles.styles16,
+          //     children: [
+          //       const TextSpan(text: 'Date of Birth'),
+          //       TextSpan(
+          //         text: '*',
+          //         style: Styles.styles14.copyWith(
+          //           color: Colors.red,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ),
         SizedBox(height: 6.h),
         const DateOfBirthTexTField(),

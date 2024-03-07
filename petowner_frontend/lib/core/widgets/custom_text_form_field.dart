@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0.r),
@@ -18,19 +19,26 @@ InputBorder customFocusedOutlinedBorder = OutlineInputBorder(
     width: 2.0,
   ),
 );
-
-InputBorder customBorder = OutlineInputBorder(
+InputBorder customErrorOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0.r),
+  borderSide: const BorderSide(
+    color: Colors.red,
+    width: 2.0,
+  ),
 );
 
+// ignore: must_be_immutable
 class CustomRegistrationTextField extends StatefulWidget {
-  const CustomRegistrationTextField({
+  CustomRegistrationTextField({
     super.key,
     this.hintText = 'HINT',
     this.keyboardType,
     required this.width,
     this.height = 60,
     this.isPassword = false,
+    this.isObsecure,
+    required this.controller,
+    this.validator,
     // required this.focusNode,
   });
 
@@ -39,6 +47,9 @@ class CustomRegistrationTextField extends StatefulWidget {
   final double width;
   final double height;
   final bool? isPassword;
+  bool? isObsecure;
+  final TextEditingController controller;
+  String? Function(String?)? validator;
   // final FocusNode focusNode;
   @override
   State<CustomRegistrationTextField> createState() =>
@@ -47,32 +58,37 @@ class CustomRegistrationTextField extends StatefulWidget {
 
 class _CustomRegistrationTextFieldState
     extends State<CustomRegistrationTextField> {
-  bool textFieldColor = false;
-  bool isVisible = true;
+  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       // focusNode: widget.focusNode,
+      controller: widget.controller,
       onTapOutside: (event) {
         setState(() {
-          textFieldColor = false;
           FocusManager.instance.primaryFocus?.unfocus();
         });
       },
-      onTap: () {
-        setState(() {
-          textFieldColor = !textFieldColor;
-        });
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'This field can\'t be empty';
+        }
+        return null;
       },
-      onFieldSubmitted: (value) {
-        setState(() {
-          textFieldColor = false;
-        });
-      },
-      obscureText: isVisible ? true : false,
+      obscureText: widget.isObsecure ?? false,
+      style:
+          Styles.styles14.copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
+        // backgroud color to textformfield (in consider)
+        // fillColor: Colors.grey.shade100,
+        // filled: true,
+
+        //is Dense is like the padding inside of the field
+        isDense: true,
+        // contentPadding:
+        //     const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
         hintText: widget.hintText,
         constraints: BoxConstraints.tightForFinite(
           width: widget.width,
@@ -81,10 +97,10 @@ class _CustomRegistrationTextFieldState
             ? IconButton(
                 onPressed: () {
                   setState(() {
-                    isVisible = !isVisible;
+                    widget.isObsecure = !widget.isObsecure!;
                   });
                 },
-                icon: !isVisible
+                icon: !widget.isObsecure!
                     ? const Icon(
                         Icons.remove_red_eye_outlined,
                         color: kPrimaryGreen,
@@ -99,9 +115,10 @@ class _CustomRegistrationTextFieldState
           color: Colors.black.withOpacity(0.5),
           fontSize: 14.sp,
         ),
-        border: customBorder,
         enabledBorder: customEnabledOutlinedBorder,
         focusedBorder: customFocusedOutlinedBorder,
+        errorBorder: customErrorOutlinedBorder,
+        border: customEnabledOutlinedBorder,
       ),
     );
   }

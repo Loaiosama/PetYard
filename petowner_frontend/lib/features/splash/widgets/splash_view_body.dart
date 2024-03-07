@@ -9,10 +9,10 @@ class SplashViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    precacheImage(
-        const AssetImage('assets/images/onBoarding_dog.png'), context);
+    // precacheImage(
+    //     const AssetImage('assets/images/onBoarding_dog.png'), context);
     //
-    precacheImage(const AssetImage('assets/images/cat4.png'), context);
+
     return AnimatedSplashScreen(
       splash: Image.asset('assets/images/test.png'),
       // nextScreen: GoRouter.of(context).pushNamed(Routes.kSignupScreen),

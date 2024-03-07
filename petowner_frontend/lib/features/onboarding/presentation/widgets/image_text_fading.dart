@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:petowner_frontend/core/constants/constants.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class BackGroundImageAndTextWithFading extends StatelessWidget {
@@ -31,7 +30,7 @@ class BackGroundImageAndTextWithFading extends StatelessWidget {
           child: Center(
             child: Text(
               'Personalized Pet Profiles',
-              style: Styles.styles22.copyWith(color: kPrimaryGreen),
+              style: Styles.styles22BoldGreen,
             ),
           ),
         ),

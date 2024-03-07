@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
-import 'signup_username_widget.dart';
+// import 'signup_username_widget.dart';
 
 class FirstSection extends StatelessWidget {
-  const FirstSection({super.key});
-
+  const FirstSection({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,7 +15,7 @@ class FirstSection extends StatelessWidget {
       children: [
         Text(
           'Let\'s get started!',
-          style: Styles.styles22.copyWith(color: kPrimaryGreen),
+          style: Styles.styles22BoldGreen,
         ),
         SizedBox(height: 8.h),
         SizedBox(
@@ -26,7 +26,7 @@ class FirstSection extends StatelessWidget {
           ),
         ),
         SizedBox(height: 14.h),
-        const SignUpUserNameWidget(),
+        // const SignUpUserNameWidget(),
       ],
     );
   }

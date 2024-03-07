@@ -8,6 +8,8 @@ class PetYardApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // precacheImage(const AssetImage('assets/images/cat4.png'), context);
+    // precacheImage(const AssetImage('assets/images/dog1.png'), context);
     return ScreenUtilInit(
       designSize: const Size(360, 800),
       minTextAdapt: true,

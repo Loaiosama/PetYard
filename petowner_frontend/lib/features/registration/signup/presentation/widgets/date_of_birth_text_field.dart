@@ -52,7 +52,6 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
               color: Colors.black.withOpacity(0.5),
               fontSize: 14.sp,
             ),
-            border: customBorder,
             enabledBorder: customEnabledOutlinedBorder,
           ),
         ),

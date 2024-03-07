@@ -11,6 +11,8 @@ class SignUpTextFieldColumn extends StatelessWidget {
     this.width = double.infinity,
     this.keyboardType,
     this.isPassword = false,
+    this.isObsecure,
+    required this.controller,
     // required this.focusNode,
   });
 
@@ -18,7 +20,9 @@ class SignUpTextFieldColumn extends StatelessWidget {
   final String labelText;
   final double width;
   final TextInputType? keyboardType;
+  final TextEditingController controller;
   final bool? isPassword;
+  final bool? isObsecure;
   // final FocusNode focusNode;
   @override
   Widget build(BuildContext context) {
@@ -27,13 +31,31 @@ class SignUpTextFieldColumn extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 9.0.w),
-          child: Text(
-            labelText,
-            style: Styles.styles16,
+          child: RichText(
+            text: TextSpan(
+              style: Styles.styles16,
+              children: [
+                TextSpan(text: labelText),
+                TextSpan(
+                  text: '*',
+                  style: Styles.styles14.copyWith(
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(height: 6.h),
         CustomRegistrationTextField(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter something';
+            }
+            return null;
+          },
+          controller: controller,
+          isObsecure: isObsecure,
           hintText: hintText,
           width: width,
           keyboardType: keyboardType,
