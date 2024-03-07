@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/widgets/alternative_signup_option.dart';
@@ -19,6 +20,7 @@ class SignUpScreenBody extends StatefulWidget {
 class _SignUpScreenBodyState extends State<SignUpScreenBody> {
   final formKey = GlobalKey<FormState>();
   final formKey1 = GlobalKey<FormState>();
+  bool isObsecure = true;
   static TextEditingController phoneNumberController = TextEditingController();
   static TextEditingController emailAddressController = TextEditingController();
   static TextEditingController passwordController = TextEditingController();
@@ -54,7 +56,23 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                 SizedBox(height: 8.h),
                 SignUpTextFieldColumn(
                   controller: passwordController,
-                  isObsecure: true,
+                  sufixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isObsecure = !isObsecure;
+                      });
+                    },
+                    icon: !isObsecure
+                        ? const Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: kPrimaryGreen,
+                          )
+                        : Icon(
+                            Icons.visibility_off_outlined,
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                  ),
+                  isObsecure: isObsecure,
                   hintText: 'Password',
                   labelText: 'Password',
                   keyboardType: TextInputType.visiblePassword,

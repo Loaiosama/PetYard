@@ -13,9 +13,10 @@ class SignUpTextFieldColumn extends StatelessWidget {
     this.isPassword = false,
     this.isObsecure,
     required this.controller,
+    this.sufixIcon,
     // required this.focusNode,
   });
-
+  final Widget? sufixIcon;
   final String hintText;
   final String labelText;
   final double width;
@@ -55,6 +56,7 @@ class SignUpTextFieldColumn extends StatelessWidget {
             return null;
           },
           controller: controller,
+          suffixIcon: sufixIcon,
           isObsecure: isObsecure,
           hintText: hintText,
           width: width,

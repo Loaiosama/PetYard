@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
@@ -28,7 +27,7 @@ InputBorder customErrorOutlinedBorder = OutlineInputBorder(
 );
 
 // ignore: must_be_immutable
-class CustomRegistrationTextField extends StatefulWidget {
+class CustomRegistrationTextField extends StatelessWidget {
   CustomRegistrationTextField({
     super.key,
     this.hintText = 'HINT',
@@ -39,6 +38,7 @@ class CustomRegistrationTextField extends StatefulWidget {
     this.isObsecure,
     required this.controller,
     this.validator,
+    this.suffixIcon,
     // required this.focusNode,
   });
 
@@ -50,36 +50,25 @@ class CustomRegistrationTextField extends StatefulWidget {
   bool? isObsecure;
   final TextEditingController controller;
   String? Function(String?)? validator;
+  final Widget? suffixIcon;
   // final FocusNode focusNode;
-  @override
-  State<CustomRegistrationTextField> createState() =>
-      _CustomRegistrationTextFieldState();
-}
-
-class _CustomRegistrationTextFieldState
-    extends State<CustomRegistrationTextField> {
   bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       // focusNode: widget.focusNode,
-      controller: widget.controller,
-      onTapOutside: (event) {
-        setState(() {
-          FocusManager.instance.primaryFocus?.unfocus();
-        });
-      },
+      controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'This field can\'t be empty';
         }
         return null;
       },
-      obscureText: widget.isObsecure ?? false,
+      obscureText: isObsecure ?? false,
       style:
           Styles.styles14.copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
-      keyboardType: widget.keyboardType,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         // backgroud color to textformfield (in consider)
         // fillColor: Colors.grey.shade100,
@@ -89,28 +78,11 @@ class _CustomRegistrationTextFieldState
         isDense: true,
         // contentPadding:
         //     const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-        hintText: widget.hintText,
+        hintText: hintText,
         constraints: BoxConstraints.tightForFinite(
-          width: widget.width,
+          width: width,
         ),
-        suffixIcon: (widget.isPassword!)
-            ? IconButton(
-                onPressed: () {
-                  setState(() {
-                    widget.isObsecure = !widget.isObsecure!;
-                  });
-                },
-                icon: !widget.isObsecure!
-                    ? const Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: kPrimaryGreen,
-                      )
-                    : Icon(
-                        Icons.visibility_off_outlined,
-                        color: Colors.black.withOpacity(0.5),
-                      ),
-              )
-            : null,
+        suffixIcon: suffixIcon,
         hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.5),
           fontSize: 14.sp,
