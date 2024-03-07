@@ -54,7 +54,7 @@ class LPetImageButton extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
         onTap: () {},
-        splashColor: Colors.black26,
+        splashColor: kPrimaryGreen.withOpacity(0.3),
         child: Row(children: [
           SizedBox(
             width: 30.w,
