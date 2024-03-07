@@ -16,8 +16,8 @@ const signUp = async (req, res) => {
         }
 
         const client = await pool.connect();
-        const existQuery = 'Select * FROM Petowner WHERE Email = $1';
-        const result = await client.query(existQuery, [email]);
+        const existQuery = 'Select * FROM Petowner WHERE Email = $1 OR Phone = $2';
+        const result = await client.query(existQuery, [email, phoneNumber]);
 
         if (result.rows.length === 1) {
             console.log("User already exists");
