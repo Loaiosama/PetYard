@@ -38,6 +38,12 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
         absorbing: true,
         child: TextFormField(
           controller: widget.controller,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'This field can\'t be empty';
+            }
+            return null;
+          },
           readOnly: true,
           decoration: InputDecoration(
             hintText: '26-1-2003',
@@ -54,6 +60,7 @@ class _DateOfBirthTexTFieldState extends State<DateOfBirthTexTField> {
               fontSize: 14.sp,
             ),
             enabledBorder: customEnabledOutlinedBorder,
+            border: customErrorOutlinedBorder,
           ),
         ),
       ),
