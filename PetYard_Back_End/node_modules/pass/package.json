@@ -1,0 +1,31 @@
+{
+    "name" : "pass",
+    "version": "0.2.0",
+    "main" : "./pass",
+    "description": "Apache htpasswd password generator/validator",
+    "author" : "Andris Reinman",
+    "maintainers":[
+        {
+            "name":"andris",
+            "email":"andris@node.ee"
+        },
+        {
+            "name":"rgeber",
+            "email":"geber@b1-systems.de"
+        }
+    ],
+    "repository" : {
+        "type" : "git",
+        "url" : "http://github.com/andris9/pass"
+    },
+    "licenses" : [
+        {
+            "type": "MIT",
+            "url": "http://github.com/andris9/pass/blob/master/LICENSE"
+        }
+    ],
+    "keywords": ["apache", "password", "passwd", "htpasswd"],
+    "scripts" : {
+        "test" : "node test.js"
+    }
+}
