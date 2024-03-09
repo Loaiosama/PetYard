@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 
 class Styles {
   static TextStyle styles22BoldBlack = TextStyle(
     fontSize: 22.sp,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontsHelper.bold,
     color: Colors.black,
   );
   static TextStyle styles22BoldGreen = TextStyle(
     fontSize: 22.sp,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontsHelper.bold,
     color: kPrimaryGreen,
   );
   static TextStyle styles20BoldBlack = TextStyle(
     fontSize: 20.sp,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontsHelper.bold,
     color: Colors.black,
   );
 

@@ -7,7 +7,6 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/home/presentation/home.dart';
 import 'package:petowner_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/first_section.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/alternative_signup_option.dart';
@@ -112,11 +111,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
         password: passwordController.text,
         email: emailController.text,
       );
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
-          ));
+      GoRouter.of(context).push(Routes.kHomeScreen);
       // await apiService.login();
       // Navigate to the next screen upon successful login
     } catch (error) {
