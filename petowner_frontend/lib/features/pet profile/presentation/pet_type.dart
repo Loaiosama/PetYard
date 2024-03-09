@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/pet%20profile/widgets/linear_percent_indecator.dart';
+import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 
-import 'package:petowner_frontend/features/pet%20profile/widgets/pet_image_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/widgets/pet_type_bar.dart';
+import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_image_button.dart';
+import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
 
 class ChooseType extends StatelessWidget {
   const ChooseType({super.key});
