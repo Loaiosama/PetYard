@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
+import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/pet_type.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
@@ -24,9 +25,6 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.kSignupScreen,
-        // builder: (BuildContext context, GoRouterState state) {
-        //   return const SignUpScreen();
-        // },
         pageBuilder: (context, state) {
           return CustomTransitionPage(
             key: state.pageKey,
@@ -40,21 +38,6 @@ abstract class AppRouter {
             },
           );
         },
-        // pageBuilder: (context, state) {
-        //   return CustomTransitionPage(
-        //     key: state.pageKey,
-        //     child: const SignUpScreen(),
-        //     transitionsBuilder:
-        //         (context, animation, secondaryAnimation, child) {
-        //       // Change the opacity of the screen using a Curve based on the the animation's
-        //       // value
-        //       return FadeTransition(
-        //         opacity: CurveTween(curve: Curves.ease).animate(animation),
-        //         child: child,
-        //       );
-        //     },
-        //   );
-        // },
       ),
       GoRoute(
         path: Routes.kSigninScreen,
@@ -71,9 +54,6 @@ abstract class AppRouter {
             },
           );
         },
-        // builder: (BuildContext context, GoRouterState state) {
-        //   return const SignInScreen();
-        // },
       ),
       GoRoute(
         path: Routes.kOnBoardingScreen,
@@ -83,9 +63,14 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: Routes.kChooseType,
-        builder: (BuildContext context, GoRouterState state) {
-          return const ChooseType();
-        },
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const ChooseType();
+        // },
+        pageBuilder: (context, state) => transitionGoRoute(
+          context: context,
+          state: state,
+          child: const ChooseType(),
+        ),
       ),
     ],
   );
