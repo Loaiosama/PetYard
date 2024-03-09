@@ -18,7 +18,7 @@ class DescriptionTextAndButtonsColumn extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.85,
             child: Text(
               'Create personalized profiles for each of your beloved pets on PetYard. Share their name, breed, and age while connecting with a vibrant community. ',
-              style: Styles.styles12,
+              style: Styles.styles12NormalHalfBlack,
               textAlign: TextAlign.center,
             ),
           ),
@@ -30,7 +30,7 @@ class DescriptionTextAndButtonsColumn extends StatelessWidget {
               GoRouter.of(context).push(Routes.kSignupScreen);
             },
             text: 'Get Started',
-            style: Styles.styles16.copyWith(
+            style: Styles.styles16BoldBlack.copyWith(
               color: Colors.white,
             ),
           ),
@@ -41,7 +41,7 @@ class DescriptionTextAndButtonsColumn extends StatelessWidget {
           },
           child: Text(
             'Sign up later',
-            style: Styles.styles14.copyWith(
+            style: Styles.styles14NormalBlack.copyWith(
               color: Colors.grey,
               decoration: TextDecoration.underline,
               decorationColor:

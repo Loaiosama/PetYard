@@ -16,7 +16,7 @@ class DateOfBirthColumn extends StatelessWidget {
           padding: EdgeInsets.only(left: 9.0.w),
           child: Text(
             'Date of Birth',
-            style: Styles.styles16,
+            style: Styles.styles16BoldBlack,
           ),
           // child: RichText(
           //   text: TextSpan(

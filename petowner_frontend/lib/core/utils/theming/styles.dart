@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class Styles {
-  static TextStyle styles22 = TextStyle(
+  static TextStyle styles22BoldBlack = TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeight.bold,
     color: Colors.black,
@@ -13,18 +13,18 @@ class Styles {
     fontWeight: FontWeight.bold,
     color: kPrimaryGreen,
   );
-  static TextStyle styles20 = TextStyle(
+  static TextStyle styles20BoldBlack = TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );
 
-  static TextStyle styles18 = TextStyle(
+  static TextStyle styles18BoldBlack = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
-  static TextStyle styles16 = TextStyle(
+  static TextStyle styles16BoldBlack = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.normal,
     color: Colors.black,
@@ -34,12 +34,12 @@ class Styles {
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
-  static TextStyle styles14 = TextStyle(
+  static TextStyle styles14NormalBlack = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.normal,
     color: Colors.black,
   );
-  static TextStyle styles12 = TextStyle(
+  static TextStyle styles12NormalHalfBlack = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.normal,
     color: Colors.black.withOpacity(0.5),

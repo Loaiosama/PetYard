@@ -104,7 +104,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                       signup();
                     }
                   },
-                  style: Styles.styles16.copyWith(color: Colors.white),
+                  style: Styles.styles16BoldBlack.copyWith(color: Colors.white),
                 ),
                 SizedBox(height: 6.h),
                 const ALternativeSignupOptionColumn(),

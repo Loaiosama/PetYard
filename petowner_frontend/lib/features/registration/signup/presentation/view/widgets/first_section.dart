@@ -22,7 +22,7 @@ class FirstSection extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.7,
           child: Text(
             'Create an account now to use all of PetYard services.',
-            style: Styles.styles12,
+            style: Styles.styles12NormalHalfBlack,
           ),
         ),
         SizedBox(height: 14.h),

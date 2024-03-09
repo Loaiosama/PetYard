@@ -5,7 +5,7 @@ import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/home/home.dart';
+import 'package:petowner_frontend/features/home/presentation/home.dart';
 import 'package:petowner_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/first_section.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/alternative_signup_option.dart';
@@ -29,7 +29,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(right: 12.0.w, left: 14.0.w, top: 110.0.h),
+          padding: EdgeInsets.only(right: 12.0.w, left: 14.0.w, top: 20.0.h),
           child: Form(
             key: formKey,
             child: Column(
@@ -72,7 +72,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                   alignment: Alignment.centerRight,
                   child: Text(
                     'Forgot password?',
-                    style: Styles.styles12.copyWith(
+                    style: Styles.styles12NormalHalfBlack.copyWith(
                       color: Colors.blue,
                     ),
                   ),
@@ -86,7 +86,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                     }
                   },
                   text: 'Login!',
-                  style: Styles.styles16.copyWith(color: Colors.white),
+                  style: Styles.styles16BoldBlack.copyWith(color: Colors.white),
                 ),
                 SizedBox(height: 16.h),
                 const ALternativeSignupOptionColumn(
@@ -116,9 +116,9 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
     } catch (error) {
       // Handle sign-in error
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
             content: Text(
-                'Sign-in failed(Incorrect email or password). Please try again.')),
+                'Sign-in failed(Incorrect email or password). Please try again. ===$error')),
       );
     }
   }
