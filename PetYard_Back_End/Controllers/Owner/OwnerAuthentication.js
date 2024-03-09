@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -89,11 +89,11 @@ const signIn = async (req, res) => {
                 message: "Incorrect email or password"
             });
         }
-
+        
         // Extract the owner ID from the query result
         const ownerId = user.owner_id;
         // Generate a JWT token based on the owner ID
-        const token = jwt.sign({ owner_id: ownerId }, 'your_secret_key', { expiresIn: '24h' });
+        const token = jwt.sign({ ID: ownerId }, 'your_secret_key', { expiresIn: '24h' });
 
         // Send the token back to the client
         res.status(200).json({
@@ -111,33 +111,31 @@ const signIn = async (req, res) => {
 }
 
 const deleteAccount = async (req, res) => {
-    const { Email, Password } = req.body;
+
+    const owner_id = req.Owner_Id;
 
     try {
-        if (!Email || !Password) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Please provide email and password"
-            });
-        }
 
-        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1 AND password = $2', [Email, Password]);
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query( Query, [owner_id]);
 
         if (result.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
-                message: "Incorrect email or password"
+                message: "User doesn't exist"
             });
         }
 
-        const deleteQuery = 'DELETE FROM Petowner WHERE email = $1';
-        await pool.query(deleteQuery, [Email]);
+        const deleteQuery = 'DELETE FROM Petowner WHERE Owner_Id = $1';
+        await pool.query(deleteQuery, [owner_id]);
 
         res.status(200).json({
             status: "Success",
             message: "Account deleted successfully"
         });
-    } catch (error) {
+
+    }
+    catch (error) {
         console.error("Error deleting account:", error);
         res.status(500).json({
             status: "Fail",
