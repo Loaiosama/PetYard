@@ -27,7 +27,7 @@ class DescriptionTextAndButtonsColumn extends StatelessWidget {
           padding: EdgeInsets.only(left: 18.0.w, top: 20.h, right: 18.w),
           child: PetYardTextButton(
             onPressed: () {
-              GoRouter.of(context).push(Routes.kSignupScreen);
+              GoRouter.of(context).push(Routes.kSigninScreen);
             },
             text: 'Get Started',
             style: Styles.styles16BoldBlack.copyWith(

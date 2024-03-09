@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
@@ -67,17 +69,21 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                   keyboardType: TextInputType.visiblePassword,
                   isPassword: true,
                 ),
-                SizedBox(height: 8.h),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Text(
-                    'Forgot password?',
-                    style: Styles.styles12NormalHalfBlack.copyWith(
-                      color: Colors.blue,
+                  child: TextButton(
+                    onPressed: () {
+                      GoRouter.of(context).push(Routes.kForgotPasswordScreen);
+                    },
+                    child: Text(
+                      'Forgot password?',
+                      style: Styles.styles12NormalHalfBlack.copyWith(
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: 36.h),
+                SizedBox(height: 30.h),
                 PetYardTextButton(
                   onPressed: () async {
                     // await _signIn();
