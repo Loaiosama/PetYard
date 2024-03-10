@@ -1,6 +1,10 @@
 const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const reset = require('./../../Models/UserModel');
+const sendemail = require("./../../Utils/email");
+
 const saltRounds = 10;
 
 const signUp = async (req, res) => {
@@ -43,7 +47,7 @@ const signUp = async (req, res) => {
             const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
             const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth]);
 
-            res.json({ message: "Sign up successful" })
+            res.status(201).json({ message: "Sign up successful" })
         }
 
         client.release();
@@ -144,9 +148,98 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        if (!email) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill Your Email"
+            });
+        }
+
+        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1', [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Incorrect email"
+            });
+        }
+
+        const { resetToken} = reset.CreatePasswordResetToken();
+
+    
+
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+
+        const message = `Forgot Your password? Submit A put request with your new password and  passwordConfirm to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your password reset token (valid for 10 min) ',
+            message
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Token sent to email!'
+        });
+
+    } catch (error) {
+
+        console.error("Error sending email:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+
+    }
+}
+
+
+const resetPassword = async (req,res)=>{
+
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex'); 
+    const {PasswordResetExpires } = reset.CreatePasswordResetToken();
+
+   
+
+    if(PasswordResetExpires >= Date.now() && hashedToken)
+    {
+        const {pass,email}=req.body;
+        if(!pass)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide password"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+        const newpass = 'UPDATE Petowner SET Password = $1 WHERE Email = $2';
+        await pool.query(newpass, [hashedPassword, email]);  
+        res.status(200).json({ message: "Password Changed correctly" });
+    
+    }
+
+    else{
+
+       return res.status(400).json({
+        status : "Fail",
+        Message : "Token is invalid or has expired"
+       });
+    }
+    
+}
+
+
 
 module.exports = {
     signUp,
     signIn,
-    deleteAccount
+    deleteAccount,
+    forgotPassword,
+    resetPassword
 }

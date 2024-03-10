@@ -13,7 +13,7 @@ router.post('/SignIn', PetOwnerController.signIn);
 
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
-router.post('/addPet',authMiddleware, PetProfileController.AddPet);
+router.post('/AddPet',authMiddleware, PetProfileController.AddPet);
 
 router.get('/getAllPet',authMiddleware, PetProfileController.GetAllPet);
 
@@ -24,6 +24,11 @@ router.delete('/RemoveAllPets',authMiddleware, PetProfileController.RemoveAllPet
 router.delete('/RemovePet/:Pet_Id',authMiddleware, PetProfileController.RemovePet);
 
 router.put('/UpdatePet/:Pet_Id',authMiddleware, PetProfileController.updatePetProfile);
+
+router.post('/Forgotpassword', PetOwnerController.forgotPassword);
+
+router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
+
 
 // Initialize passport middleware
 router.use(passport.initialize());

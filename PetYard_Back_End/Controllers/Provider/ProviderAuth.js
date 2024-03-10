@@ -49,7 +49,7 @@ const signUp = async (req, res) => {
             const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth, Bio) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
             const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Bio]);
 
-            res.json({ message: "Sign up successful" })
+            res.status(201).json({ message: "Sign up successful" })
         }
 
         client.release();
