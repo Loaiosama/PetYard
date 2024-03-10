@@ -26,7 +26,8 @@ class ChooseType extends StatelessWidget {
             SizedBox(
               height: 20.h,
             ),
-            Text('Choose the type of your pet', style: Styles.styles20),
+            Text('Choose the type of your pet',
+                style: Styles.styles20BoldBlack),
             SizedBox(
               height: 70.h,
             ),

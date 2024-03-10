@@ -29,7 +29,7 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
                   horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Text(
                 isSignUp ? 'Or sign up with' : 'Or sign in with',
-                style: Styles.styles12,
+                style: Styles.styles12NormalHalfBlack,
               ),
             ),
             SizedBox(
@@ -69,7 +69,7 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
           children: [
             Text(
               isSignUp ? 'Already have an account?' : "Don't have an account?",
-              style: Styles.styles12
+              style: Styles.styles12NormalHalfBlack
                   .copyWith(decoration: TextDecoration.underline),
             ),
             TextButton(
@@ -80,7 +80,7 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
                 },
                 child: Text(
                   isSignUp ? 'Sign in!' : 'Sign up!',
-                  style: Styles.styles12.copyWith(
+                  style: Styles.styles12NormalHalfBlack.copyWith(
                     color: Colors.blue,
                   ),
                 )),

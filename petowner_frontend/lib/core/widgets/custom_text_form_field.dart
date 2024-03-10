@@ -62,8 +62,8 @@ class CustomRegistrationTextField extends StatelessWidget {
         return null;
       },
       obscureText: isObsecure ?? false,
-      style:
-          Styles.styles14.copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
+      style: Styles.styles14NormalBlack
+          .copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
       keyboardType: keyboardType,
       decoration: InputDecoration(
         // backgroud color to textformfield (in consider)

@@ -31,7 +31,7 @@ class PetTypeBar extends StatelessWidget {
               ),
               Text(
                 'Type',
-                style: Styles.styles12,
+                style: Styles.styles12NormalHalfBlack,
               ),
             ],
           ),

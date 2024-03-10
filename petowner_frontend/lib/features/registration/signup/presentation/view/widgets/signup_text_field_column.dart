@@ -34,12 +34,12 @@ class SignUpTextFieldColumn extends StatelessWidget {
           padding: EdgeInsets.only(left: 9.0.w),
           child: RichText(
             text: TextSpan(
-              style: Styles.styles16,
+              style: Styles.styles16BoldBlack,
               children: [
                 TextSpan(text: labelText),
                 TextSpan(
                   text: '*',
-                  style: Styles.styles14.copyWith(
+                  style: Styles.styles14NormalBlack.copyWith(
                     color: Colors.red,
                   ),
                 ),

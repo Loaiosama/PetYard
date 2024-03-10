@@ -19,7 +19,7 @@ class FirstSection extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.7,
           child: Text(
             'We\'re excited to have you back, can\'t wait to see what you\'ve been to since you last logged in.',
-            style: Styles.styles12,
+            style: Styles.styles12NormalHalfBlack,
           ),
         ),
         SizedBox(height: 14.h),
