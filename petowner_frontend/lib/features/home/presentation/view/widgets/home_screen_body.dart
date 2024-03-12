@@ -19,16 +19,27 @@ class HomeScreenBody extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const HomeAppBar(),
-            heightSizedBox(24),
-            const HomeBanner(),
-            heightSizedBox(16),
-            const MainServiceWidget(),
-            heightSizedBox(16),
-            const RecommendedCarer(),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HomeAppBar(),
+                  heightSizedBox(24),
+                  const HomeBanner(),
+                  heightSizedBox(16),
+                  const MainServiceWidget(),
+                  heightSizedBox(16),
+                  SeeAllRow(title: 'Recommendation Carer', onPressed: () {}),
+                  heightSizedBox(10),
+                ],
+              ),
+            ),
+            const SliverFillRemaining(
+              child: RecommendedCarerListView(),
+            ),
           ],
         ),
       ),
@@ -36,24 +47,16 @@ class HomeScreenBody extends StatelessWidget {
   }
 }
 
-class RecommendedCarer extends StatelessWidget {
-  const RecommendedCarer({super.key});
+class RecommendedCarerListView extends StatelessWidget {
+  const RecommendedCarerListView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SeeAllRow(title: 'Recommendation Carer', onPressed: () {}),
-        heightSizedBox(10),
-        SizedBox(
-          height: 180,
-          child: ListView.builder(
-            itemBuilder: (context, index) => const PetCarerCardWidget(),
-            itemCount: 4,
-          ),
-        )
-      ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => const PetCarerCardWidget(),
+      itemCount: 10,
     );
   }
 }
-
