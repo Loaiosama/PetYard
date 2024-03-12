@@ -57,7 +57,7 @@ class HomeBanner extends StatelessWidget {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.36,
                         child: Text(
-                          'Book and schedule with nearest doctor',
+                          'Book and schedule with pet carer.',
                           style: Styles.styles18MediumWhite
                               .copyWith(color: Colors.white),
                         ),

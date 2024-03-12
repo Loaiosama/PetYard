@@ -8,6 +8,8 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 import 'home_app_bar.dart';
 import 'home_banner.dart';
+import 'main_service_widget.dart';
+import 'see_all.dart';
 
 class HomeScreenBody extends StatelessWidget {
   const HomeScreenBody({super.key});
@@ -23,6 +25,9 @@ class HomeScreenBody extends StatelessWidget {
             const HomeAppBar(),
             heightSizedBox(24),
             const HomeBanner(),
+            heightSizedBox(16),
+            const MainServiceWidget(),
+            heightSizedBox(16),
           ],
         ),
       ),
