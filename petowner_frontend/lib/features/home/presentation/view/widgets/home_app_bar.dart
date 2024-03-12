@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
@@ -16,7 +15,7 @@ class HomeAppBar extends StatelessWidget {
           children: [
             Text(
               'Hello, Mohamed!',
-              style: Styles.styles18BoldBlack,
+              style: Styles.styles22BoldGreen.copyWith(fontSize: 18.sp),
             ),
             Text(
               'How are you today',
