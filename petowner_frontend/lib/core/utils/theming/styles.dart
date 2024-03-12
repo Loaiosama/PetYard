@@ -22,7 +22,7 @@ class Styles {
 
   static TextStyle styles18BoldBlack = TextStyle(
     fontSize: 18.sp,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontsHelper.bold,
     color: Colors.black,
   );
   static TextStyle styles16BoldBlack = TextStyle(
@@ -43,6 +43,11 @@ class Styles {
   static TextStyle styles12NormalHalfBlack = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.normal,
+    color: Colors.black.withOpacity(0.5),
+  );
+  static TextStyle styles12RegularOpacityBlack = TextStyle(
+    fontSize: 12.sp,
+    fontWeight: FontsHelper.regular,
     color: Colors.black.withOpacity(0.5),
   );
 }
