@@ -1,26 +1,76 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/home/data/model/service_map.dart';
 
 import 'see_all.dart';
 
-class MainServiceWidget extends StatelessWidget {
-  const MainServiceWidget({super.key});
+class DiscoverServiceWidget extends StatelessWidget {
+  const DiscoverServiceWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SeeAllRow(
           title: 'Discover Services',
           onPressed: () {},
         ),
         heightSizedBox(10),
-        Container(
-          width: double.infinity,
-          height: 100,
-          color: Colors.grey,
+        SizedBox(
+          height: 80.h,
+          child: ListView.builder(
+            itemCount: 5,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(left: 10.0.w,right: 10.0.w),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: const Color.fromRGBO(244, 248, 255, 1),
+                      radius: 30.r,
+                      child: SvgPicture.asset(
+                        homeServicesMap[index]['image'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Text(
+                      homeServicesMap[index]['title'],
+                      style: Styles.styles12RegularOpacityBlack
+                          .copyWith(color: Colors.black,fontWeight: FontsHelper.regular),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
+        // Row(
+        //   children: List.generate(
+        //     4,
+        //     (index) => Padding(
+        //       padding: EdgeInsets.only(right: 8.0.w),
+        //       child: Column(
+        //         children: [
+        //           CircleAvatar(
+        //             backgroundColor: const Color.fromRGBO(244, 248, 255, 1),
+        //             radius: 40.r,
+        //             child: SvgPicture.asset(
+        //               'assets/svgs/test (2).svg',
+        //               fit: BoxFit.cover,
+        //             ),
+        //           ),
+        //           const Text('Pet Sitting'),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }

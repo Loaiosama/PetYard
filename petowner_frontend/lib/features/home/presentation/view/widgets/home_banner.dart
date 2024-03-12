@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +12,7 @@ class HomeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 200.h,
+      height: 210.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14.0.r),
         color: kPrimaryGreen,
@@ -44,15 +43,17 @@ class HomeBanner extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-                left: 14.0, right: 14.0, top: 20.0, bottom: 14.0),
+            padding:  EdgeInsets.only(
+                left: 14.0.w, right: 8.0.w,),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 9.0),
+                  padding:  EdgeInsets.only(top: 9.0.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.36,
@@ -62,7 +63,7 @@ class HomeBanner extends StatelessWidget {
                               .copyWith(color: Colors.white),
                         ),
                       ),
-                      heightSizedBox(16),
+                      heightSizedBox(11),
                       TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(
@@ -70,8 +71,9 @@ class HomeBanner extends StatelessWidget {
                         ),
                         child: Text(
                           'Find Nearby',
+                          //blue accent or grey
                           style: Styles.styles18MediumWhite
-                              .copyWith(color: Colors.blueAccent,fontSize: 14.sp),
+                              .copyWith(color: Colors.black.withOpacity(0.7),fontSize: 14.sp),
                         ),
                       ),
                     ],

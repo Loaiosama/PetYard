@@ -27,7 +27,7 @@ class HomeAppBar extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.11,
           height: MediaQuery.of(context).size.width * 0.11,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            // color: Colors.grey[200],
             borderRadius: BorderRadius.circular(18.0.r),
           ),
           child: Center(
