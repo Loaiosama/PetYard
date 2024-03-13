@@ -6,20 +6,12 @@ const reset = require('./../../Models/UserModel');
 const sendemail = require("./../../Utils/email");
 
 const saltRounds = 10;
-
-
 const multer =require('multer');
+const sharp = require('sharp');
 
 
-const multerStorage=multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,'public/img/users/PetOwner');
-    },
-    filename :(req,file,cb)=>{
-        const ext=file.mimetype.split('/')[1];
-        cb(null,`user-${req.ID}-${Date.now()}.${ext}`);
-    }
-});
+
+const multerStorage=multer.memoryStorage();
 
 const multerFilter=(req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
@@ -39,7 +31,15 @@ const upload=multer({
 
 const uploadphoto=upload.single('Image');
 
+const resizePhoto=(req,res,next)=>{
 
+    if(!req.file) return next();
+
+    req.file.filename=`petowner-${req.ID}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/users/PetOwner/${req.file.filename}`);
+    next();
+}
 
 
 const signUp = async (req, res) => {
@@ -278,5 +278,6 @@ module.exports = {
     deleteAccount,
     forgotPassword,
     resetPassword,
-    uploadphoto
+    uploadphoto,
+    resizePhoto
 }

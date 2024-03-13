@@ -1,16 +1,12 @@
 const pool = require('../db');
 const multer =require('multer');
 
+const sharp = require('sharp');
 
-const multerStorage=multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,'public/img/Pets');
-    },
-    filename :(req,file,cb)=>{
-        const ext=file.mimetype.split('/')[1];
-        cb(null,`user-${req.ID}-${Date.now()}.${ext}`);
-    }
-});
+
+
+
+const multerStorage=multer.memoryStorage();
 
 const multerFilter=(req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
@@ -29,6 +25,17 @@ const upload=multer({
 });
 
 const uploadpetphoto=upload.single('Image');
+
+
+
+const resizePhoto=(req,res,next)=>{
+
+    if(!req.file) return next();
+    req.file.filename=`Pet-${req.ID}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/Pets/${req.file.filename}`);
+    next();
+}
 
 
 const AddPet = async(req,res)=>
@@ -229,6 +236,7 @@ module.exports =
     RemoveAllPet,
     RemovePet,
     updatePetProfile,
-    uploadpetphoto
+    uploadpetphoto,
+    resizePhoto
 
 }
