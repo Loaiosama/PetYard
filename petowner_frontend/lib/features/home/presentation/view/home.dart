@@ -1,6 +1,8 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/features/profile/presentaiton/view/profile_screen.dart';
 
 import 'widgets/home_screen_body.dart';
 
@@ -10,23 +12,25 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const HomeScreenBody(),
+      // body: const HomeScreenBody(),
+      body: const ProfileScreen(),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
-        indicatorColor: Colors.transparent,
+        // or transparent
+        indicatorColor: kPrimaryGreen.withOpacity(0.4),
         selectedIndex: 0,
-        // shadowColor: Colors.black,
-        // surfaceTintColor: Colors.white,
+        shadowColor: Colors.white,
+        surfaceTintColor: Colors.white,
         destinations: [
           NavigationDestination(
             icon: Icon(
-              Icons.home_max_outlined,
+              FluentIcons.home_28_filled,
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Home',
             selectedIcon: const Icon(
-              Icons.home_max_outlined,
+              FluentIcons.home_28_regular,
               color: kPrimaryGreen,
             ),
           ),

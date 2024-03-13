@@ -24,7 +24,8 @@ class DiscoverServiceWidget extends StatelessWidget {
         SizedBox(
           height: 80.h,
           child: ListView.builder(
-            itemCount: 5,
+            physics: const BouncingScrollPhysics(),
+            itemCount: homeServicesMap.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Padding(
