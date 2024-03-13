@@ -4,9 +4,42 @@ const bcrypt = require('bcrypt');
 const saltRounds=10;
 
 
+const multer =require('multer');
+
+
+const multerStorage=multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,'public/img/users/ServiceProvider');
+    },
+    filename :(req,file,cb)=>{
+        const ext=file.mimetype.split('/')[1];
+        cb(null,`user-${req.ID}-${Date.now()}.${ext}`);
+    }
+});
+
+const multerFilter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true);
+    }
+    else{
+        cb("Not an image! please upload only images.",false)
+    }
+}
+
+
+const upload=multer({
+
+    storage:multerStorage,
+    fileFilter:multerFilter
+});
+
+const uploadphoto=upload.single('Image');
+
+
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
-
+    
+    const Image=req.file.filename;
     try {
 
 
@@ -46,8 +79,8 @@ const signUp = async (req, res) => {
 
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
             
-            const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth, Bio) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Bio]);
+            const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *';
+            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Bio,Image]);
 
             res.status(201).json({ message: "Sign up successful" })
         }
@@ -161,5 +194,6 @@ const deleteAccount = async (req, res) => {
 module.exports = {
     signUp,
     signIn,
-    deleteAccount
+    deleteAccount,
+    uploadphoto
 };

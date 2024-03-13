@@ -7,17 +7,54 @@ const sendemail = require("./../../Utils/email");
 
 const saltRounds = 10;
 
+
+const multer =require('multer');
+
+
+const multerStorage=multer.diskStorage({
+    destination:(req,file,cb)=>{
+        cb(null,'public/img/users/PetOwner');
+    },
+    filename :(req,file,cb)=>{
+        const ext=file.mimetype.split('/')[1];
+        cb(null,`user-${req.ID}-${Date.now()}.${ext}`);
+    }
+});
+
+const multerFilter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true);
+    }
+    else{
+        cb("Not an image! please upload only images.",false)
+    }
+}
+
+
+const upload=multer({
+
+    storage:multerStorage,
+    fileFilter:multerFilter
+});
+
+const uploadphoto=upload.single('Image');
+
+
+
+
 const signUp = async (req, res) => {
-    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
+    const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    let Image = req.file ? req.file.filename : 'default.png'; // If no file provided, use default image
+
 
     try {
 
-        if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
+        if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
-        }
+        } 
 
         const client = await pool.connect();
         const emailExists = 'Select * FROM Petowner WHERE Email = $1';
@@ -44,8 +81,8 @@ const signUp = async (req, res) => {
         else {
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
 
-            const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth]);
+            const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
+            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image]);
 
             res.status(201).json({ message: "Sign up successful" })
         }
@@ -198,7 +235,6 @@ const forgotPassword = async (req, res) => {
     }
 }
 
-
 const resetPassword = async (req,res)=>{
 
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex'); 
@@ -241,5 +277,6 @@ module.exports = {
     signIn,
     deleteAccount,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    uploadphoto
 }
