@@ -86,9 +86,10 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                 PetYardTextButton(
                   onPressed: () async {
                     // await _signIn();
-                    if (formKey.currentState!.validate()) {
-                      await _signIn();
-                    }
+                    // if (formKey.currentState!.validate()) {
+                    //   await _signIn();
+                    // }
+                    GoRouter.of(context).push(Routes.kHomeScreen);
                   },
                   text: 'Login!',
                   style: Styles.styles16BoldBlack.copyWith(color: Colors.white),
