@@ -35,7 +35,7 @@ class Styles {
   static TextStyle styles18MediumWhite = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontsHelper.medium,
-    color: Colors.black,
+    color: Colors.white,
   );
   static TextStyle styles16BoldBlack = TextStyle(
     fontSize: 16.sp,
