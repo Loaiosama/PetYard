@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfileScreenCenteredImage extends StatelessWidget {
   const ProfileScreenCenteredImage({super.key});
@@ -7,11 +8,11 @@ class ProfileScreenCenteredImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: MediaQuery.of(context).size.height * 0.60 - 56.0,
-      left: MediaQuery.of(context).size.width * 0.5 - 56.0,
+      bottom: MediaQuery.of(context).size.height * 0.71 - 70.0,
+      left: MediaQuery.of(context).size.width * 0.5 - 70.0,
       child: Container(
-        width: 110.0.w,
-        height: 110.0.h,
+        width: 120.0.w,
+        height: 120.0.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           image: const DecorationImage(
@@ -20,7 +21,33 @@ class ProfileScreenCenteredImage extends StatelessWidget {
           ),
           border: Border.all(
             color: Colors.white,
-            width: 4.0,
+            width: 4.0.w,
+          ),
+        ),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            width: 34.w,
+            height: 34.h,
+            margin: EdgeInsets.only(top: 40.0.w),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+                width: 4.0.w,
+              ),
+              shape: BoxShape.circle,
+              color: const Color.fromRGBO(248, 248, 248, 1),
+            ),
+            child: IconButton(
+              onPressed: () {},
+              icon: Center(
+                child: Icon(
+                  FontAwesomeIcons.penToSquare,
+                  size: 13.sp,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
           ),
         ),
       ),

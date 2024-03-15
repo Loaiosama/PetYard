@@ -22,6 +22,7 @@ class HomeScreen extends StatelessWidget {
         selectedIndex: 0,
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
+        // labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: [
           NavigationDestination(
             icon: Icon(
@@ -40,6 +41,7 @@ class HomeScreen extends StatelessWidget {
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Requests',
+
           ),
           NavigationDestination(
             icon: Icon(
