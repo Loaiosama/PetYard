@@ -12,8 +12,69 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   child: Icon(Icons.search),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       // body: const HomeScreenBody(),
       body: const ProfileScreen(),
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: CircularNotchedRectangle(),
+      //   notchMargin: 8,
+      //   clipBehavior: Clip.antiAlias,
+      //   child: Container(
+      //     height: 60,
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Row(
+      //             crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               MaterialButton(
+      //                 onPressed: () {},
+      //                 minWidth: 40,
+      //                 child: Column(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [Icon(Icons.account_circle), Text('data')],
+      //                 ),
+      //               ),
+      //             ]),
+      //         Row(crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               MaterialButton(
+      //                 onPressed: () {},
+      //                 minWidth: 40,
+      //                 child: Column(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [Icon(Icons.account_circle), Text('data')],
+      //                 ),
+      //               ),
+      //             ]), Row(crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               MaterialButton(
+      //                 onPressed: () {},
+      //                 minWidth: 40,
+      //                 child: Column(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [Icon(Icons.account_circle), Text('data')],
+      //                 ),
+      //               ),
+      //             ]), Row(crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               MaterialButton(
+      //                 onPressed: () {},
+      //                 minWidth: 40,
+      //                 child: Column(
+      //                   mainAxisAlignment: MainAxisAlignment.center,
+      //                   children: [Icon(Icons.account_circle), Text('data')],
+      //                 ),
+      //               ),
+      //             ]),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
         elevation: 2.0,
