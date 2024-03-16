@@ -32,10 +32,16 @@ class Styles {
     color: Colors.black,
   );
 
+  static TextStyle styles20SemiBoldBlack = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontsHelper.semiBold,
+    color: Colors.black,
+  );
+
   static TextStyle styles18MediumWhite = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontsHelper.medium,
-    color: Colors.black,
+    color: Colors.white,
   );
   static TextStyle styles16BoldBlack = TextStyle(
     fontSize: 16.sp,
@@ -47,6 +53,7 @@ class Styles {
     fontWeight: FontWeight.w600,
     color: Colors.black,
   );
+
   static TextStyle styles14NormalBlack = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.normal,

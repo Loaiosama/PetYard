@@ -1,32 +1,54 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/features/profile/presentaiton/view/profile_screen.dart';
 
 import 'widgets/home_screen_body.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int currentIndex = 0;
+  List screens = [
+    const HomeScreenBody(),
+    const Center(child: Text('Requests'),),
+    const Center(child: Text('Community'),),
+    const ProfileScreen(),
+  ];
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const HomeScreenBody(),
+      body: screens[currentIndex],
       bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
         backgroundColor: Colors.white,
         elevation: 2.0,
-        indicatorColor: Colors.transparent,
-        selectedIndex: 0,
-        // shadowColor: Colors.black,
-        // surfaceTintColor: Colors.white,
+        // or transparent
+        indicatorColor: kPrimaryGreen.withOpacity(0.4),
+        selectedIndex: currentIndex,
+        shadowColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        // labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: [
           NavigationDestination(
             icon: Icon(
-              Icons.home_max_outlined,
+              FluentIcons.home_28_filled,
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Home',
             selectedIcon: const Icon(
-              Icons.home_max_outlined,
+              FluentIcons.home_28_regular,
               color: kPrimaryGreen,
             ),
           ),
@@ -36,6 +58,7 @@ class HomeScreen extends StatelessWidget {
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Requests',
+
           ),
           NavigationDestination(
             icon: Icon(
