@@ -7,13 +7,14 @@ require('../Controllers/Owner/GoogleAuth');
 const passport = require('passport');
 
 
-router.post('/SignUp', PetOwnerController.signUp);
+router.post('/SignUp',PetOwnerController.uploadphoto,PetOwnerController.resizePhoto,PetOwnerController.signUp);
 
 router.post('/SignIn', PetOwnerController.signIn);
 
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
-router.post('/AddPet',authMiddleware, PetProfileController.AddPet);
+router.post('/AddPet',authMiddleware,PetProfileController.uploadpetphoto,PetProfileController.resizePhoto, PetProfileController.AddPet);
+
 
 router.get('/getAllPet',authMiddleware, PetProfileController.GetAllPet);
 

@@ -1,10 +1,48 @@
 const pool = require('../db');
+const multer =require('multer');
+
+const sharp = require('sharp');
+
+
+
+
+const multerStorage=multer.memoryStorage();
+
+const multerFilter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true);
+    }
+    else{
+        cb("Not an image! please upload only images.",false)
+    }
+}
+
+
+const upload=multer({
+
+    storage:multerStorage,
+    fileFilter:multerFilter
+});
+
+const uploadpetphoto=upload.single('Image');
+
+
+
+const resizePhoto=(req,res,next)=>{
+
+    if(!req.file) return next();
+    req.file.filename=`Pet-${req.ID}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/Pets/${req.file.filename}`);
+    next();
+}
 
 
 const AddPet = async(req,res)=>
 {
-    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Image,Weight}=req.body;
+    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight}=req.body;
     const owner_id = req.ID; 
+    const Image=req.file.filename;
     try 
     {
         if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight) 
@@ -60,7 +98,6 @@ const GetAllPet = async(req,res)=>{
         
     }
 }
-
 const GetPet = async(req,res)=>{
 
     const {Pet_Id} =req.params;  
@@ -198,6 +235,8 @@ module.exports =
     GetPet,
     RemoveAllPet,
     RemovePet,
-    updatePetProfile
+    updatePetProfile,
+    uploadpetphoto,
+    resizePhoto
 
 }
