@@ -2,7 +2,7 @@ const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const reset = require('./../../Models/UserModel');
+const Model = require('./../../Models/UserModel');
 const sendemail = require("./../../Utils/email");
 
 const saltRounds = 10;
@@ -40,12 +40,9 @@ const resizePhoto=(req,res,next)=>{
     sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/users/PetOwner/${req.file.filename}`);
     next();
 }
-
-
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
-    let Image = req.file ? req.file.filename : 'default.png'; // If no file provided, use default image
-
+    let Image = req.file ? req.file.filename : 'default.png';
 
     try {
 
@@ -84,19 +81,33 @@ const signUp = async (req, res) => {
             const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
             const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image]);
 
-            res.status(201).json({ message: "Sign up successful" })
+
+            
+        const {validationCode} = Model.CreateValidationCode();
+
+    console.log(validationCode)
+
+        const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your Validation code  (valid for 10 min) ',
+            message
+        });
+
+            res.status(201).json({
+                 message: "Sign up successful" 
+            })
         }
 
         client.release();
-
+ 
     }
     catch (e) {
         console.error("Error during signUp", e);
         res.status(500).json({ error: "Internal server error" });
     }
 }
-
-
 const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -150,7 +161,6 @@ const signIn = async (req, res) => {
         });
     }
 }
-
 const deleteAccount = async (req, res) => {
 
     const owner_id = req.Owner_Id;
@@ -184,7 +194,6 @@ const deleteAccount = async (req, res) => {
         });
     }
 };
-
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -205,9 +214,7 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        const { resetToken} = reset.CreatePasswordResetToken();
-
-    
+        const { resetToken} = Model.CreatePasswordResetToken();
 
         const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
@@ -234,11 +241,10 @@ const forgotPassword = async (req, res) => {
 
     }
 }
-
 const resetPassword = async (req,res)=>{
 
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex'); 
-    const {PasswordResetExpires } = reset.CreatePasswordResetToken();
+    const {PasswordResetExpires } = Model.CreatePasswordResetToken();
 
    
 
@@ -270,6 +276,37 @@ const resetPassword = async (req,res)=>{
     
 }
 
+const ValidationCode = async (req,res)=> 
+{
+    const valid=req.params;
+    
+
+    const {VaildationcodeExpires } = Model.CreateValidationCode();
+    const {code}=req.body;
+
+    if (VaildationcodeExpires >= Date.now() && code === valid.ValidCode)
+    {
+        
+        if(!code)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide Validation Code"
+            });
+        }
+
+        res.status(200).json({ message: "Validation Code correctly" });
+    }
+
+    else{
+
+       return res.status(400).json({
+        status : "Fail",
+        Message : "Validition Code is invalid or has expired "
+       });
+    }
+    
+}
 
 
 module.exports = {
@@ -279,5 +316,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     uploadphoto,
-    resizePhoto
+    resizePhoto,
+    ValidationCode
 }

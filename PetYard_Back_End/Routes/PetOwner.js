@@ -30,6 +30,9 @@ router.post('/Forgotpassword', PetOwnerController.forgotPassword);
 
 router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
 
+router.get('/ValidationCode/:ValidCode', PetOwnerController.ValidationCode);
+
+
 
 // Initialize passport middleware
 router.use(passport.initialize());

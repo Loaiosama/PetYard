@@ -13,6 +13,25 @@ const CreatePasswordResetToken=function(){
    return { resetToken, PasswordResetToken ,PasswordResetExpires};
 }
 
+const CreateValidationCode = function(){
+
+    const characters = '0123456789';
+    const length = 5; 
+    let validationCode = '';
+    for (let i = 0; i < length; i++) {
+        validationCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    VaildationcodeExpires=Date.now() +10*60*1000;
+
+    return {validationCode,VaildationcodeExpires};
+}
+
+
+
+
+
 module.exports={
-    CreatePasswordResetToken
+    CreatePasswordResetToken,
+    CreateValidationCode
 }
