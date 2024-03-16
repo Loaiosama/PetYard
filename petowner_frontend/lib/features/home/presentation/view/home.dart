@@ -6,81 +6,37 @@ import 'package:petowner_frontend/features/profile/presentaiton/view/profile_scr
 
 import 'widgets/home_screen_body.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  int currentIndex = 0;
+  List screens = [
+    const HomeScreenBody(),
+    const Center(child: Text('Requests'),),
+    const Center(child: Text('Community'),),
+    const ProfileScreen(),
+  ];
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   child: Icon(Icons.search),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // body: const HomeScreenBody(),
-      body: const ProfileScreen(),
-      // bottomNavigationBar: BottomAppBar(
-      //   shape: CircularNotchedRectangle(),
-      //   notchMargin: 8,
-      //   clipBehavior: Clip.antiAlias,
-      //   child: Container(
-      //     height: 60,
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Row(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               MaterialButton(
-      //                 onPressed: () {},
-      //                 minWidth: 40,
-      //                 child: Column(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: [Icon(Icons.account_circle), Text('data')],
-      //                 ),
-      //               ),
-      //             ]),
-      //         Row(crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               MaterialButton(
-      //                 onPressed: () {},
-      //                 minWidth: 40,
-      //                 child: Column(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: [Icon(Icons.account_circle), Text('data')],
-      //                 ),
-      //               ),
-      //             ]), Row(crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               MaterialButton(
-      //                 onPressed: () {},
-      //                 minWidth: 40,
-      //                 child: Column(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: [Icon(Icons.account_circle), Text('data')],
-      //                 ),
-      //               ),
-      //             ]), Row(crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               MaterialButton(
-      //                 onPressed: () {},
-      //                 minWidth: 40,
-      //                 child: Column(
-      //                   mainAxisAlignment: MainAxisAlignment.center,
-      //                   children: [Icon(Icons.account_circle), Text('data')],
-      //                 ),
-      //               ),
-      //             ]),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      body: screens[currentIndex],
       bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (value) {
+          setState(() {
+            currentIndex = value;
+          });
+        },
         backgroundColor: Colors.white,
         elevation: 2.0,
         // or transparent
         indicatorColor: kPrimaryGreen.withOpacity(0.4),
-        selectedIndex: 0,
+        selectedIndex: currentIndex,
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
         // labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
