@@ -5,8 +5,9 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 // import 'package:go_router/go_router.dart';
 
 class PetTypeBar extends StatelessWidget {
-  const PetTypeBar({super.key});
-
+  const PetTypeBar({super.key, required this.subtitle, required this.step});
+  final String subtitle;
+  final String step;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,7 +19,7 @@ class PetTypeBar extends StatelessWidget {
             onPressed: () {
               GoRouter.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back, color: Colors.grey),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.grey),
           ),
           Column(
             children: [
@@ -30,23 +31,23 @@ class PetTypeBar extends StatelessWidget {
                 height: 5.h,
               ),
               Text(
-                'Type',
+                subtitle,
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],
           ),
-          const Column(
+           Column(
             children: [
-              Text(
+              const Text(
                 'Steps',
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
                 children: [
-                  Text('1'),
-                  Text(
+                  Text(step),
+                  const Text(
                     '/5',
                     style: TextStyle(
                       color: Colors.grey,

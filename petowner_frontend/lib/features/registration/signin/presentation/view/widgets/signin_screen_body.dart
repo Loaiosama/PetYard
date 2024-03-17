@@ -92,7 +92,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                     GoRouter.of(context).push(Routes.kHomeScreen);
                   },
                   text: 'Login!',
-                  style: Styles.styles16BoldBlack.copyWith(color: Colors.white),
+                  style: Styles.styles16BoldWhite,
                 ),
                 SizedBox(height: 16.h),
                 const ALternativeSignupOptionColumn(

@@ -16,7 +16,7 @@ class ChooseType extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const PetTypeBar(),
+            const PetTypeBar(subtitle: 'Type',step: '1',),
             SizedBox(
               height: 10.h,
             ),

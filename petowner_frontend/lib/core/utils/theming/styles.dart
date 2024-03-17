@@ -48,6 +48,11 @@ class Styles {
     fontWeight: FontWeight.normal,
     color: Colors.black,
   );
+  static TextStyle styles16BoldWhite = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.normal,
+    color: Colors.white,
+  );
   static TextStyle styles16w600 = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,

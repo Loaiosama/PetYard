@@ -2,7 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
-import 'package:petowner_frontend/features/profile/presentaiton/view/profile_screen.dart';
+import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
 
 import 'widgets/home_screen_body.dart';
 
@@ -35,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         elevation: 2.0,
         // or transparent
-        indicatorColor: kPrimaryGreen.withOpacity(0.4),
+        // indicatorColor: kPrimaryGreen.withOpacity(0.4),
+        indicatorColor: Colors.transparent,
         selectedIndex: currentIndex,
         shadowColor: Colors.white,
         surfaceTintColor: Colors.white,
@@ -43,12 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
         destinations: [
           NavigationDestination(
             icon: Icon(
-              FluentIcons.home_28_filled,
+              FluentIcons.home_28_regular,
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Home',
             selectedIcon: const Icon(
-              FluentIcons.home_28_regular,
+              FluentIcons.home_28_filled,
               color: kPrimaryGreen,
             ),
           ),

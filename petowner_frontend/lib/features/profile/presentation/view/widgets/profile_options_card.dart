@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
@@ -7,10 +6,10 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 class ProfileOptionsCard extends StatelessWidget {
   const ProfileOptionsCard(
       {super.key,
-        required this.cardColor,
-        required this.iconColor,
-        required this.icon,
-        required this.label});
+      required this.cardColor,
+      required this.iconColor,
+      required this.icon,
+      required this.label});
 
   final Color cardColor;
   final Color iconColor;
@@ -43,9 +42,9 @@ class ProfileOptionsCard extends StatelessWidget {
                       ),
                       child: Center(
                           child: Icon(
-                            icon,
-                            color: iconColor,
-                          )),
+                        icon,
+                        color: iconColor,
+                      )),
                     ),
                     // widthSizedBox(10),
                     TextButton(
@@ -53,8 +52,15 @@ class ProfileOptionsCard extends StatelessWidget {
                       child: Text(
                         label,
                         style: Styles.styles16w600.copyWith(
-                            fontSize: 14.sp, fontWeight: FontsHelper.regular,color: Colors.black.withOpacity(0.7)),
+                            fontSize: 14.sp,
+                            fontWeight: FontsHelper.regular,
+                            color: Colors.black.withOpacity(0.7)),
                       ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black.withOpacity(0.4),
                     )
                   ],
                 ),

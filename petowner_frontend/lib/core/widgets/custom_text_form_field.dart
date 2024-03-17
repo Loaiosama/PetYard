@@ -35,7 +35,7 @@ class CustomRegistrationTextField extends StatelessWidget {
     this.height = 60,
     this.isPassword = false,
     this.isObsecure,
-    required this.controller,
+    this.controller,
     this.validator,
     this.suffixIcon,
   });
@@ -46,7 +46,7 @@ class CustomRegistrationTextField extends StatelessWidget {
   final double height;
   final bool? isPassword;
   final bool? isObsecure;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final Widget? suffixIcon;
   final bool isVisible = false;

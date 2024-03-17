@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/routing/app_router.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class PetYardApp extends StatelessWidget {
   const PetYardApp({super.key});
@@ -10,6 +12,10 @@ class PetYardApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // precacheImage(const AssetImage('assets/images/cat4.png'), context);
     // precacheImage(const AssetImage('assets/images/dog1.png'), context);
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //   statusBarColor: Colors.black38, // Change the color of the status bar here
+    // ));
+
     return ScreenUtilInit(
       designSize: const Size(360, 812),
       minTextAdapt: true,
@@ -19,8 +25,11 @@ class PetYardApp extends StatelessWidget {
           routerConfig: AppRouter.appRouter,
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light().copyWith(
-            scaffoldBackgroundColor: Colors.white,
-          ),
+
+              scaffoldBackgroundColor: Colors.white,
+              appBarTheme: const AppBarTheme(
+                color: Colors.transparent,
+              )),
         );
       },
     );
