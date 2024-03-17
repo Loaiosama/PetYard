@@ -8,10 +8,14 @@ const CreatePasswordResetToken=function(){
    
    const PasswordResetToken= crypto.createHash('sha256').update(resetToken).digest('hex');
 
-   PasswordResetExpires=Date.now() +10*60*1000;
+      PasswordResetExpires= Date.now()+ 10*60*1000;
+  
   
    return { resetToken, PasswordResetToken ,PasswordResetExpires};
 }
+
+
+
 
 const CreateValidationCode = function(){
 

@@ -85,8 +85,6 @@ const signUp = async (req, res) => {
             
         const {validationCode} = Model.CreateValidationCode();
 
-    console.log(validationCode)
-
         const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
 
         await sendemail.sendemail({
@@ -216,6 +214,8 @@ const forgotPassword = async (req, res) => {
 
         const { resetToken} = Model.CreatePasswordResetToken();
 
+       await pool.query('UPDATE Petowner SET PasswordResetToken = $1 WHERE email = $2', [resetToken, email]);
+
         const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
         const message = `Forgot Your password? Submit A put request with your new password and  passwordConfirm to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
@@ -243,38 +243,49 @@ const forgotPassword = async (req, res) => {
 }
 const resetPassword = async (req,res)=>{
 
-    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex'); 
-    const {PasswordResetExpires } = Model.CreatePasswordResetToken();
-
+    const { token } = req.params;
+    const { pass, email } = req.body;   
+   try {
+    const hashedToken1 = crypto.createHash('sha256').update(token).digest('hex'); 
+    const {PasswordResetExpires} = Model.CreatePasswordResetToken();
    
 
-    if(PasswordResetExpires >= Date.now() && hashedToken)
+    if(!pass || !email)
     {
-        const {pass,email}=req.body;
-        if(!pass)
-        {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Please Fill All Information"
+        });
+
+    }
+        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1', [email]);
+        const storedToken = result.rows[0].passwordresettoken;
+        const hashedToken2 = crypto.createHash('sha256').update(storedToken).digest('hex'); 
+        
+        if (!storedToken) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Please provide password"
+                message: "No password reset token found for this email"
             });
         }
-
-        const hashedPassword = await bcrypt.hash(pass, saltRounds);
-        const newpass = 'UPDATE Petowner SET Password = $1 WHERE Email = $2';
-        await pool.query(newpass, [hashedPassword, email]);  
-        res.status(200).json({ message: "Password Changed correctly" });
-    
+                
+    if (!storedToken || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Token is invalid or has expired"
+        });
     }
-
-    else{
-
-       return res.status(400).json({
-        status : "Fail",
-        Message : "Token is invalid or has expired"
-       });
-    }
+    const hashedPassword = await bcrypt.hash(pass, saltRounds);
+    const newpass = 'UPDATE Petowner SET Password = $1 , PasswordResetToken = NULL WHERE Email = $2';
+    await pool.query(newpass, [hashedPassword, email]);  
+    res.status(200).json({ message: "Password Changed correctly" });
     
+   } catch (error) {
+
+    res.status(500).json({ error: "Internal server error" });
+   }
 }
+
 
 const ValidationCode = async (req,res)=> 
 {
