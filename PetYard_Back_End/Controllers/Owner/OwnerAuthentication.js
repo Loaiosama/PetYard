@@ -191,7 +191,8 @@ const deleteAccount = async (req, res) => {
             message: "Internal server error"
         });
     }
-};
+}
+
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -212,9 +213,9 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        const { resetToken} = Model.CreatePasswordResetToken();
+        const { resetToken,PasswordResetToken} = Model.CreatePasswordResetToken();
 
-       await pool.query('UPDATE Petowner SET PasswordResetToken = $1 WHERE email = $2', [resetToken, email]);
+       await pool.query('UPDATE Petowner SET ResetToken = $1 WHERE email = $2', [PasswordResetToken, email]);
 
         const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
 
@@ -241,15 +242,15 @@ const forgotPassword = async (req, res) => {
 
     }
 }
+
 const resetPassword = async (req,res)=>{
 
     const { token } = req.params;
     const { pass, email } = req.body;   
-   try {
     const hashedToken1 = crypto.createHash('sha256').update(token).digest('hex'); 
     const {PasswordResetExpires} = Model.CreatePasswordResetToken();
+   try {
    
-
     if(!pass || !email)
     {
         return res.status(400).json({
@@ -259,24 +260,25 @@ const resetPassword = async (req,res)=>{
 
     }
         const result = await pool.query('SELECT * FROM Petowner WHERE email = $1', [email]);
-        const storedToken = result.rows[0].passwordresettoken;
-        const hashedToken2 = crypto.createHash('sha256').update(storedToken).digest('hex'); 
+        const hashedToken2 = result.rows[0].resettoken;
+        ;
+      
         
-        if (!storedToken) {
+        if (!hashedToken2) {
             return res.status(400).json({
                 status: "Fail",
                 message: "No password reset token found for this email"
             });
         }
                 
-    if (!storedToken || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
+    if ( !hashedToken2 || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
         return res.status(400).json({
             status: "Fail",
             message: "Token is invalid or has expired"
         });
     }
     const hashedPassword = await bcrypt.hash(pass, saltRounds);
-    const newpass = 'UPDATE Petowner SET Password = $1 , PasswordResetToken = NULL WHERE Email = $2';
+    const newpass = 'UPDATE Petowner SET Password = $1 , ResetToken = NULL WHERE Email = $2';
     await pool.query(newpass, [hashedPassword, email]);  
     res.status(200).json({ message: "Password Changed correctly" });
     

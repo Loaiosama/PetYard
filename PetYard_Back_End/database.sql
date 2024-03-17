@@ -5,7 +5,7 @@ CREATE TABLE Petowner (
     First_name VARCHAR(225),
     Last_name VARCHAR(225),
     Password VARCHAR(225),
-    PasswordResetToken VARCHAR(225),
+    ResetToken VARCHAR(225),
     Phone VARCHAR(225) UNIQUE, -- Making Phone unique
     Email VARCHAR(225) UNIQUE, -- Making Email unique
     Date_of_birth DATE,
