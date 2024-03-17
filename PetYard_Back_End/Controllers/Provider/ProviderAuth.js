@@ -198,10 +198,46 @@ const deleteAccount = async (req, res) => {
     }
 };
 
+const updateInfo = async (req, res) => {
+
+    const provider_id = req.ID;
+    const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+
+    try {
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist"
+            });
+        }
+
+        const updateQuery = 'UPDATE ServiceProvider SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 WHERE Provider_Id = $7';
+        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth, provider_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Account info updated successfully"
+        });
+
+    }
+    catch (error) {
+        console.error("Error updating account info:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
 module.exports = {
     signUp,
     signIn,
     deleteAccount,
     uploadphoto,
-    resizePhoto
+    resizePhoto,
+    updateInfo
 };

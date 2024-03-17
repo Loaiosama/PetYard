@@ -161,7 +161,7 @@ const signIn = async (req, res) => {
 }
 const deleteAccount = async (req, res) => {
 
-    const owner_id = req.Owner_Id;
+    const owner_id = req.ID;
 
     try {
 
@@ -191,7 +191,12 @@ const deleteAccount = async (req, res) => {
             message: "Internal server error"
         });
     }
+<<<<<<< Updated upstream
 }
+=======
+};
+
+>>>>>>> Stashed changes
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -321,6 +326,41 @@ const ValidationCode = async (req,res)=>
     
 }
 
+const updateInfo = async (req, res) => {
+
+    const owner_id = req.ID;
+    const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+
+    try {
+
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query(Query, [owner_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist"
+            });
+        }
+
+        const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 WHERE Owner_Id = $7';
+        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth, owner_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Account info updated successfully"
+        });
+
+    }
+    catch (error) {
+        console.error("Error updating account info:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
 
 module.exports = {
     signUp,
@@ -330,5 +370,6 @@ module.exports = {
     resetPassword,
     uploadphoto,
     resizePhoto,
-    ValidationCode
+    ValidationCode,
+    updateInfo
 }

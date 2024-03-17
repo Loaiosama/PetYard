@@ -15,7 +15,6 @@ router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
 router.post('/AddPet',authMiddleware,PetProfileController.uploadpetphoto,PetProfileController.resizePhoto, PetProfileController.AddPet);
 
-
 router.get('/getAllPet',authMiddleware, PetProfileController.GetAllPet);
 
 router.get('/getPet/:Pet_Id',authMiddleware, PetProfileController.GetPet);
@@ -31,6 +30,8 @@ router.post('/Forgotpassword', PetOwnerController.forgotPassword);
 router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
 
 router.get('/ValidationCode/:ValidCode', PetOwnerController.ValidationCode);
+
+router.put('/updateInfo',authMiddleware, PetOwnerController.updateInfo);
 
 
 
