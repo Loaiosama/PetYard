@@ -4,17 +4,14 @@ const sendemail = async options=>{
     //1 create transporter
 
     const transporter =nodemailer.createTransport({
-     host : "sandbox.smtp.mailtrap.io",
-     port :25,
+     service:"gmail",
      auth :{
-        user: "0849db6708b184",
-        pass: "5be14f013b1ff0"
+        user: "pet.connect.team100@gmail.com",
+        pass: "uuih xxyp crtl muem"
      }
 
     });
-
-
-
+    
     //2 define the email options 
 
     const mailOptions = {

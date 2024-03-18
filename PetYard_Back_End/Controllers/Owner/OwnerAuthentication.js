@@ -220,9 +220,9 @@ const forgotPassword = async (req, res) => {
 
        await pool.query('UPDATE Petowner SET ResetToken = $1 WHERE email = $2', [PasswordResetToken, email]);
 
-        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+        const resetURL = `${req.protocol}://${req.get('host')}/PetOwner/Resetpassword/${resetToken}`;
 
-        const message = `Forgot Your password? Submit A put request with your new password and  passwordConfirm to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
+        const message = `Forgot Your password? Submit A put request with your new password to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
 
         await sendemail.sendemail({
             email: email,
