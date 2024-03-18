@@ -328,8 +328,17 @@ const updateInfo = async (req, res) => {
 
     const owner_id = req.ID;
     const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    let Image = req.file ? req.file.filename : 'default.png';
 
     try {
+
+        if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        } 
+
 
         const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const result = await pool.query(Query, [owner_id]);
@@ -341,8 +350,8 @@ const updateInfo = async (req, res) => {
             });
         }
 
-        const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 WHERE Owner_Id = $7';
-        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth, owner_id]);
+        const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 ,Image=$7 WHERE Owner_Id = $8';
+        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth,Image ,owner_id]);
 
         res.status(200).json({
             status: "Success",

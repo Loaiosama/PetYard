@@ -202,8 +202,18 @@ const updateInfo = async (req, res) => {
 
     const provider_id = req.ID;
     const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    const Image=req.file.filename;
 
     try {
+
+
+        if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth )
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
 
         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const result = await pool.query(Query, [provider_id]);
@@ -215,8 +225,8 @@ const updateInfo = async (req, res) => {
             });
         }
 
-        const updateQuery = 'UPDATE ServiceProvider SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 WHERE Provider_Id = $7';
-        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth, provider_id]);
+        const updateQuery = 'UPDATE ServiceProvider SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 , Image=$7 WHERE Provider_Id = $8';
+        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth,Image,provider_id]);
 
         res.status(200).json({
             status: "Success",

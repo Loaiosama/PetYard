@@ -12,7 +12,7 @@ const session = require('express-session');
 router.post('/SignUp',ProviderController.uploadphoto,ProviderController.resizePhoto ,ProviderController.signUp);
 router.post('/SignIn', ProviderController.signIn);
 router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
-router.put('/updateInfo',authMiddleware, ProviderController.updateInfo);
+router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
 
 
 

@@ -32,7 +32,8 @@ router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
 
 router.get('/ValidationCode/:ValidCode', PetOwnerController.ValidationCode);
 
-router.put('/updateInfo',authMiddleware, PetOwnerController.updateInfo);
+router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
+
 
 
 // Use express-session middleware
