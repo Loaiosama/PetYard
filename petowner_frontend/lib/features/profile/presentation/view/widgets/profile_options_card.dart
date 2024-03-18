@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -21,7 +23,9 @@ class ProfileOptionsCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 4.0.h),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          GoRouter.of(context).push(Routes.kPersonalInformation);
+        },
         child: Column(
           children: [
             Material(
@@ -29,7 +33,7 @@ class ProfileOptionsCard extends StatelessWidget {
               // elevation: 2,
               // borderRadius: BorderRadius.circular(15),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+                padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 16.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -58,10 +62,10 @@ class ProfileOptionsCard extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    Icon(
+                    IconButton(onPressed: (){}, icon: Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black.withOpacity(0.4),
-                    )
+                    )),
                   ],
                 ),
               ),

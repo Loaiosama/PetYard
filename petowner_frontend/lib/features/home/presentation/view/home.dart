@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
@@ -14,14 +15,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int currentIndex = 0;
   List screens = [
     const HomeScreenBody(),
-    const Center(child: Text('Requests'),),
-    const Center(child: Text('Community'),),
+    const Center(
+      child: Text('Requests'),
+    ),
+    Container(),
+    const Center(
+      child: Text('Community'),
+    ),
     const ProfileScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +65,25 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black.withOpacity(0.5),
             ),
             label: 'Requests',
-
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 30.0.w),
+            child: NavigationDestination(
+              label: 'Inbox',
+              icon: Container(
+                decoration: const BoxDecoration(
+                  color: kPrimaryGreen,
+                  shape: BoxShape.circle,
+                ),
+                child: Container(
+                  margin: const EdgeInsets.all(13.0),
+                  child: const Icon(
+                    Icons.sports_gymnastics_rounded,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ),
           NavigationDestination(
             icon: Icon(

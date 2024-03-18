@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
@@ -123,15 +124,19 @@ class BreedNameItem extends StatelessWidget {
           heightSizedBox(10),
           InkWell(
               onTap: onTap,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Scottish Fold',
-                    style: Styles.styles14NormalBlack,
-                  ),
-                  isSelected ? const Icon(Icons.check) : Container(),
-                ],
+              splashColor: kPrimaryGreen.withOpacity(0.3),
+              child: SizedBox(
+                // height: 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Scottish Fold',
+                      style: Styles.styles14NormalBlack.copyWith(),
+                    ),
+                    isSelected ? const Icon(Icons.check) : Container(),
+                  ],
+                ),
               )),
           const Divider(),
         ],

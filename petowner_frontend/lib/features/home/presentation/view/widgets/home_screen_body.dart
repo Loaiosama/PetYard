@@ -55,7 +55,8 @@ class RecommendedCarerListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => const PetCarerCardWidget(),
+      itemBuilder: (context, index) =>
+          const PetCarerCardWidget(),
       itemCount: 10,
     );
   }
