@@ -5,7 +5,7 @@ const  authMiddleware=require('../Controllers/AuthMiddle');
 const PetProfileController = require('../Controllers/PetProfile');
 require('../Controllers/Owner/GoogleAuth');
 const passport = require('passport');
-
+const session = require('express-session');
 
 router.post('/SignUp',PetOwnerController.uploadphoto,PetOwnerController.resizePhoto,PetOwnerController.signUp);
 
@@ -34,16 +34,22 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.ValidationCode);
 router.put('/updateInfo',authMiddleware, PetOwnerController.updateInfo);
 
 
+// Use express-session middleware
+router.use(session({
+  secret: 'X-h2tDeZTUMVBmVL', // Set your own secret key
+  resave: false,
+  saveUninitialized: false
+}));
 
 // Initialize passport middleware
 router.use(passport.initialize());
-
+router.use(passport.session());
 
 router.get('/Auth/google',passport.authenticate('google',{scope: ['email' , 'profile']}));
 
-router.get('/google/callback', passport.authenticate('google', {
-    successRedirect: '/success', // Redirect to success page on successful authentication
-    failureRedirect: '/failure'  // Redirect to failure page on authentication failure
+router.get('/callback', passport.authenticate('google', {
+    successRedirect: '/PetOwner/success', // Redirect to success page on successful authentication
+    failureRedirect: '/PetOwner/failure'  // Redirect to failure page on authentication failure
   }));
   
 // Define the success route

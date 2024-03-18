@@ -191,12 +191,8 @@ const deleteAccount = async (req, res) => {
             message: "Internal server error"
         });
     }
-<<<<<<< Updated upstream
-}
-=======
 };
 
->>>>>>> Stashed changes
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
