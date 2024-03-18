@@ -190,9 +190,9 @@ const deleteAccount = async (req, res) => {
             status: "Fail",
             message: "Internal server error"
         });
-    }
-};
+}
 
+}
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
