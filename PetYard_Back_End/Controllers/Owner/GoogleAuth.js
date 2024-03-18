@@ -8,27 +8,36 @@ passport.use(new GoogleStrategy({
     clientSecret: "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",
     callbackURL: "http://localhost:3000/PetOwner/callback"
   },
-  function(accessToken, refreshToken, profile, done) {
-    const Firstname = profile._json.given_name;
-    const Lastname = profile._json.family_name;
+  async function(accessToken, refreshToken, profile, done) {
+    const firstname = profile._json.given_name;
+    const lastname = profile._json.family_name;
     const email = profile._json.email;
     const image = profile._json.picture;
 
-    console.log(Firstname, Lastname, email, image);
+    const client = await pool.connect();
+    try {
+      const emailExistsQuery = 'SELECT * FROM Petowner WHERE Email = $1';
+      const { rows } = await client.query(emailExistsQuery, [email]);
 
-    const insertQuery = 'INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-
-    pool.query(insertQuery, [Firstname, Lastname, null, email, null, null, image], (err, result) => {
-      if (err) {
-        console.error('Error inserting user:', err);
-        return done(err);
+      if (rows.length === 1) {
+        console.log("User already exists");
+        return done(null, profile);
+      } else {
+        const insertQuery = 'INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+        const insertResult = await client.query(insertQuery, [firstname, lastname, null, email, null, null, image]);
+        console.log('User inserted:', insertResult.rows[0]);
+        return done(null, profile);
       }
-    
-      console.log('User inserted:', result.rows[0]);
-      return done(null, profile); 
-    });
+    } catch (error) {
+      console.error('Error inserting or checking user:', error);
+      return done(error);
+    } finally {
+      client.release(); 
+    }
   }
 ));
+
+
 
 
 passport.serializeUser(function(user,done){

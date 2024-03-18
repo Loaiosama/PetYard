@@ -4,6 +4,7 @@ const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/AuthMiddle');
 const PetProfileController = require('../Controllers/PetProfile');
 require('../Controllers/Owner/GoogleAuth');
+require('../Controllers/Owner/Facebook');
 const passport = require('passport');
 const session = require('express-session');
 
@@ -46,20 +47,29 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 router.get('/Auth/google',passport.authenticate('google',{scope: ['email' , 'profile']}));
+router.get('/Auth/facebook',passport.authenticate('facebook', { scope: ['email'] }));
+
 
 router.get('/callback', passport.authenticate('google', {
     successRedirect: '/PetOwner/success', // Redirect to success page on successful authentication
     failureRedirect: '/PetOwner/failure'  // Redirect to failure page on authentication failure
   }));
-  
+
+
+  router.get('/callback', passport.authenticate('facebook', {
+    successRedirect: '/PetOwner/success', // Redirect to success page on successful authentication
+    failureRedirect: '/PetOwner/failure'  // Redirect to failure page on authentication failure
+  }));
+
 // Define the success route
 router.get('/success', (req, res) => {
-    res.send('Authentication successful');
-  });
-  
-  // Define the failure route
-  router.get('/failure', (req, res) => {
-    res.send('Authentication failed');
-  });
+  res.send('Authentication successful');
+});
+
+// Define the failure route
+router.get('/failure', (req, res) => {
+  res.send('Authentication failed');
+});
+
 
 module.exports = router;
