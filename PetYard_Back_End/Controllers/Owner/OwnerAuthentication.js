@@ -40,6 +40,8 @@ const resizePhoto=(req,res,next)=>{
     sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/users/PetOwner/${req.file.filename}`);
     next();
 }
+
+
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';

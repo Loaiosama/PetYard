@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
 
     console.log(Firstname, Lastname, email, image);
 
-    const insertQuery = 'INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+    const insertQuery = 'INSERT INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
 
     pool.query(insertQuery, [Firstname, Lastname, null, email, null, null, image], (err, result) => {
       if (err) {
