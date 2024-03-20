@@ -31,7 +31,11 @@ class Styles {
     fontWeight: FontsHelper.semiBold,
     color: Colors.black,
   );
-
+  static TextStyle styles18RegularBlack = TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontsHelper.regular,
+    color: Colors.black,
+  );
   static TextStyle styles20SemiBoldBlack = TextStyle(
     fontSize: 20.sp,
     fontWeight: FontsHelper.semiBold,
