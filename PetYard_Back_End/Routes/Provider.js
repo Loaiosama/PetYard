@@ -13,7 +13,8 @@ router.post('/SignUp',ProviderController.uploadphoto,ProviderController.resizePh
 router.post('/SignIn', ProviderController.signIn);
 router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
 router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
-
+router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
+router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
 
 
 // Use express-session middleware
@@ -22,6 +23,8 @@ router.use(session({
     resave: false,
     saveUninitialized: false
   }));
+
+
   
   // Initialize passport middleware
   router.use(passport.initialize());

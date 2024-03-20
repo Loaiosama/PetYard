@@ -241,11 +241,92 @@ const updateInfo = async (req, res) => {
     }
 };
 
+
+const SelectServices = async(req,res)=>{
+
+    const provider_id = req.ID;
+    const {Type} = req.body;
+    try {
+
+        if(!Type)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+                    
+        const client = await pool.connect();
+        const addservice = 'Insert INTO Services (Type,provider_id) VALUES ($1,$2) RETURNING *';
+        const newService = client.query(addservice, [Type,provider_id]);
+        res.status(201).json({ message: "Add Service successful" })
+        client.release();
+
+    } catch (error) {
+        console.error("Error updating account info:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+const Killservice = async(req,res)=>{
+    const provider_id=req.ID;
+    const {Type}=req.body;
+
+    try {
+        if(!Type)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+        else{
+
+
+
+            const client = await pool.connect();
+            const Exists = 'Select * FROM Services WHERE provider_id = $1';
+            const result = await client.query(Exists, [provider_id]);
+                
+            if (result.rows.length === 0) {
+                return res.status(401).json({
+                    status: "Fail",
+                    message: "Provider doesn't exist"
+                });
+            }
+            
+        const deleteQuery = 'DELETE FROM Services WHERE Type = $1 AND provider_id = $2 ';
+        await pool.query(deleteQuery, [Type,provider_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Service deleted successfully"
+        });
+
+    }
+ }catch (error) {
+        console.error("Error deleting account:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+
+
+        
+    } 
+}
+
 module.exports = {
     signUp,
     signIn,
     deleteAccount,
     uploadphoto,
     resizePhoto,
-    updateInfo
+    updateInfo,
+    SelectServices,
+    Killservice
+    
 };
