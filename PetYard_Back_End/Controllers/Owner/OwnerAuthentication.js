@@ -45,7 +45,7 @@ const resizePhoto=(req,res,next)=>{
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
-
+    console.log(phoneNumber);
     try {
 
         if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
