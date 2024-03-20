@@ -40,6 +40,8 @@ const resizePhoto=(req,res,next)=>{
     sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/users/PetOwner/${req.file.filename}`);
     next();
 }
+
+
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
@@ -218,9 +220,9 @@ const forgotPassword = async (req, res) => {
 
        await pool.query('UPDATE Petowner SET ResetToken = $1 WHERE email = $2', [PasswordResetToken, email]);
 
-        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+        const resetURL = `${req.protocol}://${req.get('host')}/PetOwner/Resetpassword/${resetToken}`;
 
-        const message = `Forgot Your password? Submit A put request with your new password and  passwordConfirm to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
+        const message = `Forgot Your password? Submit A put request with your new password to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
 
         await sendemail.sendemail({
             email: email,
@@ -326,8 +328,17 @@ const updateInfo = async (req, res) => {
 
     const owner_id = req.ID;
     const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    let Image = req.file ? req.file.filename : 'default.png';
 
     try {
+
+        if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        } 
+
 
         const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const result = await pool.query(Query, [owner_id]);
@@ -339,8 +350,8 @@ const updateInfo = async (req, res) => {
             });
         }
 
-        const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 WHERE Owner_Id = $7';
-        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth, owner_id]);
+        const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 ,Image=$7 WHERE Owner_Id = $8';
+        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth,Image ,owner_id]);
 
         res.status(200).json({
             status: "Success",
