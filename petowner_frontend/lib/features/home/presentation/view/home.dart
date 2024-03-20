@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
-
 import 'widgets/home_screen_body.dart';
 
 class HomeScreen extends StatefulWidget {

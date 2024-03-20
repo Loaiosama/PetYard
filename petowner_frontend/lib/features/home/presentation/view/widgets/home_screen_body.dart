@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
-import 'package:petowner_frontend/core/utils/theming/styles.dart';
+// import 'package:petowner_frontend/core/utils/theming/colors.dart';
+// import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/see_all.dart';
 import 'home_app_bar.dart';
 import 'home_banner.dart';
@@ -55,8 +55,7 @@ class RecommendedCarerListView extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) =>
-          const PetCarerCardWidget(),
+      itemBuilder: (context, index) => const PetCarerCardWidget(),
       itemCount: 10,
     );
   }

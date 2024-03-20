@@ -22,7 +22,7 @@ class DiscoverServiceWidget extends StatelessWidget {
         ),
         heightSizedBox(10),
         SizedBox(
-          height: 80.h,
+          height: 83.h,
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount: homeServicesMap.length,
@@ -51,27 +51,6 @@ class DiscoverServiceWidget extends StatelessWidget {
             },
           ),
         ),
-        // Row(
-        //   children: List.generate(
-        //     4,
-        //     (index) => Padding(
-        //       padding: EdgeInsets.only(right: 8.0.w),
-        //       child: Column(
-        //         children: [
-        //           CircleAvatar(
-        //             backgroundColor: const Color.fromRGBO(244, 248, 255, 1),
-        //             radius: 40.r,
-        //             child: SvgPicture.asset(
-        //               'assets/svgs/test (2).svg',
-        //               fit: BoxFit.cover,
-        //             ),
-        //           ),
-        //           const Text('Pet Sitting'),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // )
       ],
     );
   }
