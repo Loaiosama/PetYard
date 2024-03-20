@@ -31,6 +31,7 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: kPrimaryGreen,
+
       body: const ProfileScreenBody(),
     );
   }

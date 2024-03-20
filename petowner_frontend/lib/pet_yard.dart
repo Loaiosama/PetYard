@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/routing/app_router.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
+
+import 'core/utils/theming/colors.dart';
+// import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class PetYardApp extends StatelessWidget {
   const PetYardApp({super.key});
@@ -26,15 +28,16 @@ class PetYardApp extends StatelessWidget {
           routerConfig: AppRouter.appRouter,
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light().copyWith(
-              navigationBarTheme: NavigationBarThemeData(
-                labelTextStyle: MaterialStatePropertyAll(
-                  TextStyle(color: Colors.black.withOpacity(0.5),fontSize: 12),
-                ),
+            appBarTheme: const AppBarTheme(
+              shadowColor: kPrimaryGreen,
+              surfaceTintColor: kPrimaryGreen,
+            ),
+            navigationBarTheme: NavigationBarThemeData(
+              labelTextStyle: MaterialStatePropertyAll(
+                TextStyle(color: Colors.black.withOpacity(0.5), fontSize: 12),
               ),
-              scaffoldBackgroundColor: Colors.white,
-              appBarTheme: const AppBarTheme(
-                color: Colors.transparent,
-              )),
+            ),
+          ),
         );
       },
     );

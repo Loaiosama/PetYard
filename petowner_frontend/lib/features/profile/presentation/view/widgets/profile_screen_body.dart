@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
@@ -29,38 +30,40 @@ class ProfileScreenBody extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: EdgeInsets.only(
-                        left: 20.0.w, right: 20.0.w, top: 72.0.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Olivia Austin',
-                          style: Styles.styles20SemiBoldBlack,
-                        ),
-                        heightSizedBox(2),
-                        Text(
-                          'olivia@example.com',
-                          style: Styles.styles12RegularOpacityBlack,
-                        ),
-                        heightSizedBox(6),
-                        const ActivePetProfileSection(),
-                        heightSizedBox(16),
-                        Column(
-                          children: List.generate(
-                            3,
-                            (index) => Column(
-                              children: [
-                                ProfileOptionsCard(
-                                  cardColor: cardColors[index],
-                                  iconColor: iconColors[index],
-                                  label: labels[index],
-                                  icon: icons[index],
-                                ),
-                              ],
+                        left: 20.0.w, right: 20.0.w, top: 74.0.h),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Olivia Austin',
+                            style: Styles.styles20SemiBoldBlack,
+                          ),
+                          heightSizedBox(2),
+                          Text(
+                            'olivia@example.com',
+                            style: Styles.styles12RegularOpacityBlack,
+                          ),
+                          heightSizedBox(4),
+                          const ActivePetProfileSection(),
+                          heightSizedBox(8),
+                          Column(
+                            children: List.generate(
+                              3,
+                              (index) => Column(
+                                children: [
+                                  ProfileOptionsCard(
+                                    cardColor: cardColors[index],
+                                    iconColor: iconColors[index],
+                                    label: labels[index],
+                                    icon: icons[index],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -68,10 +71,12 @@ class ProfileScreenBody extends StatelessWidget {
             ),
           ],
         ),
-        const ProfileScreenCenteredImage(),
+        Positioned(
+          bottom: MediaQuery.of(context).size.height * 0.71 - 72.0,
+          left: MediaQuery.of(context).size.width * 0.5 - 70.0,
+          child: const ProfileScreenCenteredImage(),
+        ),
       ],
     );
   }
 }
-
-

@@ -7,45 +7,41 @@ class ProfileScreenCenteredImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: MediaQuery.of(context).size.height * 0.71 - 70.0,
-      left: MediaQuery.of(context).size.width * 0.5 - 70.0,
-      child: Container(
-        width: 120.0.w,
-        height: 120.0.h,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: const DecorationImage(
-            image: AssetImage('assets/images/1.png'),
-            fit: BoxFit.cover,
-          ),
-          border: Border.all(
-            color: Colors.white,
-            width: 4.0.w,
-          ),
+    return Container(
+      width: 120.0.w,
+      height: 120.0.h,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: const DecorationImage(
+          image: AssetImage('assets/images/1.png'),
+          fit: BoxFit.cover,
         ),
-        child: Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            width: 34.w,
-            height: 34.h,
-            margin: EdgeInsets.only(top: 40.0.w),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.white,
-                width: 4.0.w,
-              ),
-              shape: BoxShape.circle,
-              color: const Color.fromRGBO(248, 248, 248, 1),
+        border: Border.all(
+          color: Colors.white,
+          width: 4.0.w,
+        ),
+      ),
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          width: 34.w,
+          height: 34.h,
+          margin: EdgeInsets.only(top: 40.0.w),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white,
+              width: 4.0.w,
             ),
-            child: IconButton(
-              onPressed: () {},
-              icon: Center(
-                child: Icon(
-                  FontAwesomeIcons.penToSquare,
-                  size: 13.sp,
-                  color: Colors.blue,
-                ),
+            shape: BoxShape.circle,
+            color: const Color.fromRGBO(248, 248, 248, 1),
+          ),
+          child: IconButton(
+            onPressed: () {},
+            icon: Center(
+              child: Icon(
+                FontAwesomeIcons.penToSquare,
+                size: 13.sp,
+                color: Colors.blue,
               ),
             ),
           ),

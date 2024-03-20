@@ -21,7 +21,7 @@ class ProfileOptionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 4.0.h),
+      padding: EdgeInsets.only(bottom: 1.0.h),
       child: InkWell(
         onTap: () {
           GoRouter.of(context).push(Routes.kPersonalInformation);
@@ -33,7 +33,7 @@ class ProfileOptionsCard extends StatelessWidget {
               // elevation: 2,
               // borderRadius: BorderRadius.circular(15),
               child: Padding(
-                padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 16.w),
+                padding: EdgeInsets.only(top: 10.h, bottom: 6.h, left: 16.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
