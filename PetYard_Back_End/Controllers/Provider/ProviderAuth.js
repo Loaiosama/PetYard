@@ -46,7 +46,7 @@ const resizePhoto=(req,res,next)=>{
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
     
-    const Image=req.file.filename;
+    let Image = req.file ? req.file.filename : 'default.png';
     try {
 
 
@@ -98,7 +98,7 @@ const signUp = async (req, res) => {
     catch(e)
     {
         console.error("Error during signUp", e);
-        res.status(500).json({ error: "Internal server error"});
+        res.status(500).json({ error: "internal server error"});
     }
 
     
