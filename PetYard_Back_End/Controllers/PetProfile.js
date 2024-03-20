@@ -198,10 +198,15 @@ const RemovePet = async(req,res)=>{
 
 }
 
+
+
 const updatePetProfile = async(req,res)=>{
-    const {Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image} = req.body;
+    
     const {Pet_Id}=req.params;
     const owner_id = req.ID; 
+    const {Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight} = req.body;
+    let Image = req.file ? req.file.filename : 'default.png';
+
 
     try {
         if(!Pet_Id || !owner_id)
@@ -209,6 +214,17 @@ const updatePetProfile = async(req,res)=>{
             return res.status(400).json({
                 status: "Fail",
                 message: "Some Error Haben"
+            });
+        }
+
+
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query(Query, [owner_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist"
             });
         }
         const UpdatePet =await pool.query('UPDATE Pet SET  Name=$1,Gender=$2,Breed=$3,Date_of_birth=$4,Adoption_Date=$5,Weight=$6,Image=$7 WHERE Pet_Id=$8 AND owner_id=$9',[Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image,Pet_Id,owner_id]);
