@@ -292,7 +292,7 @@ const resetPassword = async (req,res)=>{
 }
 
 
-const ValidationCode = async (req,res)=> 
+const validationCode = async (req,res)=> 
 {
     const valid=req.params;
     
@@ -377,6 +377,6 @@ module.exports = {
     resetPassword,
     uploadphoto,
     resizePhoto,
-    ValidationCode,
+    validationCode,
     updateInfo
 }

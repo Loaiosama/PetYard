@@ -3,14 +3,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds=10;
 
-
 const multer =require('multer');
-
 const sharp = require('sharp');
 
-
-
 const multerStorage=multer.memoryStorage();
+
 
 const multerFilter=(req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
@@ -28,6 +25,7 @@ const upload=multer({
     fileFilter:multerFilter
 });
 
+
 const uploadphoto=upload.single('Image');
 
 
@@ -42,14 +40,14 @@ const resizePhoto=(req,res,next)=>{
 }
 
 
-
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
     
     let Image = req.file ? req.file.filename : 'default.png';
     try {
 
-
+        // const [longitude, latitude] = location.coordinates;
+        // console.log(longitude, " AHHH " , latitude);
         if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio)
         {
             return res.status(400).json({
@@ -164,7 +162,6 @@ const signIn = async (req, res) => {
 }
 
 
-
 const deleteAccount = async (req, res) => {
 
     const provider_id = req.ID;
@@ -197,6 +194,7 @@ const deleteAccount = async (req, res) => {
         });
     }
 };
+
 
 const updateInfo = async (req, res) => {
 
