@@ -30,7 +30,7 @@ router.post('/Forgotpassword', PetOwnerController.forgotPassword);
 
 router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
 
-router.get('/ValidationCode/:ValidCode', PetOwnerController.ValidationCode);
+router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 

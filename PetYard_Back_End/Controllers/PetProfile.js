@@ -42,7 +42,7 @@ const AddPet = async(req,res)=>
 {
     const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight}=req.body;
     const owner_id = req.ID; 
-    const Image=req.file.filename;
+    let Image = req.file ? req.file.filename : 'default.png';
     try 
     {
         if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight) 
