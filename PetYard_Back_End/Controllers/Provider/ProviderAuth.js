@@ -46,7 +46,8 @@ const signUp = async (req, res) => {
     let Image = req.file ? req.file.filename : 'default.png';
     try {
 
-
+        // const [longitude, latitude] = location.coordinates;
+        // console.log(longitude, " AHHH " , latitude);
         if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio)
         {
             return res.status(400).json({

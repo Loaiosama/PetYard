@@ -227,7 +227,9 @@ const updatePetProfile = async(req,res)=>{
                 message: "User doesn't exist"
             });
         }
-        const UpdatePet =await pool.query('UPDATE Pet SET  Name=$1,Gender=$2,Breed=$3,Date_of_birth=$4,Adoption_Date=$5,Weight=$6,Image=$7 WHERE Pet_Id=$8 AND owner_id=$9',[Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image,Pet_Id,owner_id]);
+
+        const updateQuery = 'UPDATE Pet SET  Name=$1,Gender=$2,Breed=$3,Date_of_birth=$4,Adoption_Date=$5,Weight=$6,Image=$7 WHERE Pet_Id=$8 AND owner_id=$9';
+        const UpdatePet =await pool.query(updateQuery ,[Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image,Pet_Id,owner_id]);
 
         res.status(200).json({
             status: "Success",
