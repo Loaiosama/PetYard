@@ -16,6 +16,7 @@ router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,Provider
 router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
 
+router.post('/authenticate',authMiddleware,ProviderController.startChat);
 
 // Use express-session middleware
 router.use(session({

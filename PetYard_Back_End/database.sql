@@ -52,6 +52,7 @@ CREATE TABLE Pet (
 );
 
 CREATE TYPE ServiceType AS ENUM ('Walking', 'Grooming', 'Boarding', 'Sitting', 'Clinic');
+
 CREATE TABLE Services (
     Service_ID SERIAL PRIMARY KEY,
     Provider_ID INT REFERENCES ServiceProvider(Provider_Id),

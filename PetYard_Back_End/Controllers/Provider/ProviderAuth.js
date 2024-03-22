@@ -2,7 +2,7 @@ const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds=10;
-
+const axios = require('axios');
 const multer =require('multer');
 const sharp = require('sharp');
 
@@ -46,8 +46,6 @@ const signUp = async (req, res) => {
     let Image = req.file ? req.file.filename : 'default.png';
     try {
 
-        // const [longitude, latitude] = location.coordinates;
-        // console.log(longitude, " AHHH " , latitude);
         if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio)
         {
             return res.status(400).json({
@@ -273,10 +271,10 @@ const SelectServices = async(req,res)=>{
 
 const Killservice = async(req,res)=>{
     const provider_id=req.ID;
-    const {Type}=req.body;
+    const {Service_ID}=req.params;
 
     try {
-        if(!Type)
+        if(!Service_ID)
         {
             return res.status(400).json({
                 status: "Fail",
@@ -298,8 +296,8 @@ const Killservice = async(req,res)=>{
                 });
             }
             
-        const deleteQuery = 'DELETE FROM Services WHERE Type = $1 AND provider_id = $2 ';
-        await pool.query(deleteQuery, [Type,provider_id]);
+        const deleteQuery = 'DELETE FROM Services WHERE Service_ID = $1 AND provider_id = $2 ';
+        await pool.query(deleteQuery, [Service_ID,provider_id]);
 
         res.status(200).json({
             status: "Success",
@@ -319,6 +317,37 @@ const Killservice = async(req,res)=>{
     } 
 }
 
+const startChat =  async (req, res) => {
+    const provider_id = req.ID;
+   try {
+
+    const client = await pool.connect();
+    const Exists = 'Select * FROM ServiceProvider WHERE provider_id = $1';
+    const result = await client.query(Exists, [provider_id]);
+
+ 
+       const username = result.rows[0].first_name;
+       const Email = result.rows[0].email;
+
+     const r =await axios.put(
+       "https://api.chatengine.io/users/",
+       {username : username+provider_id ,secret :username, first_name:username ,
+           email: Email},
+       {"headers":{"private-key":"9b5d6df8-7257-4993-9642-45017512c89d"}}
+     );
+     return res.status(r.status).json(r.data);
+   } catch (error) {
+     if (error.response && error.response.status) {
+         return res.status(error.response.status).json(error.response.data);
+     } else {
+        
+         return res.status(500).json({ message: 'Internal Server Error' });
+     }
+ }
+ 
+};
+
+
 module.exports = {
     signUp,
     signIn,
@@ -327,6 +356,7 @@ module.exports = {
     resizePhoto,
     updateInfo,
     SelectServices,
-    Killservice
+    Killservice,
+    startChat
     
 };
