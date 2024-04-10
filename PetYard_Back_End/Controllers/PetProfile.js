@@ -90,7 +90,6 @@ const GetAllPet = async(req,res)=>{
     } 
     catch (error)
     {
-        console.error("Error Add Pet:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"

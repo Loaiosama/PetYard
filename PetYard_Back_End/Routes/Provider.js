@@ -15,6 +15,16 @@ router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
 router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
 router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
+router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
+router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
+
+
+router.post('/CreateSlot/:Service_ID',authMiddleware,ProviderController.CreateSlot);
+router.get('/GetAllSlots',authMiddleware,ProviderController.GetAllSlots);
+router.get('/GetSlot/:Slot_ID',authMiddleware,ProviderController.GetSlot);
+router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ProviderController.DeleteSlot);
+router.put('/UpdateSlot/:Slot_ID',authMiddleware,ProviderController.UpdateSlot);
+
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
 

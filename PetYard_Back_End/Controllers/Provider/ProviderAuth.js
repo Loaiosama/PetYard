@@ -1,7 +1,6 @@
 const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const saltRounds=10;
 const axios = require('axios');
 const multer =require('multer');
 const sharp = require('sharp');
@@ -43,7 +42,6 @@ const resizePhoto=(req,res,next)=>{
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
     
-    let Image = req.file ? req.file.filename : 'default.png';
     try {
 
         if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio)
@@ -80,10 +78,7 @@ const signUp = async (req, res) => {
         else
         {
 
-            const hashedPassword = await bcrypt.hash(pass, saltRounds);
             
-            const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Bio,Image]);
 
             res.status(201).json({ message: "Sign up successful" })
         }
@@ -253,12 +248,24 @@ const SelectServices = async(req,res)=>{
                 message: "Please Fill All Information"
             });
         }
-                    
-        const client = await pool.connect();
-        const addservice = 'Insert INTO Services (Type,provider_id) VALUES ($1,$2) RETURNING *';
-        const newService = client.query(addservice, [Type,provider_id]);
-        res.status(201).json({ message: "Add Service successful" })
-        client.release();
+        const getservices= await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ',[provider_id]);
+        const services = getservices.rows;
+        // Check if the service type already exists for the provider
+        const isServiceAlreadySelected = services.some(service => service.type === Type);
+        if (isServiceAlreadySelected) {
+            return res.status(400).json({
+                status: "Fail",
+                message: `You have already selected this service before: ${Type}`
+            });
+        }
+
+
+             // Add the new service to the database
+         const client = await pool.connect();
+         const addserviceQuery = 'INSERT INTO Services (Type, provider_id) VALUES ($1, $2) RETURNING *';
+         client.release();
+         res.status(201).json({ message: "Add Service successful" })
+      
 
     } catch (error) {
         console.error("Error updating account info:", error);
@@ -317,6 +324,212 @@ const Killservice = async(req,res)=>{
     } 
 }
 
+const getallservices = async(req,res)=>{
+    const provider_id = req.ID;
+    try {
+        if(!provider_id)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Some Error Haben"
+            });
+        }
+        const getAllservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1',[provider_id]);
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :getAllservices.rows
+        });
+            
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+    
+}
+
+const getService=async(req,res)=>{
+
+    const {Service_ID}=req.params;
+    const provider_id = req.ID;
+    try {   
+
+        if(!provider_id || !Service_ID)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Some Error Haben"
+            });
+        }
+        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 AND Service_ID=$2',[provider_id,Service_ID]);
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :getservices.rows
+        });
+            
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+
+const CreateSlot = async (req, res) => {
+    const { Price, Start_time, End_time } = req.body;
+    const Service_ID = req.params.Service_ID;
+    const provider_id = req.ID;
+
+    try {
+        if (!Price || !Start_time || !End_time || !Service_ID || !provider_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing required information"
+            });
+        }
+        
+        const client = await pool.connect();
+        const addslotQuery = 'INSERT INTO ServiceSlots (Service_ID, Provider_ID, Price, Start_time, End_time) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        client.release();
+        res.status(201).json({ message: "Slot added successfully" });
+
+    } catch (error) {
+        console.error("Error adding slot:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
+const GetAllSlots=async(req,res)=>{
+  const provider_id = req.ID;
+  try {
+
+    if (!provider_id) {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Missing required information"
+        });
+    }
+
+    const getallslot=await pool.query('SELECT * FROM ServiceSlots WHERE Provider_ID=$1 ',[provider_id]);
+    res.status(200).json({
+        status :"Done",
+        message : "One Data Is Here",
+        data :getallslot.rows
+    });
+    
+    
+  } catch (error) {
+    res.status(500).json({
+        status: "Fail",
+        message: "Internal server error"
+    });
+  }
+
+
+
+}
+
+const GetSlot =async(req,res)=>
+{
+    const provider_id = req.ID;
+    const {Slot_ID}=req.params;
+    try {   
+
+        if(!provider_id || !Slot_ID)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Some Error Haben"
+            });
+        }
+        const getslot = await pool.query('SELECT * FROM ServiceSlots WHERE Provider_ID=$1 AND Slot_ID=$2',[provider_id,Slot_ID]);
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :getslot.rows
+        });
+            
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+const DeleteSlot = async(req,res)=>{
+    const {Slot_ID}=req.params;
+    try {   
+
+        if(!Slot_ID)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Some Error Happen"
+            });
+        }
+        const deleteQuery = 'DELETE FROM ServiceSlots WHERE Slot_ID=$1';
+        await pool.query(deleteQuery, [Slot_ID]);
+       
+        res.status(200).json({
+            status: "Success",
+            message: "Slot deleted successfully"
+        });
+            
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+const UpdateSlot=async(req,res)=>{
+    const {Slot_ID}=req.params;
+    const {Start_time,End_time,Price}=req.body;
+ 
+    try {   
+
+        if (!Slot_ID || !Start_time || !End_time || !Price) 
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Some Errors Happen"
+            });
+        }
+        const updateQuery = 'UPDATE ServiceSlots SET Start_time=$1, End_time=$2, Price=$3 WHERE Slot_ID = $4';
+        const result = await pool.query(updateQuery, [Start_time, End_time, Price, Slot_ID]);
+
+        if (result.rowCount === 0) {
+            // If no rows were updated, return a failure response
+            return res.status(404).json({
+                status: "Fail",
+                message: "Slot not found"
+            });
+        }
+
+        // Respond with success message
+        res.status(200).json({
+            status: "Success",
+            message: "Slot updated successfully"
+        });
+            
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
 const startChat =  async (req, res) => {
     const provider_id = req.ID;
    try {
@@ -345,7 +558,8 @@ const startChat =  async (req, res) => {
      }
  }
  
-};
+}
+
 
 
 module.exports = {
@@ -357,6 +571,13 @@ module.exports = {
     updateInfo,
     SelectServices,
     Killservice,
-    startChat
+    startChat,
+    getallservices,
+    getService,
+    CreateSlot,
+    GetAllSlots,
+    GetSlot,
+    DeleteSlot,
+    UpdateSlot
     
 };
