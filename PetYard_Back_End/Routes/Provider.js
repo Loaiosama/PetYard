@@ -26,6 +26,14 @@ router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ProviderController.DeleteSlo
 router.put('/UpdateSlot/:Slot_ID',authMiddleware,ProviderController.UpdateSlot);
 
 
+
+router.post('/AddProduct',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.Add_Product);
+
+
+
+
+
+
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
 
 // Use express-session middleware

@@ -4,6 +4,13 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const multer =require('multer');
 const sharp = require('sharp');
+const saltRounds = 10;
+const crypto = require('crypto');//reset pass - forget pass
+const Model = require('./../../Models/UserModel');
+const sendemail = require("./../../Utils/email");
+
+
+
 
 const multerStorage=multer.memoryStorage();
 
@@ -38,9 +45,20 @@ const resizePhoto=(req,res,next)=>{
     next();
 }
 
+const resizePhotoProduct=(req,res,next)=>{
+
+    if(!req.file) return next();
+
+    req.file.filename=`Products-${req.ID}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/Products/${req.file.filename}`);
+    next();
+}
+
 
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
+    const Image=req.file.filename;
     
     try {
 
@@ -78,9 +96,19 @@ const signUp = async (req, res) => {
         else
         {
 
-            
+            const hashedPassword = await bcrypt.hash(pass, saltRounds);
+            const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7,$8) RETURNING *';
+            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Bio,Image]);  
+            const {validationCode} = Model.CreateValidationCode();
 
-            res.status(201).json({ message: "Sign up successful" })
+            const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
+
+            await sendemail.sendemail({
+                email: email,
+                subject: 'Your Validation code  (valid for 10 min) ',
+                message
+            });
+         res.status(201).json({ message: "Sign up successful" })
         }
 
         client.release();
@@ -92,7 +120,6 @@ const signUp = async (req, res) => {
         res.status(500).json({ error: "internal server error"});
     }
 
-    
 }
 
 
@@ -248,6 +275,22 @@ const SelectServices = async(req,res)=>{
                 message: "Please Fill All Information"
             });
         }
+
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+
+
+
+
         const getservices= await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ',[provider_id]);
         const services = getservices.rows;
         // Check if the service type already exists for the provider
@@ -334,6 +377,15 @@ const getallservices = async(req,res)=>{
                 message: "Some Error Haben"
             });
         }
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
         const getAllservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1',[provider_id]);
         res.status(200).json({
             status :"Done",
@@ -361,6 +413,16 @@ const getService=async(req,res)=>{
             return res.status(400).json({
                 status: "Fail",
                 message: "Some Error Haben"
+            });
+        }
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
             });
         }
         const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 AND Service_ID=$2',[provider_id,Service_ID]);
@@ -391,6 +453,16 @@ const CreateSlot = async (req, res) => {
                 message: "Missing required information"
             });
         }
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
         
         const client = await pool.connect();
         const addslotQuery = 'INSERT INTO ServiceSlots (Service_ID, Provider_ID, Price, Start_time, End_time) VALUES ($1, $2, $3, $4, $5) RETURNING *';
@@ -417,6 +489,15 @@ const GetAllSlots=async(req,res)=>{
             message: "Missing required information"
         });
     }
+    const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+     const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
 
     const getallslot=await pool.query('SELECT * FROM ServiceSlots WHERE Provider_ID=$1 ',[provider_id]);
     res.status(200).json({
@@ -450,6 +531,20 @@ const GetSlot =async(req,res)=>
                 message: "Some Error Haben"
             });
         }
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+        
+
+
+
         const getslot = await pool.query('SELECT * FROM ServiceSlots WHERE Provider_ID=$1 AND Slot_ID=$2',[provider_id,Slot_ID]);
         res.status(200).json({
             status :"Done",
@@ -467,15 +562,27 @@ const GetSlot =async(req,res)=>
 
 const DeleteSlot = async(req,res)=>{
     const {Slot_ID}=req.params;
+    const provider_id = req.ID;
     try {   
 
-        if(!Slot_ID)
+        if(!Slot_ID||!provider_id)
         {
             return res.status(400).json({
                 status: "Fail",
                 message: "Some Error Happen"
             });
         }
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
         const deleteQuery = 'DELETE FROM ServiceSlots WHERE Slot_ID=$1';
         await pool.query(deleteQuery, [Slot_ID]);
        
@@ -495,6 +602,7 @@ const DeleteSlot = async(req,res)=>{
 const UpdateSlot=async(req,res)=>{
     const {Slot_ID}=req.params;
     const {Start_time,End_time,Price}=req.body;
+    const provider_id = req.ID;
  
     try {   
 
@@ -505,6 +613,20 @@ const UpdateSlot=async(req,res)=>{
                 message: "Some Errors Happen"
             });
         }
+
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const res = await pool.query(Query, [provider_id]);
+
+        if (res.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+
+
+
         const updateQuery = 'UPDATE ServiceSlots SET Start_time=$1, End_time=$2, Price=$3 WHERE Slot_ID = $4';
         const result = await pool.query(updateQuery, [Start_time, End_time, Price, Slot_ID]);
 
@@ -530,6 +652,71 @@ const UpdateSlot=async(req,res)=>{
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Add_Product = async (req, res) => {
+    const provider_id = req.ID;
+    const { name, description, Type, brand, Price, stock_quantity } = req.body;
+    const Image=req.file.filename;
+
+    try {
+        if (!provider_id || !name || !description || !Type || !brand || !Price || !stock_quantity || !Image) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
+
+        const userQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const userResult = await pool.query(userQuery, [provider_id]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const insertQuery = 'INSERT INTO Products (name, description, Type, brand, Price, stock_quantity, Image,provider_id) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *';
+        const productResult = await pool.query(insertQuery, [name, description, Type, brand, Price, stock_quantity, Image,provider_id]);
+
+        res.status(201).json({ message: "Product added successfully", product: productResult.rows[0] });
+    } catch (error) {
+        console.error("Error adding product:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
 const startChat =  async (req, res) => {
     const provider_id = req.ID;
    try {
@@ -537,6 +724,13 @@ const startChat =  async (req, res) => {
     const client = await pool.connect();
     const Exists = 'Select * FROM ServiceProvider WHERE provider_id = $1';
     const result = await client.query(Exists, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
 
  
        const username = result.rows[0].first_name;
@@ -578,6 +772,8 @@ module.exports = {
     GetAllSlots,
     GetSlot,
     DeleteSlot,
-    UpdateSlot
+    UpdateSlot,
+    Add_Product,
+    resizePhotoProduct
     
 };
