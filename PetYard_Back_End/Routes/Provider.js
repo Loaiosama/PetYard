@@ -26,12 +26,11 @@ router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ProviderController.DeleteSlo
 router.put('/UpdateSlot/:Slot_ID',authMiddleware,ProviderController.UpdateSlot);
 
 
-
 router.post('/AddProduct',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.Add_Product);
-
-
-
-
+router.get('/GetAllProduct',authMiddleware,ProviderController.GetAllProduct);
+router.get('/GetProduct/:Product_Id',authMiddleware,ProviderController.GetProduct);
+router.put('/UpdateProduct/:Product_Id',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.UpdateProduct);
+router.delete('/RemoveProduct/:Product_Id',authMiddleware,ProviderController.RemoveProduct);
 
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
