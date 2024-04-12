@@ -8,6 +8,7 @@ import 'package:petowner_frontend/features/onboarding/presentation/onboarding_sc
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_type.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
+import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/signup.dart';
@@ -31,6 +32,7 @@ abstract class AppRouter {
           return const SplashView();
         },
       ),
+      // Navigate to sign up screen
       GoRoute(
         path: Routes.kSignupScreen,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -39,6 +41,7 @@ abstract class AppRouter {
           child: const SignUpScreen(),
         ),
       ),
+      // Navigate to sign in screen
       GoRoute(
         path: Routes.kSigninScreen,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -47,6 +50,7 @@ abstract class AppRouter {
           child: const SignInScreen(),
         ),
       ),
+      // Navigate to home screen
       GoRoute(
         path: Routes.kHomeScreen,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -55,6 +59,7 @@ abstract class AppRouter {
           child: const HomeScreen(),
         ),
       ),
+      // Navigate to forget password screen
       GoRoute(
         path: Routes.kForgotPasswordScreen,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -69,12 +74,14 @@ abstract class AppRouter {
       //     return const OnBoardingScreen();
       //   },
       // ),
+      // Navigate to onboarding screen
       GoRoute(
         path: Routes.kOnBoardingScreen,
         builder: (BuildContext context, GoRouterState state) {
           return const OnBoardingScreen2();
         },
       ),
+      // Navigate to choose type of pet screen
       GoRoute(
         path: Routes.kChooseType,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -83,6 +90,7 @@ abstract class AppRouter {
           child: const ChooseType(),
         ),
       ),
+      // Navigate to chosse breed of pet screen
       GoRoute(
         path: Routes.kPetBreed,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -91,12 +99,22 @@ abstract class AppRouter {
           child: const PetBreedScreen(),
         ),
       ),
+      // Navigate to personal information screen
       GoRoute(
         path: Routes.kPersonalInformation,
         pageBuilder: (context, state) => transitionGoRoute(
           context: context,
           state: state,
           child: const PersonalInformationScreen(),
+        ),
+      ),
+      // Navigate to provider profile screen
+      GoRoute(
+        path: Routes.kProviderProfile,
+        pageBuilder: (context, state) => transitionGoRoute(
+          context: context,
+          state: state,
+          child: const ProviderProfileScreen(),
         ),
       ),
     ],

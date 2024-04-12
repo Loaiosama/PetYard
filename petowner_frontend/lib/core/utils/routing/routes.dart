@@ -9,4 +9,5 @@ class Routes {
   static const String kPetInfo = '/petInfo';
   static const String kPetBreed = '/petBreed';
   static const String kPersonalInformation = '/personalInformation';
+  static const String kProviderProfile = '/providerProfile';
 }
