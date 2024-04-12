@@ -52,6 +52,7 @@ CREATE TABLE Pet (
 );
 
 CREATE TYPE ServiceType AS ENUM ('Walking', 'Grooming', 'Boarding', 'Sitting', 'Clinic');
+
 CREATE TABLE Services (
     Service_ID SERIAL PRIMARY KEY,
     Provider_ID INT REFERENCES ServiceProvider(Provider_Id),
@@ -94,3 +95,65 @@ CREATE TABLE Comment (
     Comment VARCHAR(255),
     FOREIGN KEY (Rating_ID) REFERENCES Review(Rating_ID)
 );
+
+
+
+
+
+
+
+/*
+
+Each Product is associated with a User (provider) who added the product (provider_id).
+Each Order is linked to a User who placed the order (user_id).
+OrderItems represent the products included in each order (product_id).
+
+
+*/
+
+CREATE TYPE category AS ENUM ('Accessories','Food');
+
+CREATE TABLE Products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    Type  category,
+    brand VARCHAR(100),
+    Price DOUBLE PRECISION,
+    stock_quantity INT DEFAULT 0,
+    Image VARCHAR(255) NOT NULL, 
+    Provider_ID INT ,
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+CREATE TABLE Orders (
+    order_id SERIAL PRIMARY KEY,
+    user_id INT,
+    total_amount DOUBLE PRECISION NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'Pending',
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE OrderItems (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    quantity INT NOT NULL,
+    price_per_unit DOUBLE PRECISION NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE Shipping (
+    shipping_id SERIAL PRIMARY KEY,
+    order_id INT,
+    Location POINT,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    Phone VARCHAR(225) UNIQUE,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
+

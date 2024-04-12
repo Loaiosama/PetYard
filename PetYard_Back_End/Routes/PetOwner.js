@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/AuthMiddle');
 const PetProfileController = require('../Controllers/PetProfile');
@@ -35,6 +36,7 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
+router.post('/authenticate',authMiddleware,PetOwnerController.startChat);
 
 // Use express-session middleware
 router.use(session({

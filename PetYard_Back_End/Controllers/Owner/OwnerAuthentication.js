@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Model = require('./../../Models/UserModel');
 const sendemail = require("./../../Utils/email");
-
+const axios = require('axios');
 const saltRounds = 10;
 const multer =require('multer');
 const sharp = require('sharp');
@@ -369,6 +369,36 @@ const updateInfo = async (req, res) => {
 };
 
 
+
+const startChat =  async (req, res) => {
+     const owner_id = req.ID;
+    try {
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query( Query, [owner_id]); 
+       
+        const username = result.rows[0].first_name;
+        const Email = result.rows[0].email;
+
+      const r =await axios.put(
+        "https://api.chatengine.io/users/",
+        {username : username+owner_id ,secret :username, first_name:username ,
+            email: Email},
+        {"headers":{"private-key":"9b5d6df8-7257-4993-9642-45017512c89d"}}
+      );
+      return res.status(r.status).json(r.data);
+    } catch (error) {
+      if (error.response && error.response.status) {
+          return res.status(error.response.status).json(error.response.data);
+      } else {
+         
+          return res.status(500).json({ message: 'Internal Server Error' });
+      }
+  }
+  
+};
+  
+  
+
 module.exports = {
     signUp,
     signIn,
@@ -378,5 +408,6 @@ module.exports = {
     uploadphoto,
     resizePhoto,
     validationCode,
-    updateInfo
+    updateInfo,
+    startChat
 }
