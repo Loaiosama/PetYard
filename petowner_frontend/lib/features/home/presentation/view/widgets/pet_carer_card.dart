@@ -48,24 +48,34 @@ class PetCarerCardWidget extends StatelessWidget {
                   style: Styles.styles12RegularOpacityBlack,
                 ),
                 heightSizedBox(6),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                      size: 16.sp,
-                    ),
-                    widthSizedBox(5),
-                    Text('4.8 (4,279 reviews)',
-                        style: Styles.styles12RegularOpacityBlack),
-                  ],
-                )
+                const RatingRowWidget(),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class RatingRowWidget extends StatelessWidget {
+  const RatingRowWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.star,
+          color: Colors.yellow,
+          size: 16.sp,
+        ),
+        widthSizedBox(5),
+        Text('4.8 (4,279 reviews)', style: Styles.styles12RegularOpacityBlack),
+      ],
     );
   }
 }

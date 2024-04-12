@@ -14,7 +14,8 @@ class ProviderProfileScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Text(
           'Olivia Austin',
-          style: Styles.styles20SemiBoldBlack,
+          style: Styles.styles18SemiBoldBlack
+              .copyWith(fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         leading: IconButton(
