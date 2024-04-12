@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class ProfileOptionsCard extends StatelessWidget {
-  const ProfileOptionsCard(
-      {super.key,
-      required this.cardColor,
-      required this.iconColor,
-      required this.icon,
-      required this.label});
+  const ProfileOptionsCard({
+    super.key,
+    required this.cardColor,
+    required this.iconColor,
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
 
+  final String route;
   final Color cardColor;
   final Color iconColor;
   final IconData icon;
@@ -24,7 +26,7 @@ class ProfileOptionsCard extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 1.0.h),
       child: InkWell(
         onTap: () {
-          GoRouter.of(context).push(Routes.kPersonalInformation);
+          GoRouter.of(context).push(route);
         },
         child: Column(
           children: [
@@ -38,17 +40,19 @@ class ProfileOptionsCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      width: 40.w,
-                      height: 40.h,
+                      width: 30.w,
+                      height: 30.h,
                       decoration: BoxDecoration(
                         color: cardColor,
-                        borderRadius: BorderRadius.circular(10.0.r),
+                        borderRadius: BorderRadius.circular(16.0.r),
                       ),
                       child: Center(
-                          child: Icon(
-                        icon,
-                        color: iconColor,
-                      )),
+                        child: Icon(
+                          icon,
+                          color: iconColor,
+                          size: 14.sp,
+                        ),
+                      ),
                     ),
                     // widthSizedBox(10),
                     TextButton(
@@ -62,10 +66,14 @@ class ProfileOptionsCard extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    IconButton(onPressed: (){}, icon: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black.withOpacity(0.4),
-                    )),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.black.withOpacity(0.4),
+                        size: 16.sp,
+                      ),
+                    ),
                   ],
                 ),
               ),

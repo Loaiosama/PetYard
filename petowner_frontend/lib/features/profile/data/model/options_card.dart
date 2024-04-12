@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 
 List<IconData> icons = [
   FontAwesomeIcons.addressCard,
@@ -19,4 +20,10 @@ List iconColors = [
   const Color.fromRGBO(36, 124, 255, 1),
   const Color.fromRGBO(34, 197, 94, 1),
   const Color.fromRGBO(255, 76, 94, 1),
+];
+
+List routes = [
+  Routes.kPersonalInformation,
+  Routes.kPersonalInformation,
+  Routes.kPersonalInformation,
 ];

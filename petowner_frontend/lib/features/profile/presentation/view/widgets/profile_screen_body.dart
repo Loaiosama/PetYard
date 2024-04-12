@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
@@ -53,6 +52,7 @@ class ProfileScreenBody extends StatelessWidget {
                               (index) => Column(
                                 children: [
                                   ProfileOptionsCard(
+                                    route: routes[index],
                                     cardColor: cardColors[index],
                                     iconColor: iconColors[index],
                                     label: labels[index],
