@@ -27,7 +27,8 @@ class PetYardApp extends StatelessWidget {
         return MaterialApp.router(
           routerConfig: AppRouter.appRouter,
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.light().copyWith(
+          theme: ThemeData(
+            // fontFamily: 'Inter',
             appBarTheme: const AppBarTheme(
               shadowColor: kPrimaryGreen,
               surfaceTintColor: kPrimaryGreen,

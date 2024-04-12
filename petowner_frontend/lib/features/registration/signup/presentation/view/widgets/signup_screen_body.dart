@@ -100,6 +100,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                 // const ThirdSection(),
                 PetYardTextButton(
                   onPressed: () {
+                    print('hello');
                     if (formKey.currentState!.validate()) {
                       signup();
                     }
@@ -132,7 +133,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
     } catch (error) {
       // Handle sign-in error
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign-in failed. Please try again.')),
+        const SnackBar(content: Text('Sign-up failed. Please try again.')),
       );
     }
   }
