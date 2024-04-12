@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -12,7 +14,9 @@ class PetCarerCardWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          GoRouter.of(context).push(Routes.kProviderProfile);
+        },
         splashColor: kPrimaryGreen.withOpacity(0.3),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
