@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
+import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
 import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_type.dart';
@@ -62,10 +63,16 @@ abstract class AppRouter {
           child: const ForgotPasswordScreen(),
         ),
       ),
+      // GoRoute(
+      //   path: Routes.kOnBoardingScreen,
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     return const OnBoardingScreen();
+      //   },
+      // ),
       GoRoute(
         path: Routes.kOnBoardingScreen,
         builder: (BuildContext context, GoRouterState state) {
-          return const OnBoardingScreen();
+          return const OnBoardingScreen2();
         },
       ),
       GoRoute(
