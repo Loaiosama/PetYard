@@ -63,6 +63,12 @@ class Styles {
     color: Colors.black,
   );
 
+  static TextStyle styles14w600 = TextStyle(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+
   static TextStyle styles14NormalBlack = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.normal,

@@ -29,7 +29,7 @@ class DiscoverServiceWidget extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.only(left: 10.0.w,right: 10.0.w),
+                padding: EdgeInsets.only(left: 10.0.w, right: 10.0.w),
                 child: Column(
                   children: [
                     CircleAvatar(
@@ -40,10 +40,22 @@ class DiscoverServiceWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
+                    // Container(
+                    //   height: 50.h,
+                    //   width: 50.w,
+                    //   decoration: BoxDecoration(
+                    //     shape: BoxShape.circle,
+                    //     color: const Color.fromRGBO(244, 248, 255, 1),
+                    //   ),
+                    //   child: SvgPicture.asset(
+                    //     homeServicesMap[index]['image'],
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
                     Text(
                       homeServicesMap[index]['title'],
-                      style: Styles.styles12RegularOpacityBlack
-                          .copyWith(color: Colors.black,fontWeight: FontsHelper.regular),
+                      style: Styles.styles12RegularOpacityBlack.copyWith(
+                          color: Colors.black, fontWeight: FontsHelper.regular),
                     ),
                   ],
                 ),

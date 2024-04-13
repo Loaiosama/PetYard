@@ -4,7 +4,7 @@ List<Map<String, dynamic>> homeServicesMap = [
     'title': 'Pet Sitting',
   },
   {
-    'image': 'assets/svgs/test (2).svg',
+    'image': 'assets/svgs/home_walking.svg',
     'title': 'Pet Walking',
   },
   {
