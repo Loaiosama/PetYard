@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const MessageController = require('../Controllers/Message');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
-const  authMiddleware=require('../Controllers/AuthMiddle');
-const PetProfileController = require('../Controllers/PetProfile');
+const  authMiddleware=require('../Controllers/Authentication/AuthMiddle');
+const PetProfileController = require('../Controllers/Pet_Profile/PetProfileController');
+const OrderController=require('../Controllers/Online_Store/OrderController');
 require('../Controllers/Owner/GoogleAuth');
 require('../Controllers/Owner/Facebook');
 const passport = require('passport');
@@ -43,18 +44,19 @@ router.get('/GetChat/:chat_id',PetOwnerController.GetChat);
 router.post('/SendMessage/:chat_id',MessageController.SendMessage);4
 
 
-router.post('/MakeOrder',authMiddleware,PetOwnerController.MakeOrder);
-router.get('/GetAllOrders',authMiddleware,PetOwnerController.GetAllOrders);
-router.get('/GetOrder/:order_id',authMiddleware,PetOwnerController.GetOrder);
-router.delete('/DeleteOrder/:order_id',authMiddleware,PetOwnerController.DeleteOrder);
+router.post('/MakeOrder',authMiddleware,OrderController.MakeOrder);
+router.get('/GetAllOrders',authMiddleware,OrderController.GetAllOrders);
+router.get('/GetOrder/:order_id',authMiddleware,OrderController.GetOrder);
+router.delete('/DeleteOrder/:order_id',authMiddleware,OrderController.DeleteOrder);
 
-router.get('/SearchByname',authMiddleware,PetOwnerController.SearchByname);
-router.get('/SearchBycategory',authMiddleware,PetOwnerController.SearchBycategory);
-router.get('/SearchBybrand',authMiddleware,PetOwnerController.SearchBybrand);
+router.get('/SearchByname',authMiddleware,OrderController.SearchByname);
+router.get('/SearchBycategory',authMiddleware,OrderController.SearchBycategory);
+router.get('/SearchBybrand',authMiddleware,OrderController.SearchBybrand);
 
 
-router.post('/AddOrderItem/:order_id/:product_id',authMiddleware,PetOwnerController.AddOrderItem);
-
+router.post('/AddOrderItem/:order_id/:product_id',authMiddleware,OrderController.AddOrderItem);
+router.delete('/RemoveOrderItem/:order_id/:product_id/:order_item_id',authMiddleware,OrderController.RemoveOrderItem);
+router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddleware,OrderController.UpdateOrderItem);
 
 // Use express-session middleware
 router.use(session({

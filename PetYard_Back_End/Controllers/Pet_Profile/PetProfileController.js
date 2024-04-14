@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../../db');
 const multer =require('multer');
 
 const sharp = require('sharp');

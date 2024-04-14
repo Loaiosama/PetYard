@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const MessageController = require('../Controllers/Message');
 const ProviderController = require('../Controllers/Provider/ProviderAuth');
-const authMiddleware = require('../Controllers/AuthMiddle');
+const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
+const StoreController=require('../Controllers/Online_Store/StoreController');
+const ScheduleController=require('../Controllers/Schedule/ScheduleController');
 require('../Controllers/Provider/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');
@@ -14,24 +16,26 @@ router.post('/SignUp',ProviderController.uploadphoto,ProviderController.resizePh
 router.post('/SignIn', ProviderController.signIn);
 router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
 router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
+
+
 router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
 router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
 router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
 
 
-router.post('/CreateSlot/:Service_ID',authMiddleware,ProviderController.CreateSlot);
-router.get('/GetAllSlots',authMiddleware,ProviderController.GetAllSlots);
-router.get('/GetSlot/:Slot_ID',authMiddleware,ProviderController.GetSlot);
-router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ProviderController.DeleteSlot);
-router.put('/UpdateSlot/:Slot_ID',authMiddleware,ProviderController.UpdateSlot);
+router.post('/CreateSlot/:Service_ID',authMiddleware,ScheduleController.CreateSlot);
+router.get('/GetAllSlots',authMiddleware,ScheduleController.GetAllSlots);
+router.get('/GetSlot/:Slot_ID',authMiddleware,ScheduleController.GetSlot);
+router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ScheduleController.DeleteSlot);
+router.put('/UpdateSlot/:Slot_ID',authMiddleware,ScheduleController.UpdateSlot);
 
 
-router.post('/AddProduct',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.Add_Product);
-router.get('/GetAllProduct',authMiddleware,ProviderController.GetAllProduct);
-router.get('/GetProduct/:Product_Id',authMiddleware,ProviderController.GetProduct);
-router.put('/UpdateProduct/:Product_Id',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.UpdateProduct);
-router.delete('/RemoveProduct/:Product_Id',authMiddleware,ProviderController.RemoveProduct);
+router.post('/AddProduct',authMiddleware,StoreController.uploadphoto,StoreController.resizePhotoProduct,StoreController.Add_Product);
+router.get('/GetAllProduct',authMiddleware,StoreController.GetAllProduct);
+router.get('/GetProduct/:Product_Id',authMiddleware,StoreController.GetProduct);
+router.put('/UpdateProduct/:Product_Id',authMiddleware,StoreController.uploadphoto,StoreController.resizePhotoProduct,StoreController.UpdateProduct);
+router.delete('/RemoveProduct/:Product_Id',authMiddleware,StoreController.RemoveProduct);
 
 
 
