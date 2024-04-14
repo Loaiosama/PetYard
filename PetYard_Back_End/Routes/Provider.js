@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const MessageController = require('../Controllers/Message');
 const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/AuthMiddle');
 require('../Controllers/Provider/GoogleAuth');
@@ -32,6 +33,9 @@ router.get('/GetProduct/:Product_Id',authMiddleware,ProviderController.GetProduc
 router.put('/UpdateProduct/:Product_Id',authMiddleware,ProviderController.uploadphoto,ProviderController.resizePhotoProduct,ProviderController.UpdateProduct);
 router.delete('/RemoveProduct/:Product_Id',authMiddleware,ProviderController.RemoveProduct);
 
+
+
+router.post('/SendMessage/:chat_id',MessageController.SendMessage);
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
 

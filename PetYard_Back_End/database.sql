@@ -23,8 +23,7 @@ CREATE TABLE Petowner (
 
 CREATE TABLE ServiceProvider (
     Provider_Id SERIAL PRIMARY KEY,
-    First_name VARCHAR(225),
-    Last_name VARCHAR(225),
+    UserName VARCHAR(225) UNIQUE, 
     Password VARCHAR(225),
     Phone VARCHAR(225) UNIQUE, -- Making Phone unique
     Email VARCHAR(225) UNIQUE, -- Making Email unique
@@ -98,8 +97,22 @@ CREATE TABLE Comment (
 
 
 
+CREATE TABLE Chat (
+   
+    Chat_ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Owner_ID INT,
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
 
 
+CREATE TABLE Messages (
+    Sender_id SERIAL PRIMARY KEY,
+    Chat_Id INT,
+    text VARCHAR(5000),
+    FOREIGN KEY (Chat_Id) REFERENCES Chat(Chat_ID)
+);
 
 
 /*
@@ -128,11 +141,10 @@ CREATE TABLE Products (
 
 CREATE TABLE Orders (
     order_id SERIAL PRIMARY KEY,
-    user_id INT,
-    total_amount DOUBLE PRECISION NOT NULL,
+    total_amount DOUBLE PRECISION ,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'Pending',
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    Owner_ID INT,
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id)
 );
 
 CREATE TABLE OrderItems (

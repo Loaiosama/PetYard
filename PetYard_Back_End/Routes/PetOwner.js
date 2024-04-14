@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const MessageController = require('../Controllers/Message');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/AuthMiddle');
 const PetProfileController = require('../Controllers/PetProfile');
@@ -36,7 +36,25 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
-router.post('/authenticate',authMiddleware,PetOwnerController.startChat);
+router.post('/CreateChat/:name_provider',authMiddleware,PetOwnerController.CreateChat);
+router.get('/GetChat/:chat_id',PetOwnerController.GetChat);
+
+
+router.post('/SendMessage/:chat_id',MessageController.SendMessage);4
+
+
+router.post('/MakeOrder',authMiddleware,PetOwnerController.MakeOrder);
+router.get('/GetAllOrders',authMiddleware,PetOwnerController.GetAllOrders);
+router.get('/GetOrder/:order_id',authMiddleware,PetOwnerController.GetOrder);
+router.delete('/DeleteOrder/:order_id',authMiddleware,PetOwnerController.DeleteOrder);
+
+router.get('/SearchByname',authMiddleware,PetOwnerController.SearchByname);
+router.get('/SearchBycategory',authMiddleware,PetOwnerController.SearchBycategory);
+router.get('/SearchBybrand',authMiddleware,PetOwnerController.SearchBybrand);
+
+
+router.post('/AddOrderItem/:order_id/:product_id',authMiddleware,PetOwnerController.AddOrderItem);
+
 
 // Use express-session middleware
 router.use(session({

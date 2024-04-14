@@ -45,12 +45,12 @@ const resizePhotoProduct=(req,res,next)=>{
 
 
 const signUp = async (req, res) => {
-    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
+    const { UserName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
     const Image=req.file.filename;
     
     try {
 
-        if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio)
+        if(!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image)
         {
             return res.status(400).json({
                 status: "Fail",
@@ -60,12 +60,18 @@ const signUp = async (req, res) => {
 
 
         const client = await pool.connect();
+        const UserNameExists = 'Select * FROM ServiceProvider WHERE UserName = $1';
         const emailExists = 'Select * FROM ServiceProvider WHERE Email = $1';
         const phoneExists = 'Select * FROM ServiceProvider WHERE Phone = $1';
+        const resultUserNameExists = await client.query(UserNameExists, [UserName]);
         const resultEmail = await client.query(emailExists, [email]);
         const resultPhone = await client.query(phoneExists, [phoneNumber]);
 
-        if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
+        if (resultUserNameExists.rows.length === 1 ) {
+            console.log("User already exists");
+            res.status(400).json({ message: "User already exists, try another  User_Name." })
+        }
+        else if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another Email and Phone number." })
         }
@@ -85,8 +91,8 @@ const signUp = async (req, res) => {
         {
 
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
-            const insertQuery = 'Insert INTO ServiceProvider (First_name, Last_name, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7,$8) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Bio,Image]);  
+            const insertQuery = 'Insert INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
+            const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth,Bio,Image]);  
             const {validationCode} = Model.CreateValidationCode();
 
             const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
@@ -111,25 +117,25 @@ const signUp = async (req, res) => {
 }
 const signIn = async (req, res) => {
 
-    const { email, password } = req.body;
+    const { UserName, password } = req.body;
 
     try {
         // Check if both email and password are provided
-        if (!email || !password) {
+        if (!UserName || !password) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Please provide email and password"
+                message: "Please provide UserName and password"
             });
         }
 
         // Query the database for the user with the provided email and password
-        const result = await pool.query('SELECT * FROM ServiceProvider WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM ServiceProvider WHERE UserName = $1', [UserName]);
        
         // If user not found
         if (result.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
-                message: "Incorrect email or password"
+                message: "Incorrect UserName or password"
             });
         }
 
@@ -201,13 +207,13 @@ const deleteAccount = async (req, res) => {
 const updateInfo = async (req, res) => {
 
     const provider_id = req.ID;
-    const {firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    const {UserName, la, pass, email, phoneNumber,dateOfBirth } = req.body;
     const Image=req.file.filename;
 
     try {
 
 
-        if(!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth )
+        if(!UserName|| !pass || !email || !phoneNumber || !dateOfBirth )
         {
             return res.status(400).json({
                 status: "Fail",
@@ -225,8 +231,8 @@ const updateInfo = async (req, res) => {
             });
         }
 
-        const updateQuery = 'UPDATE ServiceProvider SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 , Image=$7 WHERE Provider_Id = $8';
-        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth,Image,provider_id]);
+        const updateQuery = 'UPDATE ServiceProvider SET UserName =$1,  Password = $2, Email = $3, Phone = $4, Date_of_birth = $5 , Image=$6 WHERE Provider_Id = $7';
+        await pool.query(updateQuery, [UserName, pass, email, phoneNumber, dateOfBirth,Image,provider_id]);
 
         res.status(200).json({
             status: "Success",
