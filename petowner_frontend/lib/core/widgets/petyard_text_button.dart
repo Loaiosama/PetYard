@@ -15,11 +15,13 @@ class PetYardTextButton extends StatelessWidget {
     this.style,
     this.text = 'Sign up!',
     required this.onPressed,
+    this.borderColor = Colors.transparent,
   });
   final double width;
   final double height;
   final double radius;
   final Color color;
+  final Color? borderColor;
   final TextStyle? style;
   final String text;
   final void Function() onPressed;
@@ -32,6 +34,7 @@ class PetYardTextButton extends StatelessWidget {
         backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
+          side: BorderSide(color: borderColor!),
         ),
         minimumSize: Size(width, height),
       ),
