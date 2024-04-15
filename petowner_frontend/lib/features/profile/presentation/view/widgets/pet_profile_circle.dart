@@ -25,27 +25,32 @@ class PetProfileCircle extends StatelessWidget {
               shape: BoxShape.circle,
               image: !isAddNew
                   ? const DecorationImage(
-                image: AssetImage('assets/images/profile_dog.jpg'),
-                fit: BoxFit.cover,
-              )
+                      image: AssetImage('assets/images/profile_dog.jpg'),
+                      fit: BoxFit.cover,
+                    )
                   : null,
-              border: !isAddNew ? Border.all(
-                color: kPrimaryGreen,
-                width: 1.0.w,
-              ) : null,
+              border: !isAddNew
+                  ? Border.all(
+                      color: kPrimaryGreen,
+                      width: 1.0.w,
+                    )
+                  : null,
             ),
             child: isAddNew
                 ? Center(
-              child: IconButton(
-                onPressed: () {
-                  GoRouter.of(context).push(Routes.kChooseType);
-                },
-                icon: Icon(
-                  FontAwesomeIcons.circlePlus,
-                  color: kPrimaryGreen.withOpacity(0.6),
-                  size: 30.sp,
-                ),),
-            )
+                    child: IconButton(
+                        onPressed: () {
+                          GoRouter.of(context).push(Routes.kChooseType);
+                        },
+                        icon: Tooltip(
+                          message: "Add new Pet",
+                          child: Icon(
+                            FontAwesomeIcons.circlePlus,
+                            color: kPrimaryGreen.withOpacity(0.6),
+                            size: 30.sp,
+                          ),
+                        )),
+                  )
                 : null,
           ),
           heightSizedBox(3),

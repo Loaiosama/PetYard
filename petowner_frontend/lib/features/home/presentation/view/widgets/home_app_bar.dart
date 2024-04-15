@@ -33,10 +33,13 @@ class HomeAppBar extends StatelessWidget {
           child: Center(
             child: IconButton(
               onPressed: () {},
-              icon: Icon(
-                Icons.notifications_none_outlined,
-                color: Colors.black,
-                size: 22.sp,
+              icon: Tooltip(
+                message: 'Notifications',
+                child: Icon(
+                  Icons.notifications_none_outlined,
+                  color: Colors.black,
+                  size: 22.sp,
+                ),
               ),
             ),
           ),

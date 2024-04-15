@@ -26,10 +26,13 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(
-              FluentIcons.settings_32_regular,
-              color: Colors.white,
-              size: 24.sp,
+            icon: Tooltip(
+              message: 'Settings',
+              child: Icon(
+                FluentIcons.settings_32_regular,
+                color: Colors.white,
+                size: 24.sp,
+              ),
             ),
           ),
           widthSizedBox(4),

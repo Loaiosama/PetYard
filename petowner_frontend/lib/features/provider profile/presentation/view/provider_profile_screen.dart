@@ -43,10 +43,13 @@ class ProviderProfileScreen extends StatelessWidget {
             child: Center(
               child: IconButton(
                 onPressed: () {},
-                icon: Icon(
-                  Icons.more_horiz,
-                  color: Colors.black,
-                  size: 22.sp,
+                icon: Tooltip(
+                  message: 'More',
+                  child: Icon(
+                    Icons.more_horiz,
+                    color: Colors.black,
+                    size: 22.sp,
+                  ),
                 ),
               ),
             ),

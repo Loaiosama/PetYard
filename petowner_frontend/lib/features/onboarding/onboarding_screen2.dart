@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -41,6 +43,22 @@ class OnBoardingScreen2State extends State<OnBoardingScreen2> {
     'assets/images/kitty_onboarding.png',
     'assets/images/dog_onboarding.png',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Start timer to go to next page after 5 seconds
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (currentPageIndex < 2) {
+        pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

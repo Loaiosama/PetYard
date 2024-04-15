@@ -61,8 +61,9 @@ class ProviderProfileBody extends StatelessWidget {
             child: PetYardTextButton(
               onPressed: () {},
               text: 'Make An Appointment',
-              style: Styles.styles16BoldWhite
-                  .copyWith(fontWeight: FontWeight.w600),
+              style: Styles.styles14w600.copyWith(
+                color: Colors.white,
+              ),
               // color: kBlue,
               height: 54.0.h,
             ),
@@ -335,7 +336,7 @@ class AboutTabColumn extends StatelessWidget {
             ],
           ),
           /* 
-          Should we add more info her and database like 
+          Should we add more info here and database like 
           Distance willing to travel,
           Accepted Pet Types,
           Accepted Pet size,
@@ -392,10 +393,13 @@ class ProviderProfileCard extends StatelessWidget {
           padding: EdgeInsets.only(right: 4.0.w),
           child: IconButton(
             onPressed: () {},
-            icon: Icon(
-              FluentIcons.chat_20_regular,
-              color: kPrimaryGreen,
-              size: 28.0.sp,
+            icon: Tooltip(
+              message: 'Send a message to Olivia.',
+              child: Icon(
+                FluentIcons.chat_20_regular,
+                color: kPrimaryGreen,
+                size: 28.0.sp,
+              ),
             ),
           ),
         ),
