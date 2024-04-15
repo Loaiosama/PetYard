@@ -41,11 +41,9 @@ const resizePhoto=(req,res,next)=>{
     next();
 }
 
-
 const signUp = async (req, res) => {
     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
-    console.log(phoneNumber);
     try {
 
         if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
@@ -369,8 +367,96 @@ const updateInfo = async (req, res) => {
 };
 
 
+const CreateChat = async (req, res) => {
+    const Name_Provider = req.params.name_provider;
+    const Owner_Id = req.ID; // Assuming req.ID is correctly defined
 
-const startChat =  async (req, res) => {
+    try {
+        // Check if Owner_Id and Name_Provider are provided
+        if (!Owner_Id || !Name_Provider) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+
+
+
+
+        // Query to check if Petowner exists
+        const Query1 = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const res1 = await pool.query(Query1, [Owner_Id]);
+
+        if (res1.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Petowner doesn't exist"
+            });
+        }
+
+        // Query to check if ServiceProvider exists
+        const Query2 = 'SELECT * FROM ServiceProvider WHERE UserName = $1';
+        const res2 = await pool.query(Query2, [Name_Provider]);
+
+        if (res2.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "ServiceProvider doesn't exist"
+            });
+        }
+    
+        const provider_id=res2.rows[0].provider_id;
+        // Insert new Chat record with Provider_ID and Owner_Id
+        const client = await pool.connect();
+        const startChat = 'INSERT INTO Chat (Provider_ID, Owner_Id) VALUES ($1, $2) RETURNING *';
+        const NewChat = await client.query(startChat, [provider_id, Owner_Id]);
+        client.release();
+
+        // Respond with success message
+        res.status(200).json({
+            status: "Success",
+            message: "Chat created successfully"
+        });
+
+    } catch (error) {
+        console.error("Error creating chat:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const GetChat =async (req,res)=>
+{
+    const chat_id=req.params.chat_id;
+    try {
+
+        if (!chat_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+
+        const GetChat=await pool.query('SELECT * From Chat Where Chat_ID=$1',[chat_id]);
+
+
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :GetChat.rows
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+
+
+/*const startChat =  async (req, res) => {
      const owner_id = req.ID;
     try {
         const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
@@ -396,7 +482,9 @@ const startChat =  async (req, res) => {
   }
   
 };
-  
+  */
+
+
   
 
 module.exports = {
@@ -409,5 +497,7 @@ module.exports = {
     resizePhoto,
     validationCode,
     updateInfo,
-    startChat
+    CreateChat,
+    GetChat,
+      
 }
