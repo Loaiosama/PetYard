@@ -97,14 +97,19 @@ CREATE TABLE Comment (
 
 
 
+
+
+
+
+
+-- Create the Chat table with an array of integers for the Members column
 CREATE TABLE Chat (
-   
     Chat_ID SERIAL PRIMARY KEY,
-    Provider_ID INT,
-    Owner_ID INT,
-    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
-    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+    Members INTEGER[], -- Array of integers to store member IDs
+    Owner_ID INTEGER REFERENCES Petowner(Owner_Id),
+    Provider_ID INTEGER REFERENCES ServiceProvider(Provider_Id)
 );
+
 
 
 CREATE TABLE Messages (
