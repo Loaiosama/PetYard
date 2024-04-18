@@ -348,8 +348,12 @@ const updateInfo = async (req, res) => {
             });
         }
 
+
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+
+
         const updateQuery = 'UPDATE Petowner SET First_name = $1, Last_name = $2, Password = $3, Email = $4, Phone = $5, Date_of_birth = $6 ,Image=$7 WHERE Owner_Id = $8';
-        await pool.query(updateQuery, [firstName, lastName, pass, email, phoneNumber, dateOfBirth,Image ,owner_id]);
+        await pool.query(updateQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image ,owner_id]);
 
         res.status(200).json({
             status: "Success",
