@@ -157,8 +157,11 @@ CREATE TABLE OrderItems (
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
+CREATE TYPE Pay AS ENUM ('Cash','Online');
+
 CREATE TABLE Shipping (
     shipping_id SERIAL PRIMARY KEY,
+    Type Pay,
     order_id INT,
     Location POINT,
     city VARCHAR(100) NOT NULL,
