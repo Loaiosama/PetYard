@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MessageController = require('../Controllers/Message');
+const ChatController=require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/Authentication/AuthMiddle');
 const PetProfileController = require('../Controllers/Pet_Profile/PetProfileController');
@@ -11,37 +12,26 @@ const passport = require('passport');
 const session = require('express-session');
 
 router.post('/SignUp',PetOwnerController.uploadphoto,PetOwnerController.resizePhoto,PetOwnerController.signUp);
-
 router.post('/SignIn', PetOwnerController.signIn);
-
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
 router.post('/AddPet',authMiddleware,PetProfileController.uploadpetphoto,PetProfileController.resizePhoto, PetProfileController.AddPet);
-
 router.get('/getAllPet',authMiddleware, PetProfileController.GetAllPet);
-
 router.get('/getPet/:Pet_Id',authMiddleware, PetProfileController.GetPet);
-
 router.delete('/RemoveAllPets',authMiddleware, PetProfileController.RemoveAllPet);
-
 router.delete('/RemovePet/:Pet_Id',authMiddleware, PetProfileController.RemovePet);
-
 router.put('/UpdatePet/:Pet_Id',authMiddleware, PetProfileController.updatePetProfile);
 
 router.post('/Forgotpassword', PetOwnerController.forgotPassword);
-
 router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
-
 router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
-
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
-router.post('/CreateChat/:name_provider',authMiddleware,PetOwnerController.CreateChat);
-router.get('/GetChat/:chat_id',PetOwnerController.GetChat);
+router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
+router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
+router.get('/GetChat/:First_id/:Second_id',ChatController.FindChat);
 
-
-router.post('/SendMessage/:chat_id',MessageController.SendMessage);4
 
 
 router.post('/MakeOrder',authMiddleware,OrderController.MakeOrder);
