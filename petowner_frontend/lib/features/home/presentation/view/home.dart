@@ -38,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         backgroundColor: Colors.white,
         elevation: 2.0,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        // height: 80.h,
         // or transparent
         // indicatorColor: kPrimaryGreen.withOpacity(0.4),
         indicatorColor: Colors.transparent,
