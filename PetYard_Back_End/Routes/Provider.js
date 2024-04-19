@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MessageController = require('../Controllers/Message');
+const ChatController=require('../Controllers/Chat/ChatController');
 const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
 const StoreController=require('../Controllers/Online_Store/StoreController');
@@ -39,7 +40,11 @@ router.delete('/RemoveProduct/:Product_Id',authMiddleware,StoreController.Remove
 
 
 
-router.post('/SendMessage/:chat_id',MessageController.SendMessage);
+
+router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
+router.get('/GetChat/:First_id/:Second_id',ChatController.FindChat);
+
+//router.post('/SendMessage/:chat_id',MessageController.SendMessage);
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
 

@@ -199,7 +199,7 @@ const deleteAccount = async (req, res) => {
 const updateInfo = async (req, res) => {
 
     const provider_id = req.ID;
-    const {UserName, la, pass, email, phoneNumber,dateOfBirth } = req.body;
+    const {UserName, pass, email, phoneNumber,dateOfBirth } = req.body;
     const Image=req.file.filename;
 
     try {
@@ -223,8 +223,11 @@ const updateInfo = async (req, res) => {
             });
         }
 
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+
+
         const updateQuery = 'UPDATE ServiceProvider SET UserName =$1,  Password = $2, Email = $3, Phone = $4, Date_of_birth = $5 , Image=$6 WHERE Provider_Id = $7';
-        await pool.query(updateQuery, [UserName, pass, email, phoneNumber, dateOfBirth,Image,provider_id]);
+        await pool.query(updateQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth,Image,provider_id]);
 
         res.status(200).json({
             status: "Success",
