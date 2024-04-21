@@ -69,13 +69,15 @@ CREATE TABLE ServiceSlots (
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
+CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected');
 CREATE TABLE Reservation (
     Reserve_ID SERIAL PRIMARY KEY,
     Slot_ID INT,
     Pet_ID INT,
     Owner_ID INT,
-    Date DATE,
-    Status BOOLEAN,
+    Start_time DATE,
+    End_time DATE,
+    Type Status,
     FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
@@ -94,11 +96,6 @@ CREATE TABLE Comment (
     Comment VARCHAR(255),
     FOREIGN KEY (Rating_ID) REFERENCES Review(Rating_ID)
 );
-
-
-
-
-
 
 
 
@@ -177,4 +174,3 @@ CREATE TABLE Shipping (
     Phone VARCHAR(225) UNIQUE,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
-
