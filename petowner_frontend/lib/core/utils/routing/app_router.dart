@@ -7,6 +7,7 @@ import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
 // import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_type.dart';
+import 'package:petowner_frontend/features/profile/presentation/view/location_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
@@ -124,6 +125,14 @@ abstract class AppRouter {
           context: context,
           state: state,
           child: const PetInformationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.kProfileLocation,
+        pageBuilder: (context, state) => transitionGoRoute(
+          context: context,
+          state: state,
+          child: const ProfileLocationScreen(),
         ),
       ),
     ],

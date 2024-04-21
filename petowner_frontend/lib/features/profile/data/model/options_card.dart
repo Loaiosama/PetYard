@@ -25,5 +25,5 @@ List iconColors = [
 List routes = [
   Routes.kPersonalInformation,
   Routes.kPersonalInformation,
-  Routes.kPersonalInformation,
+  Routes.kProfileLocation,
 ];
