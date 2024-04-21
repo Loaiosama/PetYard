@@ -32,9 +32,6 @@ router.delete('/DeleteSlot/:Slot_ID',authMiddleware,ScheduleController.DeleteSlo
 router.put('/UpdateSlot/:Slot_ID',authMiddleware,ScheduleController.UpdateSlot);
 
 
-router.get('/GetProvidersByType/:type', ProviderController.getProvidersByType);
-
-
 router.post('/AddProduct',authMiddleware,StoreController.uploadphoto,StoreController.resizePhotoProduct,StoreController.Add_Product);
 router.get('/GetAllProduct',authMiddleware,StoreController.GetAllProduct);
 router.get('/GetProduct/:Product_Id',authMiddleware,StoreController.GetProduct);
