@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const ReservationController = require('../Controllers/Reservation/ReservationController');
 const MessageController = require('../Controllers/Messages/MessageController');
 const ChatController=require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
@@ -52,6 +53,7 @@ router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddlewar
 
 
 
+router.get('/getproviders/:Type',authMiddleware,ReservationController.getproviders);
 
 
 
