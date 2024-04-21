@@ -3,9 +3,52 @@ const pool = require('../../db');
 
 
 
-/*
-getproviderInfo
-reserveBoardingSlot*/
+const getProviderInfo = async (req, res) => {
+    const Provider_id = req.params.Provider_id;
+    const owner_id = req.ID;
+
+    try {
+        if (!Provider_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide the provider ID"
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [owner_id]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist"
+            });
+        }
+
+        const query = 'SELECT provider_id, username, phone, email, bio, date_of_birth, location, image FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(query, [Provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider not found"
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        console.error("Error fetching provider info:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
 
 const GetSlotProvider=async(req,res)=>{
 
@@ -62,6 +105,7 @@ const GetSlotProvider=async(req,res)=>{
 
 
 module.exports = {  
-   GetSlotProvider
+   GetSlotProvider,
+   getProviderInfo,
     
 };
