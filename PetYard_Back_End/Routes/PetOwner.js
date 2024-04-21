@@ -58,7 +58,7 @@ router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddlewar
 
 
 router.get('/getproviders/:Type',authMiddleware,ReservationController.getproviders);
-
+router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,ReservationController.GetSlotProvider);
 
 
 
