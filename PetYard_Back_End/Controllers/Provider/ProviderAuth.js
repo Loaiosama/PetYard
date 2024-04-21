@@ -422,6 +422,51 @@ const getService=async(req,res)=>{
 }
 
 
+const getProvidersByType = async(req, res)=>{
+
+    const type = req.params;
+    try {
+        if(!type)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+        else{
+
+            const client = await pool.connect();
+            const providers = 'Select * FROM ServiceProvider WHERE Provider_Id IN (SELECT * FROM Services WHERE ServiceType = $1)';
+            const result = await client.query(providers, [type]);
+                
+            if (result.rows.length === 0) {
+                return res.status(401).json({
+                    status: "Fail",
+                    message: "No providers of given type."
+                });
+            }
+
+            res.status(200).json({
+                status: "Success",
+                message: "Providers found",
+                data: result.rows
+            });
+
+        }
+    }catch (error) {
+        console.error("Error finding providers:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+
+
+        
+    } 
+
+}
+
+
 
 
 
@@ -478,6 +523,7 @@ module.exports = {
     startChat,
     getallservices,
     getService,
+    getProvidersByType
     
   
     
