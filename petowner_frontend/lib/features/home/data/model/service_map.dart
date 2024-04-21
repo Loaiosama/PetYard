@@ -8,15 +8,15 @@ List<Map<String, dynamic>> homeServicesMap = [
     'title': 'Pet Walking',
   },
   {
-    'image': 'assets/svgs/test (2).svg',
+    'image': 'assets/svgs/pet_sitting_home.svg',
     'title': 'Pet Grooming',
   },
   {
-    'image': 'assets/svgs/test (2).svg',
+    'image': 'assets/svgs/home_boarding.svg',
     'title': 'Pet Boarding',
   },
   {
-    'image': 'assets/svgs/test (2).svg',
+    'image': 'assets/svgs/home_healthcare.svg',
     'title': 'Health Care',
   },
 ];

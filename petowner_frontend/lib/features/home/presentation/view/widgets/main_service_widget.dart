@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/data/model/service_map.dart';
@@ -32,12 +33,16 @@ class DiscoverServiceWidget extends StatelessWidget {
                 padding: EdgeInsets.only(left: 10.0.w, right: 10.0.w),
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      backgroundColor: const Color.fromRGBO(244, 248, 255, 1),
-                      radius: 30.r,
-                      child: SvgPicture.asset(
-                        homeServicesMap[index]['image'],
-                        fit: BoxFit.cover,
+                    InkWell(
+                      onTap: () {},
+                      splashColor: kPrimaryGreen.withOpacity(0.4),
+                      child: CircleAvatar(
+                        backgroundColor: const Color.fromRGBO(244, 248, 255, 1),
+                        radius: 30.r,
+                        child: SvgPicture.asset(
+                          homeServicesMap[index]['image'],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     // Container(
