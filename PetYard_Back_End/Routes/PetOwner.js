@@ -29,7 +29,7 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
-router.get('/GetProvidersByType/:type',authMiddleware, PetOwnerController.getProvidersByType);
+
 
 router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
 router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
@@ -57,7 +57,7 @@ router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddlewar
 
 
 
-//router.get('/Getproviders/:Type',authMiddleware,ReservationController.getproviders);
+router.get('/GetProvidersByType/:type',authMiddleware, ReservationController.getProvidersByType);
 router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,ReservationController.GetSlotProvider);
 router.get('/GetProviderInfo/:Provider_id',authMiddleware,ReservationController.getProviderInfo);
 
