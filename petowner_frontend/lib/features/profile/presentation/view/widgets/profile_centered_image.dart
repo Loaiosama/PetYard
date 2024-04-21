@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 
 class ProfileScreenCenteredImage extends StatelessWidget {
   const ProfileScreenCenteredImage({super.key});
@@ -36,7 +38,11 @@ class ProfileScreenCenteredImage extends StatelessWidget {
             color: const Color.fromRGBO(248, 248, 248, 1),
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              GoRouter.of(context).push(
+                Routes.kPersonalInformation,
+              );
+            },
             icon: Center(
               child: Icon(
                 FontAwesomeIcons.penToSquare,

@@ -4,7 +4,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
-import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
+// import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_type.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';

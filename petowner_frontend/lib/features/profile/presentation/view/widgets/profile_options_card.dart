@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -24,18 +26,19 @@ class ProfileOptionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 1.0.h),
-      child: InkWell(
-        onTap: () {
-          GoRouter.of(context).push(route);
-        },
-        child: Column(
-          children: [
-            Material(
-              color: Colors.white,
-              // elevation: 2,
-              // borderRadius: BorderRadius.circular(15),
-              child: Padding(
-                padding: EdgeInsets.only(top: 10.h, bottom: 6.h, left: 16.w),
+      child: Column(
+        children: [
+          Material(
+            color: Colors.white,
+            // elevation: 2,
+            // borderRadius: BorderRadius.circular(15),
+            child: Padding(
+              padding: EdgeInsets.only(top: 10.h, bottom: 6.h, left: 16.w),
+              child: InkWell(
+                onTap: () {
+                  GoRouter.of(context).push(route);
+                },
+                splashColor: kPrimaryGreen.withOpacity(0.3),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -54,33 +57,33 @@ class ProfileOptionsCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // widthSizedBox(10),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        label,
-                        style: Styles.styles16w600.copyWith(
-                            fontSize: 14.sp,
-                            fontWeight: FontsHelper.regular,
-                            color: Colors.black.withOpacity(0.7)),
-                      ),
+                    widthSizedBox(14),
+                    Text(
+                      label,
+                      style: Styles.styles16w600.copyWith(
+                          fontSize: 14.sp,
+                          fontWeight: FontsHelper.regular,
+                          color: Colors.black.withOpacity(0.7)),
                     ),
                     const Spacer(),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black.withOpacity(0.4),
-                        size: 16.sp,
+                    AbsorbPointer(
+                      absorbing: true,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.black.withOpacity(0.4),
+                          size: 16.sp,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const Divider(),
-          ],
-        ),
+          ),
+          const Divider(),
+        ],
       ),
     );
   }

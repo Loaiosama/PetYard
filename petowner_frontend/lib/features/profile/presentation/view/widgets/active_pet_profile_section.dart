@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -32,22 +34,28 @@ class ActivePetProfileSection extends StatelessWidget {
           ),
         ),
         heightSizedBox(8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: List.generate(
-                2,
-                    (index) => InkWell(
-                  onTap: () {},
-                  child: const PetProfileCircle(),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: List.generate(
+                  2,
+                  (index) => InkWell(
+                    onTap: () {
+                      GoRouter.of(context).push(Routes.kPetInformation);
+                    },
+                    child: const PetProfileCircle(),
+                  ),
                 ),
               ),
-            ),
-            const PetProfileCircle(
-              isAddNew: true,
-            ),
-          ],
+              const PetProfileCircle(
+                isAddNew: true,
+              ),
+            ],
+          ),
         ),
         heightSizedBox(16),
         // const Divider(),

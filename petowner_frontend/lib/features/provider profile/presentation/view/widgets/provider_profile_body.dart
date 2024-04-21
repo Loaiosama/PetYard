@@ -48,7 +48,7 @@ class ProviderProfileBody extends StatelessWidget {
                       children: [
                         AboutTabColumn(),
                         LocationTabColumn(),
-                        ReviewsTabColumn()
+                        ReviewsTabColumn(),
                       ],
                     ),
                   ),
@@ -58,14 +58,47 @@ class ProviderProfileBody extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.only(right: 12.0.w, top: 20.0.h),
-            child: PetYardTextButton(
-              onPressed: () {},
-              text: 'Make An Appointment',
-              style: Styles.styles14w600.copyWith(
-                color: Colors.white,
-              ),
-              // color: kBlue,
-              height: 54.0.h,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 10.0.w),
+                    child: PetYardTextButton(
+                      onPressed: () {},
+                      text: 'Make An Appointment',
+                      style: Styles.styles14w600.copyWith(
+                        color: Colors.white,
+                      ),
+                      // color: kBlue,
+                      height: 54.0.h,
+                      // width: MediaQuery.of(context).size.width * 0.73,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: 54.h,
+                    // width: MediaQuery.of(context).size.width * 0.14,
+                    decoration: BoxDecoration(
+                      color: kPrimaryGreen,
+                      borderRadius: BorderRadius.circular(10.0.r),
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Tooltip(
+                        message: 'Send a message to Olivia.',
+                        child: Icon(
+                          FluentIcons.chat_20_regular,
+                          color: Colors.white,
+                          size: 28.0.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -388,21 +421,21 @@ class ProviderProfileCard extends StatelessWidget {
           ],
         ),
         // widthSizedBox(10),
-        const Spacer(),
-        Padding(
-          padding: EdgeInsets.only(right: 4.0.w),
-          child: IconButton(
-            onPressed: () {},
-            icon: Tooltip(
-              message: 'Send a message to Olivia.',
-              child: Icon(
-                FluentIcons.chat_20_regular,
-                color: kPrimaryGreen,
-                size: 28.0.sp,
-              ),
-            ),
-          ),
-        ),
+        // const Spacer(),
+        // Padding(
+        //   padding: EdgeInsets.only(right: 4.0.w),
+        //   child: IconButton(
+        //     onPressed: () {},
+        //     icon: Tooltip(
+        //       message: 'Send a message to Olivia.',
+        //       child: Icon(
+        //         FluentIcons.chat_20_regular,
+        //         color: kPrimaryGreen,
+        //         size: 28.0.sp,
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
