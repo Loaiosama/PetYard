@@ -47,6 +47,7 @@ dependencies:
   meta: ^1.11.0
   percent_indicator: ^4.2.3
   shimmer: ^3.0.0
+  stroke_text: ^0.0.2
 
 dev_dependencies:
 
