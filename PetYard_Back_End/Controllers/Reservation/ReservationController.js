@@ -3,14 +3,19 @@ const pool = require('../../db');
 
 
 
+/*
+getproviderInfo
+reserveBoardingSlot*/
 
-const getproviders=async(req,res)=>{
-    const Type=req.params.Type;
+const GetSlotProvider=async(req,res)=>{
+
     const owner_id = req.ID;
+    const Provider_id=req.params.Provider_id;
+    const Service_id=req.params.Service_id;
+
 
     try {
-
-        if (!Type || !owner_id) {
+        if (!Provider_id || !Service_id || !owner_id) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
@@ -28,58 +33,35 @@ const getproviders=async(req,res)=>{
         }
 
 
-            const Providers = 'SELECT * FROM Services WHERE Type = $1';
-            const resquery = await pool.query(Providers, [Type]);
+        const Slot = 'SELECT * FROM ServiceSlots WHERE Provider_ID = $1 And Service_ID=$2';
+        const res1 = await pool.query(Slot, [Provider_id,Service_id]);
 
-            res.status(200).json({
-                status :"Done",
-                message : "One Data Is Here",
-                data :resquery.rows
-            });
+        const slot_id=res1.rows[0].slot_id;
+        const status="Accepted";
 
-        }
-        catch (error) {
-            console.error("Error:", error);
-            res.status(500).json({
-                status: "Fail",
-                message: "Internal server error"
-            });
-        }
-}
+        const Reservation = 'SELECT * FROM Reservation WHERE  Slot_ID=$1 And Type=$2';
+        const res2 = await pool.query(Reservation, [slot_id,status]);
+          
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :res1.rows,
+            data1:res2.rows
+        });
 
-
-
-/*
-getproviderInfo
-reserveBoardingSlot*/
-
-const ReserveSlotProvider=async(req,res)=>{
-
-    const owner_id = req.ID;
-    const Provider_id=req.params.Provider_id;
-    const Service_id=req.params.Service_id;
-
-
-    try {
-        if (!Provider_id || !Service_id || !owner_id) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Please Fill All Information"
-            });
-        } 
-        
-
-
-        
-    } catch (error) {
-        
+    }
+    catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
     }
 
 }
 
 
 module.exports = {  
-   getproviders,
-   ReserveSlotProvider
+   GetSlotProvider
     
 };
