@@ -186,19 +186,12 @@ const ReserveSlot = async(req, res) => {
         const startDate = new Date(Date.parse(Start_time));
         const endDate = new Date(Date.parse(End_time));
   
-<<<<<<< Updated upstream
-        // Calculate number of days between Start_time and End_time inclusively
-        const timeDiff = endDate.getTime() - startDate.getTime();
-        const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-=======
           // Calculate number of days between Start_time and End_time inclusively
           const timeDiff = endDate.getTime() - startDate.getTime();
           const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) ;
 
           
           
->>>>>>> Stashed changes
 
         const Provider=await pool.query('SELECT * FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
         
