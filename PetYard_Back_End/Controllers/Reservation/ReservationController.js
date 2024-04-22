@@ -196,11 +196,96 @@ const ReserveSlot = async(req, res) => {
     }
 }
 
+const GetReservation=async(req,res)=>{
+    const provider_id = req.ID;
+  
+    try {
 
+        if (!provider_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [provider_id]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const Reservation=await pool.query('SELECT * FROM Reservation WHERE Slot_ID IN (SELECT Slot_ID FROM ServiceSlots WHERE Provider_ID = $1)',[provider_id]);
+
+    
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :Reservation.rows
+        });
+
+
+
+        
+    } catch (error) {
+        console.error("Error ", error);
+        res.status(500).json({
+            message: "Internal server error."
+        });
+        
+    }
+}
+
+const UpdateReservation=async(req,res)=>{
+    const reserve_id=req.params.reserve_id;
+    const provider_id = req.ID;
+    const {slot_id,pet_id,owner_id,start_time,end_time,Type}=req.body;
+    try {
+
+
+        if (!provider_id || !reserve_id ) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [provider_id]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const updateQuery = 'UPDATE Reservation SET Slot_ID =$1,  Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5 , Type=$6 WHERE Reserve_ID = $7';
+        await pool.query(updateQuery, [slot_id, pet_id, owner_id, start_time,end_time,Type,reserve_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reservation updated successfully"
+        });
+        
+    } catch (error) {
+
+        console.error("Error ", error);
+        res.status(500).json({
+            message: "Internal server error."
+        });
+        
+    }
+ 
+
+}
 module.exports = {  
    GetSlotProvider,
    getProviderInfo,
    getProvidersByType,
-   ReserveSlot
+   ReserveSlot,
+   GetReservation,
+   UpdateReservation
     
 };

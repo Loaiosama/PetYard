@@ -70,6 +70,7 @@ CREATE TABLE ServiceSlots (
 );
 
 CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected');
+
 CREATE TABLE Reservation (
     Reserve_ID SERIAL PRIMARY KEY,
     Slot_ID INT,
