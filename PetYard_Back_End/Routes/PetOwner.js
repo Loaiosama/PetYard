@@ -12,6 +12,9 @@ require('../Controllers/Owner/Facebook');
 const passport = require('passport');
 const session = require('express-session');
 
+
+
+router.get('/Getinfo', authMiddleware, PetOwnerController.getinfo);
 router.post('/SignUp',PetOwnerController.uploadphoto,PetOwnerController.resizePhoto,PetOwnerController.signUp);
 router.post('/SignIn', PetOwnerController.signIn);
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);

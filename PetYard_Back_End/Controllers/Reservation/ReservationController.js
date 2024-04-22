@@ -1,6 +1,6 @@
 const pool = require('../../db');
-
-
+const sendemail = require("./../../Utils/email");
+let expirationTime = null;
 
 const getProvidersByType = async(req, res)=>{
 
@@ -55,6 +55,9 @@ const getProvidersByType = async(req, res)=>{
     } 
 
 }
+
+
+
 const getProviderInfo = async (req, res) => {
     const Provider_id = req.params.Provider_id;
     const owner_id = req.ID;
@@ -99,7 +102,7 @@ const getProviderInfo = async (req, res) => {
             message: "Internal server error"
         });
     }
-};
+}
 
 
 const GetSlotProvider=async(req,res)=>{
@@ -178,23 +181,32 @@ const ReserveSlot = async(req, res) => {
                     message: "User doesn't exist"
             });
         }
-
-
-         
          
         // Parse dates from ISO 8601 format
         const startDate = new Date(Date.parse(Start_time));
         const endDate = new Date(Date.parse(End_time));
   
+<<<<<<< Updated upstream
         // Calculate number of days between Start_time and End_time inclusively
         const timeDiff = endDate.getTime() - startDate.getTime();
         const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
+=======
+          // Calculate number of days between Start_time and End_time inclusively
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) ;
 
-        const Price_Provider=await pool.query('SELECT Price FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
+          
+          
+>>>>>>> Stashed changes
+
+        const Provider=await pool.query('SELECT * FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
         
+        const Final_cost=numDays*Provider.rows[0].price;
+       
+        const Provider_id=Provider.rows[0].provider_id;
 
-        const Final_cost=numDays*Price_Provider.rows[0].price;
+        
 
 
         const client = await pool.connect();
@@ -203,7 +215,20 @@ const ReserveSlot = async(req, res) => {
 
         client.release();
 
+        const q=await pool.query('SELECT * FROM ServiceProvider WHERE Provider_Id=$1',[Provider_id]);
+        
+        const email= q.rows[0].email;
+                
+        const currentTime = Date.now();
+        expirationTime = currentTime + (6 * 60 * 60 * 1000);
 
+        const message = `Your have new Reservation Request \nOpen The Application To Enjoy💸`;
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Request for Reservation  (valid for 6 hours)',
+            message
+        });
     
 
         res.status(201).json({
@@ -271,7 +296,7 @@ const GetProviderReservations=async(req,res)=>{
 const UpdateReservation=async(req,res)=>{
     const reserve_id=req.params.reserve_id;
     const provider_id = req.ID;
-    const {slot_id,pet_id,owner_id,start_time,end_time,Type}=req.body;
+    let {slot_id,pet_id,owner_id,start_time,end_time,Type}=req.body;
     try {
 
 
@@ -283,6 +308,7 @@ const UpdateReservation=async(req,res)=>{
         }
         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const providerResult = await pool.query(providerQuery, [provider_id]);
+        const name=providerResult.rows[0].username;
 
         if (providerResult.rows.length === 0) {
             return res.status(401).json({
@@ -291,9 +317,50 @@ const UpdateReservation=async(req,res)=>{
             });
         }
 
+      
+       let time=expirationTime;
+      
+        if ( time <= Date.now()) {
+            Type = "Rejected"; // Set type to Rejected if expired
+            
+        }
+            
+
         const updateQuery = 'UPDATE Reservation SET Slot_ID =$1,  Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5 , Type=$6 WHERE Reserve_ID = $7';
         await pool.query(updateQuery, [slot_id, pet_id, owner_id, start_time,end_time,Type,reserve_id]);
 
+
+
+        const q=await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1',[owner_id]);
+        const email= q.rows[0].email;
+      
+        const q1=await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1',[pet_id]);
+        const name_pet=q1.rows[0].name;
+
+      
+         if(Type ==="Accepted")
+         {
+                const message = `Your reservation got accepted ✅\nProvider_Name:${name}\nYour_Pet:${name_pet}\nStart_Time:${start_time}\nEnd_Time:${end_time}`;
+
+                await sendemail.sendemail({
+                    email: email,
+                    subject: 'Your recent reservation status 😄',
+                    message
+                });
+
+            }
+            else if(Type==="Rejected")
+            {
+                const message = `Your reservation got Rejected 😞\nProvider_Name:${name}\nYour_Pet:${name_pet}\nStart_Time:${start_time}\nEnd_Time:${end_time}`;
+                
+                await sendemail.sendemail({
+                    email: email,
+                    subject: 'Your recent reservation status 😄',
+                    message
+                });
+
+            }
+       
         res.status(200).json({
             status: "Success",
             message: "Reservation updated successfully"
