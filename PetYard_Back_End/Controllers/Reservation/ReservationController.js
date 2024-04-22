@@ -155,6 +155,8 @@ const GetSlotProvider=async(req,res)=>{
 
 }
 
+
+
 const ReserveSlot = async(req, res) => {
     const ownerId = req.ID;
     const { Slot_ID, Pet_ID, Start_time, End_time } = req.body;
@@ -177,15 +179,38 @@ const ReserveSlot = async(req, res) => {
             });
         }
 
+
+         
+         
+          // Parse dates from ISO 8601 format
+          const startDate = new Date(Date.parse(Start_time));
+          const endDate = new Date(Date.parse(End_time));
+  
+          // Calculate number of days between Start_time and End_time inclusively
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+        console.log(numDays);
+
+        const Price_Provider=await pool.query('SELECT Price FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
+        
+
+        const Final_cost=numDays*Price_Provider.rows[0].price;
+
+
         const client = await pool.connect();
-        const insertReservation =  'INSERT INTO Reservation (Slot_ID, Pet_ID, Start_time, End_time, Owner_ID) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-        const result = await client.query(insertReservation, [Slot_ID, Pet_ID, Start_time, End_time, ownerId]);
+        const insertReservation =  'INSERT INTO Reservation (Slot_ID, Pet_ID, Start_time, End_time,Final_Price, Owner_ID) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *';
+        const result = await client.query(insertReservation, [Slot_ID, Pet_ID, Start_time, End_time,Final_cost ,ownerId]);
 
         client.release();
 
+
+    
+
         res.status(201).json({
             status: "Success",
-            message: "Reservation created successfully"
+            message: "Reservation created successfully",
+            numberOfDays: numDays,
+            Finalcost:Final_cost
         });
 
     } catch (error) {
@@ -195,6 +220,9 @@ const ReserveSlot = async(req, res) => {
         });
     }
 }
+
+
+
 
 const GetReservation=async(req,res)=>{
     const provider_id = req.ID;
@@ -216,8 +244,8 @@ const GetReservation=async(req,res)=>{
                 message: "User doesn't exist."
             });
         }
-
-        const Reservation=await pool.query('SELECT * FROM Reservation WHERE Slot_ID IN (SELECT Slot_ID FROM ServiceSlots WHERE Provider_ID = $1)',[provider_id]);
+        const status="Pending";
+        const Reservation=await pool.query('SELECT * FROM Reservation WHERE Type=$1 AND Slot_ID IN (SELECT Slot_ID FROM ServiceSlots WHERE Provider_ID = $2)',[status,provider_id]);
 
     
         res.status(200).json({
@@ -237,6 +265,8 @@ const GetReservation=async(req,res)=>{
         
     }
 }
+
+
 
 const UpdateReservation=async(req,res)=>{
     const reserve_id=req.params.reserve_id;
@@ -280,6 +310,9 @@ const UpdateReservation=async(req,res)=>{
  
 
 }
+
+
+
 module.exports = {  
    GetSlotProvider,
    getProviderInfo,
