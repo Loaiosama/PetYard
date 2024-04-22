@@ -182,14 +182,14 @@ const ReserveSlot = async(req, res) => {
 
          
          
-          // Parse dates from ISO 8601 format
-          const startDate = new Date(Date.parse(Start_time));
-          const endDate = new Date(Date.parse(End_time));
+        // Parse dates from ISO 8601 format
+        const startDate = new Date(Date.parse(Start_time));
+        const endDate = new Date(Date.parse(End_time));
   
-          // Calculate number of days between Start_time and End_time inclusively
-          const timeDiff = endDate.getTime() - startDate.getTime();
-          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-        console.log(numDays);
+        // Calculate number of days between Start_time and End_time inclusively
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
 
         const Price_Provider=await pool.query('SELECT Price FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
         
@@ -224,7 +224,7 @@ const ReserveSlot = async(req, res) => {
 
 
 
-const GetReservation=async(req,res)=>{
+const GetProviderReservations=async(req,res)=>{
     const provider_id = req.ID;
   
     try {
@@ -313,12 +313,71 @@ const UpdateReservation=async(req,res)=>{
 
 
 
+const GetOwnerReservations = async (req, res) => {
+    const ownerId = req.ID;
+
+    try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID not provided."
+            });
+        }
+
+        // Check if the owner exists
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+        // Query to retrieve reservations along with provider information
+        const reservationsQuery = `
+            SELECT 
+                R.*, 
+                S.Start_time AS slot_start_time,
+                S.End_time AS slot_end_time,
+                SP.UserName AS provider_name
+            FROM 
+                Reservation R
+            INNER JOIN 
+                ServiceSlots S ON R.Slot_ID = S.Slot_ID
+            INNER JOIN 
+                ServiceProvider SP ON S.Provider_ID = SP.Provider_Id
+            WHERE 
+                R.Owner_ID = $1
+        `;
+        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reservations retrieved.",
+            data: reservations
+        });
+    } catch (error) {
+        console.error("Error retrieving reservations:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+}
+
+
+// Owner get reservations  /  After a certain amount of hours Reject automatically  /  Notify provider  /  Notify Owner Accept or Reject 
+
+
 module.exports = {  
    GetSlotProvider,
    getProviderInfo,
    getProvidersByType,
    ReserveSlot,
-   GetReservation,
-   UpdateReservation
+   GetProviderReservations,
+   UpdateReservation,
+   GetOwnerReservations
     
 };

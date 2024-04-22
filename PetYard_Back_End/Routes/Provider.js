@@ -52,7 +52,7 @@ router.get('/GetMessages/:chat_id',authMiddleware,MessageController.GetMessages)
 
 
 
-router.get('/GetReservation',authMiddleware,ReservationController.GetReservation);
+router.get('/GetProviderReservations',authMiddleware,ReservationController.GetProviderReservations);
 router.put('/UpdateReservation/:reserve_id',authMiddleware,ReservationController.UpdateReservation);
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);

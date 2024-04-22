@@ -78,6 +78,7 @@ CREATE TABLE Reservation (
     Owner_ID INT,
     Start_time DATE,
     End_time DATE,
+    Final_Price DOUBLE PRECISION,
     Type Status DEFAULT 'Pending',
     FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),

@@ -29,6 +29,7 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
+router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
 
 
 router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
