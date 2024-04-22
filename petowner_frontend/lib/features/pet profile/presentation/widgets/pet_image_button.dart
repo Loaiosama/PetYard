@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
 // import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 // import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 // import 'package:petowner_frontend/core/utils/theming/colors.dart';
@@ -20,7 +21,10 @@ class RPetImageButton extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
         onTap: () {
-          GoRouter.of(context).push(Routes.kPetBreed);
+          PetModel petModel = PetModel() ; 
+          petModel.type = "Cat" ;
+          
+          context.pushNamed(Routes.kPetBreed, extra: petModel ) ; 
         },
         //changed the color here to our green with opacity still the same in the dog one
         splashColor: kPrimaryGreen.withOpacity(0.3),

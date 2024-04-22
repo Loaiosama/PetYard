@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/gender_button.dart';
 
 class Gender extends StatefulWidget {
-  const Gender({super.key});
+  final void Function(String) onGenderSelected;
+  const Gender({super.key, required this.onGenderSelected});
 
   @override
   State<Gender> createState() => _GenderState();
@@ -22,6 +23,7 @@ class _GenderState extends State<Gender> {
                     onSelect: (isSelected) {
                       setState(() {
                         selectedGender = isSelected ? 'Male' : '';
+                        widget.onGenderSelected(selectedGender);
                       });
                     },
                     borderRadius: const BorderRadius.only(
@@ -37,6 +39,7 @@ class _GenderState extends State<Gender> {
                     onSelect: (isSelected) {
                       setState(() {
                         selectedGender = isSelected ? 'Female' : '';
+                        widget.onGenderSelected(selectedGender);
                       });
                     },
                     borderRadius: const BorderRadius.only(

@@ -7,11 +7,13 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
 
 class PetBreedScreen extends StatelessWidget {
-  const PetBreedScreen({super.key});
+  final PetModel petModel ;
+  const PetBreedScreen({super.key, required this.petModel,});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,9 @@ class PetBreedScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: PetYardTextButton(
                 onPressed: () {
-                  GoRouter.of(context).push(Routes.KPetInfo);
+           
+                  petModel.breed = "Scottish Fold" ; 
+                  context.pushNamed(Routes.KPetInfo,extra : petModel) ; 
 
                 },
                 style: Styles.styles16BoldWhite,
@@ -82,7 +86,7 @@ class BreedNameListView extends StatefulWidget {
 
 class _BreedNameListViewState extends State<BreedNameListView> {
   int selectedIndex = -1;
-
+   late  String breed ; 
   void handleSelection(int index) {
     if (selectedIndex == index) {
       setState(() {
@@ -91,6 +95,7 @@ class _BreedNameListViewState extends State<BreedNameListView> {
     } else {
       setState(() {
         selectedIndex = index;
+  
       });
     }
   }
@@ -128,7 +133,7 @@ class BreedNameItem extends StatelessWidget {
         children: [
           heightSizedBox(10),
           InkWell(
-              onTap: onTap,
+              onTap: onTap ,
               splashColor: kPrimaryGreen.withOpacity(0.3),
               child: SizedBox(
                 // height: 40,

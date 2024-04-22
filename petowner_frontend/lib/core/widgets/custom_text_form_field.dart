@@ -28,17 +28,17 @@ InputBorder customErrorOutlinedBorder = OutlineInputBorder(
 
 class CustomRegistrationTextField extends StatelessWidget {
   const CustomRegistrationTextField({
-    super.key,
+    Key? key,
     this.hintText = 'HINT',
     this.keyboardType,
     required this.width,
+    required this.controller, 
     this.height = 60,
     this.isPassword = false,
     this.isObsecure,
-    this.controller,
     this.validator,
-    this.suffixIcon,
-  });
+    this.suffixIcon, this.onChanged,
+  }) : super(key: key);
 
   final String hintText;
   final TextInputType? keyboardType;
@@ -46,39 +46,28 @@ class CustomRegistrationTextField extends StatelessWidget {
   final double height;
   final bool? isPassword;
   final bool? isObsecure;
-  final TextEditingController? controller;
+  final TextEditingController controller; 
   final String? Function(String?)? validator;
   final Widget? suffixIcon;
   final bool isVisible = false;
+  final void Function(String)? onChanged ;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'This field can\'t be empty';
-        }
-        return null;
+      onChanged: (value)
+      {
+
       },
+      controller: controller,
+      validator: validator,
       obscureText: isObsecure ?? false,
-      style: Styles.styles14NormalBlack
-          .copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
+      style: Styles.styles14NormalBlack.copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
       keyboardType: keyboardType,
       decoration: InputDecoration(
-        // backgroud color to textformfield (in consider)
-        // fillColor: Colors.grey.shade100,
-        // filled: true,
-
-        //is Dense is like the padding inside of the field
         isDense: true,
-        // contentPadding:
-        //     const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-
         hintText: hintText,
-        constraints: BoxConstraints.tightForFinite(
-          width: width,
-        ),
+        constraints: BoxConstraints.tightForFinite(width: width),
         suffixIcon: suffixIcon,
         hintStyle: TextStyle(
           color: Colors.black.withOpacity(0.5),
@@ -92,3 +81,4 @@ class CustomRegistrationTextField extends StatelessWidget {
     );
   }
 }
+

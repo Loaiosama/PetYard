@@ -8,6 +8,7 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/add_pet_image.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/date_picker.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/gender.dart';
@@ -17,14 +18,20 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pe
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_weight_item.dart';
 
 class PetInfo extends StatefulWidget {
-  const PetInfo({Key? key}) : super(key: key);
-
+   
+  final PetModel petModel  ; 
+  const PetInfo({Key? key, required this.petModel,}) : super(key: key);
   @override
   _PetInfoState createState() => _PetInfoState();
 }
 
 class _PetInfoState extends State<PetInfo> {
   String selectedWeight = '';
+  final TextEditingController nameController = TextEditingController() ;  
+
+   @override
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +53,11 @@ class _PetInfoState extends State<PetInfo> {
               SizedBox(height: 20.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: CustomRegistrationTextField(width: 300.w, hintText: 'Your pet name'),
+                child: CustomRegistrationTextField(width: 300.w, hintText: 'Your pet name' , controller: nameController , onChanged: (value){
+                  setState(() {
+                    widget.petModel.name = value ;
+                  });
+                },  ),
               ),
               SizedBox(height: 15.h),
               Padding(
@@ -101,25 +112,42 @@ class _PetInfoState extends State<PetInfo> {
                                ),
                ),
                SizedBox(height: 15.h),
-               const Padding(
+                Padding(
                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  Gender(),
+                 child:  Gender(onGenderSelected: ( gender){ 
+                  setState(() {
+                    widget.petModel.gender = gender ; 
+                  });
+                 }
+                  
+                 ),
                ),
                SizedBox(height: 15.h,),
              
-               const Padding(
+                Padding(
                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  DatePicker(labelText: 'Date of birth'),
+                 child:  DatePicker(labelText: 'Date of birth' , onDateSelected: (date){
+                  setState(() {
+                    widget.petModel.dateOfBirth = date ; 
+                  });
+                 } ,),
                ),
                SizedBox(height: 20.h,),
-               const Padding(
+                Padding(
                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  DatePicker(labelText: 'Adoption Date'),
+                 child:  DatePicker(labelText: 'Adoption Date' , onDateSelected: (date){
+                  setState(() {
+                    widget.petModel.adoptionDate = date;
+                  });
+                 },),
                ),
                SizedBox(height: 10.h,),
                Padding(
                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                 child: PetYardTextButton(width: 50.w,text: 'Continue', onPressed: () { GoRouter.of(context).push(Routes.KPetRecap); }, style: Styles.styles14NormalBlack.copyWith(color : Colors.white),),
+                 child: PetYardTextButton(width: 50.w,text: 'Continue', onPressed: () {
+                  widget.petModel.name = nameController.text;
+            
+                   context.pushNamed(Routes.KPetRecap , extra : widget.petModel); }, style: Styles.styles14NormalBlack.copyWith(color : Colors.white),),
                ),
           
                
@@ -132,8 +160,7 @@ class _PetInfoState extends State<PetInfo> {
                 
                   
                   
-                  
-            ],
+            ]
           ),
         
       ),

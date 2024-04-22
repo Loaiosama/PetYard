@@ -4,6 +4,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
 // import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_breed.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/pet_info.dart';
@@ -96,12 +97,16 @@ abstract class AppRouter {
       ),
       // Navigate to chosse breed of pet screen
       GoRoute(
+        name: Routes.kPetBreed,
         path: Routes.kPetBreed,
-        pageBuilder: (context, state) => transitionGoRoute(
+        pageBuilder: (context, state) {
+          final PetModel pet = state.extra as PetModel;
+          return transitionGoRoute(
           context: context,
           state: state,
-          child: const PetBreedScreen(),
-        ),
+          child:  PetBreedScreen(petModel: pet),
+        );
+        }
       ),
       // Navigate to personal information screen
       GoRoute(
@@ -138,20 +143,30 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
-        path: Routes.kPetInfo,
-        pageBuilder: (context, state) => transitionGoRoute(
+       name: Routes.KPetInfo,
+       path: Routes.kPetInfo,
+       pageBuilder: (context, state) { 
+         //final Object? breed = state.extra; 
+          final PetModel pet = state.extra as PetModel;
+          return transitionGoRoute(
           context: context,
           state: state,
-          child: const PetInfo(),
-        ),
-      ),
+          child: PetInfo(petModel: pet,), 
+    );
+  },
+),
+       
        GoRoute(
+        name :Routes.KPetRecap,
         path: Routes.KPetRecap,
-        pageBuilder: (context, state) => transitionGoRoute(
+        pageBuilder: (context, state) { 
+          final PetModel pet = state.extra as PetModel;
+          return transitionGoRoute(
           context: context,
           state: state,
-          child: const Recap(),
-        ),
+          child:  Recap(petModel: pet),
+        );
+        }
       ),
     ],
   );

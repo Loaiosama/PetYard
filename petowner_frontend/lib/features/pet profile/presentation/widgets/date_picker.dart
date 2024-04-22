@@ -4,8 +4,9 @@ import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
 class DatePicker extends StatefulWidget {
   final String labelText;
+  final void Function(String) onDateSelected;
 
-  const DatePicker({Key? key, required this.labelText}) : super(key: key);
+  const DatePicker({Key? key, required this.labelText, required this.onDateSelected}) : super(key: key);
 
   @override
   State<DatePicker> createState() => _DatePickerState();
@@ -13,9 +14,15 @@ class DatePicker extends StatefulWidget {
 
 class _DatePickerState extends State<DatePicker> {
   TextEditingController _dateController = TextEditingController();
+  late String selectedDate;
+
+  void initState() {
+    super.initState();
+    selectedDate = ''; // Initialize with an empty string
+  }
 
   @override
-  Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         _selectDate();
@@ -43,6 +50,7 @@ class _DatePickerState extends State<DatePicker> {
     );
   }
 
+
   Future<void> _selectDate() async {
     DateTime? _picked = await showDatePicker(
       context: context,
@@ -52,7 +60,7 @@ class _DatePickerState extends State<DatePicker> {
       builder: (context, child) => Theme(
         data: ThemeData().copyWith(
           colorScheme: const ColorScheme.light(
-            primary: kPrimaryGreen,
+            primary: Colors.green, // Change primary color to green
             onPrimary: Colors.white,
             surface: Colors.white,
           ),
@@ -63,7 +71,9 @@ class _DatePickerState extends State<DatePicker> {
     if (_picked != null) {
       setState(() {
         _dateController.text = _picked.toString().split(" ")[0];
+        widget.onDateSelected(_picked.toString().split(" ")[0]);
       });
     }
   }
 }
+
