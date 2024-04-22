@@ -43,14 +43,16 @@ class HomeBanner extends StatelessWidget {
             ),
           ),
           Padding(
-            padding:  EdgeInsets.only(
-                left: 14.0.w, right: 8.0.w,),
+            padding: EdgeInsets.only(
+              left: 14.0.w,
+              right: 8.0.w,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding:  EdgeInsets.only(top: 9.0.h),
+                  padding: EdgeInsets.only(top: 9.0.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -72,8 +74,9 @@ class HomeBanner extends StatelessWidget {
                         child: Text(
                           'Find Nearby',
                           //blue accent or grey
-                          style: Styles.styles18MediumWhite
-                              .copyWith(color: Colors.black.withOpacity(0.7),fontSize: 14.sp),
+                          style: Styles.styles18MediumWhite.copyWith(
+                              color: Colors.black.withOpacity(0.7),
+                              fontSize: 14.sp),
                         ),
                       ),
                     ],

@@ -84,4 +84,16 @@ class Styles {
     fontWeight: FontsHelper.regular,
     color: Colors.black.withOpacity(0.5),
   );
+
+  static TextStyle styles12w600 = TextStyle(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
+
+  static TextStyle styles10w400 = TextStyle(
+    fontSize: 10.sp,
+    fontWeight: FontWeight.w400,
+    color: Colors.black,
+  );
 }

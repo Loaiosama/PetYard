@@ -6,19 +6,17 @@ import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/data/repos/pet_info_repo.dart';
 
-class PetInfoRepoImp extends PetInfoRepo
-{
+class PetInfoRepoImp extends PetInfoRepo {
+  final ApiService apiService;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  final ApiService apiService ;
-   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-
-  PetInfoRepoImp({required this.apiService}); 
+  PetInfoRepoImp({required this.apiService});
   @override
   Future<void> addPetInfo({required PetModel petModel}) async {
     try {
       var response = await apiService.post(
         endPoints: 'PetOwner/SignIn',
-        data: petModel.toJson() ,
+        data: petModel.toJson(),
       );
       // Check if response is successful
       if (response.data['status'] == 'Success') {
@@ -35,8 +33,6 @@ class PetInfoRepoImp extends PetInfoRepo
       debugPrint('add pet error error: $e');
       rethrow;
     }
-    
-  
   }
 
   @override
@@ -44,5 +40,4 @@ class PetInfoRepoImp extends PetInfoRepo
     // TODO: implement fetchPetInfo
     throw UnimplementedError();
   }
-  
 }

@@ -7,4 +7,5 @@ final class PersonalInformationInitial extends PersonalInformationState {}
 
 final class PersonalInformationEditState extends PersonalInformationState {}
 
-final class PersonalInformationEditGenderState extends PersonalInformationState {}
+final class PersonalInformationEditGenderState
+    extends PersonalInformationState {}

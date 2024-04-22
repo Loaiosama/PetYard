@@ -8,10 +8,15 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class PetProfileCircle extends StatelessWidget {
-  const PetProfileCircle({super.key, this.isAddNew = false});
+  const PetProfileCircle(
+      {super.key,
+      this.isAddNew = false,
+      required this.petName,
+      required this.petImage});
 
   final bool isAddNew;
-
+  final String petName;
+  final String petImage;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,8 +29,8 @@ class PetProfileCircle extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: !isAddNew
-                  ? const DecorationImage(
-                      image: AssetImage('assets/images/profile_dog.jpg'),
+                  ? DecorationImage(
+                      image: AssetImage('assets/images/$petImage'),
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -55,7 +60,7 @@ class PetProfileCircle extends StatelessWidget {
           ),
           heightSizedBox(3),
           Text(
-            !isAddNew ? 'Maxi' : 'Add Pet',
+            !isAddNew ? petName : 'Add Pet',
             style: !isAddNew
                 ? Styles.styles22BoldGreen.copyWith(fontSize: 12.sp)
                 : Styles.styles12RegularOpacityBlack,

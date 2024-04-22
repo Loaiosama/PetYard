@@ -36,15 +36,14 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
     }
   }
 
-  void changeGender({String? value}){
+  void changeGender({String? value}) {
     selectedGender = value!;
     emit(PersonalInformationEditGenderState());
   }
 
-  void save(){
+  void save() {
     isEdit = !isEdit;
     emit(PersonalInformationEditState());
-
   }
 
   void edit() {

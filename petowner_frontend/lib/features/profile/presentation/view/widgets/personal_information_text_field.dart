@@ -23,7 +23,7 @@ class PersonalInformationTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       enabled: !isEmail! ? (isEdit ? true : false) : false,
-      readOnly: isDate! ? true: false,
+      readOnly: isDate! ? true : false,
       // enabled: isEdit ? true : false,
       decoration: InputDecoration(
         filled: true,
@@ -38,14 +38,14 @@ class PersonalInformationTextField extends StatelessWidget {
             : null,
         suffix: isDate!
             ? isEdit
-            ? const Icon(
-          Icons.calendar_today_outlined,
-          color: kPrimaryGreen,
-        )
-            :  Icon(
-          Icons.calendar_today_outlined,
-          color: iconColor,
-        )
+                ? const Icon(
+                    Icons.calendar_today_outlined,
+                    color: kPrimaryGreen,
+                  )
+                : Icon(
+                    Icons.calendar_today_outlined,
+                    color: iconColor,
+                  )
             : null,
       ),
     );

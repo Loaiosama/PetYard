@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/profile/presentation/view_model/cubit/personal_information_cubit.dart';
+import 'package:petowner_frontend/features/profile/presentation/view_model/personal_information_cubit/personal_information_cubit.dart';
 import '../../../../core/utils/theming/colors.dart';
 import 'widgets/personal_information_image.dart';
 import 'widgets/personal_information_text_field.dart';
@@ -39,19 +39,18 @@ class PersonalInformationScreen extends StatelessWidget {
                         onPressed: () {
                           cubit.edit();
                         },
-                        child:
-                       Text(
+                        child: Text(
                           'Edit',
                           style: Styles.styles16w600.copyWith(
                               color: kPrimaryGreen,
                               fontWeight: FontWeight.w500),
-                        )
-
-                ): Container(),
+                        ))
+                    : Container(),
               ],
             ),
             body: Padding(
-              padding: EdgeInsets.only(left: 20.0.w, right: 20.0.w, bottom: 20.0.h),
+              padding:
+                  EdgeInsets.only(left: 20.0.w, right: 20.0.w, bottom: 20.0.h),
               child: SingleChildScrollView(
                 child: Column(
                   children: [

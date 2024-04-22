@@ -2,7 +2,9 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
@@ -65,7 +67,9 @@ class ProviderProfileBody extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.only(right: 10.0.w),
                     child: PetYardTextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).push(Routes.kbookAppointment);
+                      },
                       text: 'Make An Appointment',
                       style: Styles.styles14w600.copyWith(
                         color: Colors.white,
