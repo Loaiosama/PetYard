@@ -12,4 +12,6 @@ class Routes {
   static const String kProviderProfile = '/providerProfile';
   static const String kPetInformation = '/petInformation';
   static const String kProfileLocation = '/profileLocation';
+  static const String KPetInfo = '/petInfo';
+  static const String KPetRecap = '/Recap';
 }

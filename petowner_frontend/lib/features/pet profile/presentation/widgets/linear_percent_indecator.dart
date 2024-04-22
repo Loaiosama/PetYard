@@ -14,7 +14,7 @@ class LinearIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LinearPercentIndicator(
-      lineHeight: 5.h,
+      lineHeight: 3.h,
       percent: percent,
       progressColor: kPrimaryGreen,
       barRadius: Radius.circular(8.r),

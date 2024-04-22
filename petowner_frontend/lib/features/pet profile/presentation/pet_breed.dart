@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
@@ -56,7 +58,10 @@ class PetBreedScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: PetYardTextButton(
-                onPressed: () {},
+                onPressed: () {
+                  GoRouter.of(context).push(Routes.KPetInfo);
+
+                },
                 style: Styles.styles16BoldWhite,
                 text: 'Continue',
               ),

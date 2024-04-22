@@ -28,7 +28,7 @@ class PetTypeBar extends StatelessWidget {
                 style: Styles.styles16w600,
               ),
               SizedBox(
-                height: 5.h,
+                height: 2.h,
               ),
               Text(
                 subtitle,
@@ -41,8 +41,8 @@ class PetTypeBar extends StatelessWidget {
               const Text(
                 'Steps',
               ),
-              const SizedBox(
-                height: 5,
+               SizedBox(
+                height: 2.h,
               ),
               Row(
                 children: [

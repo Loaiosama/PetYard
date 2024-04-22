@@ -32,6 +32,44 @@ class ApiService {
     }
   }
 
+  Future<Map<String,dynamic>> get ({required String endpoint}) async 
+  {
+    var  response = await dio.get('$baseUrl$endpoint');
+    return response.data ; 
+  }
+  // Future<Response> addPet () async
+  // {
+  //    try {
+  //     var response = await dio.post(
+  //       'http://localhost:3000/PetOwner/AddPet',
+  //       data:  , 
+  //       options: Options(
+  //         method: 'POST',
+  //         headers: headers,
+  //       ),
+  //     );
+  //     print('response codeee ${response.statusCode}');
+  //     if (response.data['status'] == 'Success') {
+  //       final token = response.data['token'];
+  //       await _storage.write(key: 'token', value: token);
+  //       debugPrint("fsdfnlksadjflndaskfnklsadnmkl ${response.data['status']}");
+  //     } else if (response.statusCode == 401) {
+  //       debugPrint('Incorrect email or password');
+  //     } else {
+  //       // Handle error response
+  //       debugPrint('=================Incorrect email or password');
+  //       throw Exception('Failed to sign in');
+  //     }
+  //     return response;
+  //   } catch (error) {
+  //     // just for now
+  //     debugPrint('=================Incorrect email or password');
+  //     // debugPrint('Login error: $error');
+  //     rethrow; // Re-throw the error for handling in the caller
+  //   }
+
+  // }
+
   // Future<Response> login() async {
   //   try {
   //     var response = await dio.post(
