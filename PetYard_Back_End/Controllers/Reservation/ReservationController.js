@@ -188,8 +188,8 @@ const ReserveSlot = async(req, res) => {
   
           // Calculate number of days between Start_time and End_time inclusively
           const timeDiff = endDate.getTime() - startDate.getTime();
-          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-        console.log(numDays);
+          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) ;
+          
 
         const Price_Provider=await pool.query('SELECT Price FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
         
