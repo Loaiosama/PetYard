@@ -77,4 +77,33 @@ class ProfileRepoImpl extends ProfileRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, AllPetsModel>> getPetInfo({required int id}) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.get(endpoint: 'PetOwner/getPet/$id');
+      AllPetsModel allPetsModel = const AllPetsModel();
+      for (var item in response['data']) {
+        // print('item $item');
+        var datum = Datum.fromJson(item);
+        allPetsModel = AllPetsModel(
+          status: response['status'],
+          message: response['message'],
+          data: [datum],
+        );
+        allPets.add(allPetsModel);
+      }
+      // print(allPetsModel.data![0].name);
+      return right(allPetsModel);
+    } catch (e) {
+      if (e is DioException) {
+        // print('tagroba${ServerFailure.fromDioError(e)}');
+        return left(ServerFailure.fromDioError(e));
+      }
+      // print('fail 2');
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }
