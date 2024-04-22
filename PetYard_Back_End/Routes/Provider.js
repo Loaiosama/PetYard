@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const MessageController = require('../Controllers/Message');
+const MessageController = require('../Controllers/Messages/MessageController');
 const ChatController=require('../Controllers/Chat/ChatController');
 const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
 const StoreController=require('../Controllers/Online_Store/StoreController');
 const ScheduleController=require('../Controllers/Schedule/ScheduleController');
+const ReservationController = require('../Controllers/Reservation/ReservationController');
 require('../Controllers/Provider/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');
@@ -44,7 +45,15 @@ router.delete('/RemoveProduct/:Product_Id',authMiddleware,StoreController.Remove
 router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
 router.get('/GetChat/:First_id/:Second_id',ChatController.FindChat);
 
+router.post('/CreateMessage/:chat_id',authMiddleware,MessageController.CreateMessage);
+router.get('/GetMessages/:chat_id',authMiddleware,MessageController.GetMessages);
 //router.post('/SendMessage/:chat_id',MessageController.SendMessage);
+
+
+
+
+router.get('/GetProviderReservations',authMiddleware,ReservationController.GetProviderReservations);
+router.put('/UpdateReservation/:reserve_id',authMiddleware,ReservationController.UpdateReservation);
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
 

@@ -460,6 +460,49 @@ const GetChat =async (req,res)=>
 
 
 
+const getinfo=async(req,res)=>{
+    const Owner_Id = req.ID; // Assuming req.ID is correctly defined
+
+    try {
+        // Check if Owner_Id and Name_Provider are provided
+        if (!Owner_Id ) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+        }
+
+
+
+        // Query to check if Petowner exists
+        const Query1 = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const res1 = await pool.query(Query1, [Owner_Id]);
+
+        if (res1.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Petowner doesn't exist"
+            });
+        }
+
+
+        const q=await pool.query('SELECT First_name,Last_name,Phone,Email,Date_of_birth,Location,Image FROM Petowner WHERE Owner_Id=$1',[Owner_Id]);
+
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :q.rows[0]
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
 /*const startChat =  async (req, res) => {
      const owner_id = req.ID;
     try {
@@ -503,5 +546,7 @@ module.exports = {
     updateInfo,
     CreateChat,
     GetChat,
+    getinfo
+   
       
 }

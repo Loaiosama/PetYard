@@ -35,7 +35,10 @@ const CreateValidationCode = function(){
 
 
 
+
+
 module.exports={
     CreatePasswordResetToken,
-    CreateValidationCode
+    CreateValidationCode,
+   
 }

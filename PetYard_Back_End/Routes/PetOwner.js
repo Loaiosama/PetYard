@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const MessageController = require('../Controllers/Message');
+const ReservationController = require('../Controllers/Reservation/ReservationController');
+const MessageController = require('../Controllers/Messages/MessageController');
 const ChatController=require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/Authentication/AuthMiddle');
@@ -11,6 +12,9 @@ require('../Controllers/Owner/Facebook');
 const passport = require('passport');
 const session = require('express-session');
 
+
+
+router.get('/Getinfo', authMiddleware, PetOwnerController.getinfo);
 router.post('/SignUp',PetOwnerController.uploadphoto,PetOwnerController.resizePhoto,PetOwnerController.signUp);
 router.post('/SignIn', PetOwnerController.signIn);
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
@@ -28,10 +32,15 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
+router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
+
+
 router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
 router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
 router.get('/GetChat/:First_id/:Second_id',ChatController.FindChat);
 
+router.post('/CreateMessage/:chat_id',authMiddleware,MessageController.CreateMessage);
+router.get('/GetMessages/:chat_id',authMiddleware,MessageController.GetMessages);
 
 
 router.post('/MakeOrder',authMiddleware,OrderController.MakeOrder);
@@ -47,6 +56,18 @@ router.get('/SearchBybrand',authMiddleware,OrderController.SearchBybrand);
 router.post('/AddOrderItem/:order_id/:product_id',authMiddleware,OrderController.AddOrderItem);
 router.delete('/RemoveOrderItem/:order_id/:product_id/:order_item_id',authMiddleware,OrderController.RemoveOrderItem);
 router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddleware,OrderController.UpdateOrderItem);
+
+
+
+
+
+router.get('/GetProvidersByType/:type',authMiddleware, ReservationController.getProvidersByType);
+router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,ReservationController.GetSlotProvider);
+router.get('/GetProviderInfo/:Provider_id',authMiddleware,ReservationController.getProviderInfo);
+router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
+
+
+
 
 // Use express-session middleware
 router.use(session({

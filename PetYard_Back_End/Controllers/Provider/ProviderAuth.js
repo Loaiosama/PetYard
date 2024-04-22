@@ -427,6 +427,9 @@ const getService=async(req,res)=>{
 
 
 
+
+
+
 const startChat =  async (req, res) => {
     const provider_id = req.ID;
    try {
@@ -477,7 +480,7 @@ module.exports = {
     Killservice,
     startChat,
     getallservices,
-    getService,
+    getService
     
   
     

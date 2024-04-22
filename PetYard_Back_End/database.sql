@@ -69,13 +69,17 @@ CREATE TABLE ServiceSlots (
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
+CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected');
+
 CREATE TABLE Reservation (
     Reserve_ID SERIAL PRIMARY KEY,
     Slot_ID INT,
     Pet_ID INT,
     Owner_ID INT,
-    Date DATE,
-    Status BOOLEAN,
+    Start_time DATE,
+    End_time DATE,
+    Final_Price DOUBLE PRECISION,
+    Type Status DEFAULT 'Pending',
     FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
@@ -97,12 +101,8 @@ CREATE TABLE Comment (
 
 
 
-
-
-
-
-
 -- Create the Chat table with an array of integers for the Members column
+
 CREATE TABLE Chat (
     Chat_ID SERIAL PRIMARY KEY,
     Members INTEGER[], -- Array of integers to store member IDs
@@ -110,14 +110,14 @@ CREATE TABLE Chat (
     Provider_ID INTEGER REFERENCES ServiceProvider(Provider_Id)
 );
 
-
-
 CREATE TABLE Messages (
-    Sender_id SERIAL PRIMARY KEY,
+    Message_id SERIAL PRIMARY KEY,
+    Sender_id INT NOT NULL,
     Chat_Id INT,
-    text VARCHAR(5000),
+    text TEXT, 
     FOREIGN KEY (Chat_Id) REFERENCES Chat(Chat_ID)
 );
+
 
 
 /*
@@ -176,4 +176,3 @@ CREATE TABLE Shipping (
     Phone VARCHAR(225) UNIQUE,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
-
