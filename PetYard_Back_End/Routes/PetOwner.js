@@ -60,6 +60,7 @@ router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id',authMiddlewar
 router.get('/GetProvidersByType/:type',authMiddleware, ReservationController.getProvidersByType);
 router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,ReservationController.GetSlotProvider);
 router.get('/GetProviderInfo/:Provider_id',authMiddleware,ReservationController.getProviderInfo);
+router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
 
 
 

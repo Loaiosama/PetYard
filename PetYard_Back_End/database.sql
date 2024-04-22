@@ -77,7 +77,7 @@ CREATE TABLE Reservation (
     Owner_ID INT,
     Start_time DATE,
     End_time DATE,
-    Type Status,
+    Type Status DEFAULT 'Pending',
     FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)

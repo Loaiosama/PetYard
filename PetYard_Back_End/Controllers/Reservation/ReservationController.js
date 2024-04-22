@@ -155,10 +155,52 @@ const GetSlotProvider=async(req,res)=>{
 
 }
 
+const ReserveSlot = async(req, res) => {
+    const ownerId = req.ID;
+    const { Slot_ID, Pet_ID, Start_time, End_time } = req.body;
+
+    try {
+
+        if (!Slot_ID || !Pet_ID || !Start_time || !End_time) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result1 = await pool.query(Query, [ownerId]);
+
+        if (result1.rows.length === 0) {
+            return res.status(401).json({
+                    status: "Fail",
+                    message: "User doesn't exist"
+            });
+        }
+
+        const client = await pool.connect();
+        const insertReservation =  'INSERT INTO Reservation (Slot_ID, Pet_ID, Start_time, End_time, Owner_ID) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        const result = await client.query(insertReservation, [Slot_ID, Pet_ID, Start_time, End_time, ownerId]);
+
+        client.release();
+
+        res.status(201).json({
+            status: "Success",
+            message: "Reservation created successfully"
+        });
+
+    } catch (error) {
+        console.error("Error during reservation", error);
+        res.status(500).json({
+            message: "Internal server error."
+        });
+    }
+}
+
 
 module.exports = {  
    GetSlotProvider,
    getProviderInfo,
-   getProvidersByType
+   getProvidersByType,
+   ReserveSlot
     
 };
