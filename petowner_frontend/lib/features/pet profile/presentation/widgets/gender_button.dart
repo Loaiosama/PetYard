@@ -10,20 +10,19 @@ class GenderButton extends StatefulWidget {
   final Function(bool) onSelect;
 
   const GenderButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.borderRadius,
     required this.isSelected,
     required this.onSelect,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _GenderButtonState createState() => _GenderButtonState();
 }
 
 class _GenderButtonState extends State<GenderButton> {
-  Color _buttonColor = Colors.grey.withOpacity(0.7);
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -32,17 +31,18 @@ class _GenderButtonState extends State<GenderButton> {
         elevation: 0,
         child: TextButton(
           onPressed: () {
-            widget.onSelect(!widget.isSelected); 
+            widget.onSelect(!widget.isSelected);
           },
           style: TextButton.styleFrom(
-            backgroundColor: widget.isSelected ? kPrimaryGreen : Colors.grey[400],
+            backgroundColor:
+                widget.isSelected ? kPrimaryGreen : Colors.grey[400],
             shape: RoundedRectangleBorder(
               borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
             ),
           ),
           child: Text(
             widget.text,
-            style: Styles.styles14NormalBlack.copyWith(color : Colors.white),
+            style: Styles.styles14NormalBlack.copyWith(color: Colors.white),
           ),
         ),
       ),

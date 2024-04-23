@@ -9,11 +9,11 @@ class RecapItem extends StatelessWidget {
   final String secondaryText;
 
   const RecapItem({
-    Key? key,
+    super.key,
     required this.iconData,
     required this.primaryText,
     required this.secondaryText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +23,7 @@ class RecapItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
-        
-        
         border: Border.all(
-          
           color: Colors.white,
           width: 2.w,
         ),
@@ -35,15 +32,17 @@ class RecapItem extends StatelessWidget {
             color: Colors.grey.withOpacity(0.7),
             spreadRadius: 2,
             blurRadius: 4,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: ListTile(
-        leading: Icon(iconData , color : kPrimaryGreen) ,
-        title: Text(primaryText , style : Styles.styles14NormalBlack),
-        trailing: Text(secondaryText , style: Styles.styles14NormalBlack,),
-            
+        leading: Icon(iconData, color: kPrimaryGreen),
+        title: Text(primaryText, style: Styles.styles14NormalBlack),
+        trailing: Text(
+          secondaryText,
+          style: Styles.styles14NormalBlack,
+        ),
       ),
     );
   }

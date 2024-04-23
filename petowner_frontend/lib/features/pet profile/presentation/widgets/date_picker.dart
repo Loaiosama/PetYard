@@ -6,23 +6,25 @@ class DatePicker extends StatefulWidget {
   final String labelText;
   final void Function(String) onDateSelected;
 
-  const DatePicker({Key? key, required this.labelText, required this.onDateSelected}) : super(key: key);
+  const DatePicker(
+      {super.key, required this.labelText, required this.onDateSelected});
 
   @override
   State<DatePicker> createState() => _DatePickerState();
 }
 
 class _DatePickerState extends State<DatePicker> {
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   late String selectedDate;
 
+  @override
   void initState() {
     super.initState();
     selectedDate = ''; // Initialize with an empty string
   }
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         _selectDate();
@@ -50,9 +52,8 @@ class _DatePickerState extends State<DatePicker> {
     );
   }
 
-
   Future<void> _selectDate() async {
-    DateTime? _picked = await showDatePicker(
+    DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2020),
@@ -68,12 +69,11 @@ class _DatePickerState extends State<DatePicker> {
         child: child ?? Container(), // Ensure child is not null
       ),
     );
-    if (_picked != null) {
+    if (picked != null) {
       setState(() {
-        _dateController.text = _picked.toString().split(" ")[0];
-        widget.onDateSelected(_picked.toString().split(" ")[0]);
+        _dateController.text = picked.toString().split(" ")[0];
+        widget.onDateSelected(picked.toString().split(" ")[0]);
       });
     }
   }
 }
-

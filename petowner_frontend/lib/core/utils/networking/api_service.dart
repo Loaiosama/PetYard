@@ -25,7 +25,7 @@ class ApiService {
     try {
       // Retrieve token from secure storage
       final token = await _storage.read(key: 'token');
-      print('tokennnn $token');
+      // print('tokennnn $token');
       // Check if token exists
       if (token != null) {
         // Add token to the headers of the Dio instance
@@ -64,7 +64,7 @@ class ApiService {
 
   Future<Map<String, dynamic>> get({required String endpoint}) async {
     // await setAuthorizationHeader();
-    print('Request Headers: ${dio.options.headers}');
+    // print('Request Headers: ${dio.options.headers}');
     var response = await dio.get(
       '$baseUrl$endpoint',
     );

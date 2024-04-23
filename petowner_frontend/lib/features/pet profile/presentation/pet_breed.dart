@@ -7,7 +7,7 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
 

@@ -10,9 +10,9 @@ class ServerFailure extends Failure {
   ServerFailure(super.errorMessage);
 
   factory ServerFailure.fromDioError(DioException dioError) {
-    print(dioError.type);
-    print('object  ${dioError.response!.statusCode}');
-    print('object  ${dioError.response}');
+    // print(dioError.type);
+    // print('object  ${dioError.response!.statusCode}');
+    // print('object  ${dioError.response}');
     switch (dioError.type) {
       case DioExceptionType.connectionTimeout:
         return ServerFailure('Connection Time out!');
@@ -23,7 +23,7 @@ class ServerFailure extends Failure {
       case DioExceptionType.badCertificate:
         return ServerFailure('BAD CERTIFICATE OR WHATEVER DOES THAT MEAN!');
       case DioExceptionType.badResponse:
-        print('anahenaa');
+        // print('anahenaa');
         return ServerFailure('Connection Time out!');
       case DioExceptionType.cancel:
         return ServerFailure('Request was canceled!');
@@ -39,7 +39,7 @@ class ServerFailure extends Failure {
   factory ServerFailure.fromResponse(int? statusCode, dynamic response) {
     switch (statusCode) {
       case 400 || 401 || 403:
-        print('response $response["message"]');
+        // print('response $response["message"]');
         return ServerFailure(response['message']);
       case 404:
         return ServerFailure('Error 404, Not Found!');

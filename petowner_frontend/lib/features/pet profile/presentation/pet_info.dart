@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
-
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/add_pet_image.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/date_picker.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/gender.dart';
-
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_weight_item.dart';
@@ -20,10 +16,11 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pe
 class PetInfo extends StatefulWidget {
   final PetModel petModel;
   const PetInfo({
-    Key? key,
+    super.key,
     required this.petModel,
-  }) : super(key: key);
+  });
   @override
+  // ignore: library_private_types_in_public_api
   _PetInfoState createState() => _PetInfoState();
 }
 
@@ -79,6 +76,8 @@ class _PetInfoState extends State<PetInfo> {
                       onSelect: (isSelected) {
                         setState(() {
                           selectedWeight = isSelected ? 'Under 3 kg' : '';
+                          widget.petModel.weight = '3';
+                          widget.petModel.image = 'default.png';
                         });
                       },
                     ),
@@ -113,7 +112,7 @@ class _PetInfoState extends State<PetInfo> {
               ),
               SizedBox(height: 15.h),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: Gender(onGenderSelected: (gender) {
                   setState(() {
                     widget.petModel.gender = gender;
@@ -124,7 +123,7 @@ class _PetInfoState extends State<PetInfo> {
                 height: 15.h,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: DatePicker(
                   labelText: 'Date of birth',
                   onDateSelected: (date) {
@@ -138,7 +137,7 @@ class _PetInfoState extends State<PetInfo> {
                 height: 20.h,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: DatePicker(
                   labelText: 'Adoption Date',
                   onDateSelected: (date) {

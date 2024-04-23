@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class PetImage extends StatefulWidget {
-   
-
-  const PetImage({Key? key,}) : super(key: key); 
+  const PetImage({
+    super.key,
+  });
 
   @override
   State<PetImage> createState() => _AddPetPhotoState();
 }
 
 class _AddPetPhotoState extends State<PetImage> {
-   File? image;
+  File? image;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -47,7 +47,6 @@ class _AddPetPhotoState extends State<PetImage> {
             ),
           ),
         ),
-
       ],
     );
   }

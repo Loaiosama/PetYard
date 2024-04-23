@@ -9,11 +9,11 @@ class PetWeightItem extends StatefulWidget {
   final Function(bool) onSelect;
 
   const PetWeightItem({
-    Key? key,
+    super.key,
     required this.text,
     required this.isSelected,
     required this.onSelect,
-  }) : super(key: key);
+  });
 
   @override
   State<PetWeightItem> createState() => _PetWeightItemState();
@@ -41,14 +41,14 @@ class _PetWeightItemState extends State<PetWeightItem> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 3,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Center(
           child: Text(
             widget.text,
-            style: Styles.styles12NormalHalfBlack.copyWith(color : Colors.black),
+            style: Styles.styles12NormalHalfBlack.copyWith(color: Colors.black),
           ),
         ),
       ),

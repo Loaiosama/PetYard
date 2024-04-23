@@ -6,7 +6,7 @@ class PetModel {
   String? dateOfBirth;
   String? adoptionDate;
   String? weight;
-
+  String? image;
   PetModel(
       {this.type,
       this.name,
@@ -27,14 +27,14 @@ class PetModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Type'] = this.type;
-    data['Name'] = this.name;
-    data['Gender'] = this.gender;
-    data['Breed'] = this.breed;
-    data['Date_of_birth'] = this.dateOfBirth;
-    data['Adoption_Date'] = this.adoptionDate;
-    data['Weight'] = this.weight;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Type'] = type;
+    data['Name'] = name;
+    data['Gender'] = gender;
+    data['Breed'] = breed;
+    data['Date_of_birth'] = dateOfBirth;
+    data['Adoption_Date'] = adoptionDate;
+    data['Weight'] = weight;
     return data;
   }
 }

@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class AddPetPhoto extends StatefulWidget {
-   
-
-  const AddPetPhoto({Key? key,}) : super(key: key); 
+  const AddPetPhoto({
+    super.key,
+  });
 
   @override
   State<AddPetPhoto> createState() => _AddPetPhotoState();
 }
 
 class _AddPetPhotoState extends State<AddPetPhoto> {
-   File? image;
+  File? image;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -52,14 +52,11 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
           bottom: 0,
           right: 0,
           child: InkWell(
-            onTap: () async {
-            
-            },
+            onTap: () async {},
             child: Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.symmetric(horizontal: 180.0),
               height: 30,
-    
               decoration: ShapeDecoration(
                 shape: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),

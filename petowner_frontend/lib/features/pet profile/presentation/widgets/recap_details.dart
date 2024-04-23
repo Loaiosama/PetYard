@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/pet_model.dart';
+import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
 import 'package:petowner_frontend/features/pet%20profile/data/repos/pet_info_imp.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/view_model/cubit/add_pet_info_cubit.dart';
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_image.dart';
@@ -14,7 +13,7 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/re
 
 class RecapDetails extends StatelessWidget {
   final PetModel petModel;
-  const RecapDetails({Key? key, required this.petModel}) : super(key: key);
+  const RecapDetails({super.key, required this.petModel});
 
   @override
   Widget build(BuildContext context) {
@@ -80,27 +79,23 @@ class RecapDetails extends StatelessWidget {
                           PetInfoRepoImp(apiService: ApiService(dio: Dio()))),
                       child: BlocBuilder<AddPetInfoCubit, AddPetInfoState>(
                         builder: (context, state) {
-                          if(state is AddPetInfoSuccess)
-                          {
-                            return Text("koko") ; 
-
-                          }else if (state is AddPetInfoloading)
-                          {
-                            return Text("koko tany ") ; 
-
-                          }else if(state is AddPetInfoFaliure)
-                          {
-                            return Text("koko talt ") ; 
-
+                          AddPetInfoCubit cubit = BlocProvider.of(context);
+                          if (state is AddPetInfoSuccess) {
+                            return Text(state.successMessage);
+                          } else if (state is AddPetInfoloading) {
+                            return const CircularProgressIndicator();
+                          } else if (state is AddPetInfoFaliure) {
+                            return Text(state.errorMessage);
                           }
-                            return PetYardTextButton(
+                          return PetYardTextButton(
                             width: 50.w,
                             text: 'Continue',
-                            onPressed: () {},
+                            onPressed: () {
+                              cubit.addPetInfo(petModel);
+                            },
                             style: Styles.styles14NormalBlack
                                 .copyWith(color: Colors.white),
                           );
-
                         },
                       ),
                     ),
@@ -109,7 +104,7 @@ class RecapDetails extends StatelessWidget {
                 ],
               ),
             ),
-            Positioned(
+            const Positioned(
               left: 0,
               right: 0,
               top: -80,
