@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
-// import 'package:petowner_frontend/core/utils/routing/routes.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/profile/data/repo/get_all_pets_repo.dart';
@@ -62,13 +62,16 @@ class ActivePetProfileSection extends StatelessWidget {
                             (index) => InkWell(
                               onTap: () {
                                 // activePetRepo.getAllPets();
-                                // GoRouter.of(context).push(Routes.kPetInformation);
+                                // GoRouter.of(context)
+                                //     .push(Routes.kPetInformation);
+                                context.pushNamed(Routes.kPetInformation,
+                                    extra: state.allPets[index].data![0].petId);
                               },
                               child: PetProfileCircle(
                                 petName: state.allPets[index].data![0].name ??
                                     'no name',
-                                petImage:
-                                    state.allPets[index].data![0].image ?? '',
+                                petImage: state.allPets[index].data![0].image ??
+                                    'default.png',
                               ),
                             ),
                           ),

@@ -18,27 +18,25 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pe
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_weight_item.dart';
 
 class PetInfo extends StatefulWidget {
-   
-  final PetModel petModel  ; 
-  const PetInfo({Key? key, required this.petModel,}) : super(key: key);
+  final PetModel petModel;
+  const PetInfo({
+    Key? key,
+    required this.petModel,
+  }) : super(key: key);
   @override
   _PetInfoState createState() => _PetInfoState();
 }
 
 class _PetInfoState extends State<PetInfo> {
   String selectedWeight = '';
-  final TextEditingController nameController = TextEditingController() ;  
+  final TextEditingController nameController = TextEditingController();
 
-   @override
-
-  
-
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-  
-          child: Column(
+        child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,18 +44,20 @@ class _PetInfoState extends State<PetInfo> {
               SizedBox(height: 5.h),
               const LinearIndicator(percent: 0.5),
               SizedBox(height: 20.h),
-      
-             
-               const AddPetPhoto(),
-            
+              const AddPetPhoto(),
               SizedBox(height: 20.h),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: CustomRegistrationTextField(width: 300.w, hintText: 'Your pet name' , controller: nameController , onChanged: (value){
-                  setState(() {
-                    widget.petModel.name = value ;
-                  });
-                },  ),
+                child: CustomRegistrationTextField(
+                  width: 300.w,
+                  hintText: 'Your pet name',
+                  controller: nameController,
+                  onChanged: (value) {
+                    setState(() {
+                      widget.petModel.name = value;
+                    });
+                  },
+                ),
               ),
               SizedBox(height: 15.h),
               Padding(
@@ -103,69 +103,70 @@ class _PetInfoState extends State<PetInfo> {
                   ],
                 ),
               ),
-               SizedBox(height: 15.h),
-               Padding(
-                 padding:const EdgeInsets.symmetric(horizontal: 40.0),
-                 child: Text(
+              SizedBox(height: 15.h),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Text(
                   'What’s the gender of your pet?',
                   style: Styles.styles14NormalBlack,
-                               ),
-               ),
-               SizedBox(height: 15.h),
-                Padding(
-                 padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  Gender(onGenderSelected: ( gender){ 
+                ),
+              ),
+              SizedBox(height: 15.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child: Gender(onGenderSelected: (gender) {
                   setState(() {
-                    widget.petModel.gender = gender ; 
+                    widget.petModel.gender = gender;
                   });
-                 }
-                  
-                 ),
-               ),
-               SizedBox(height: 15.h,),
-             
-                Padding(
-                 padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  DatePicker(labelText: 'Date of birth' , onDateSelected: (date){
-                  setState(() {
-                    widget.petModel.dateOfBirth = date ; 
-                  });
-                 } ,),
-               ),
-               SizedBox(height: 20.h,),
-                Padding(
-                 padding: EdgeInsets.symmetric(horizontal: 40.0),
-                 child:  DatePicker(labelText: 'Adoption Date' , onDateSelected: (date){
-                  setState(() {
-                    widget.petModel.adoptionDate = date;
-                  });
-                 },),
-               ),
-               SizedBox(height: 10.h,),
-               Padding(
-                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                 child: PetYardTextButton(width: 50.w,text: 'Continue', onPressed: () {
-                  widget.petModel.name = nameController.text;
-            
-                   context.pushNamed(Routes.KPetRecap , extra : widget.petModel); }, style: Styles.styles14NormalBlack.copyWith(color : Colors.white),),
-               ),
-          
-               
-                  
-            
-                  
-              
-              
-               
-                
-                  
-                  
-            ]
-          ),
-        
+                }),
+              ),
+              SizedBox(
+                height: 15.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child: DatePicker(
+                  labelText: 'Date of birth',
+                  onDateSelected: (date) {
+                    setState(() {
+                      widget.petModel.dateOfBirth = date;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child: DatePicker(
+                  labelText: 'Adoption Date',
+                  onDateSelected: (date) {
+                    setState(() {
+                      widget.petModel.adoptionDate = date;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: PetYardTextButton(
+                  width: 50.w,
+                  text: 'Continue',
+                  onPressed: () {
+                    widget.petModel.name = nameController.text;
+
+                    context.pushNamed(Routes.kPetRecap, extra: widget.petModel);
+                  },
+                  style:
+                      Styles.styles14NormalBlack.copyWith(color: Colors.white),
+                ),
+              ),
+            ]),
       ),
     );
   }
-
-
 }

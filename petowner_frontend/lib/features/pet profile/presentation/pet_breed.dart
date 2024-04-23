@@ -12,8 +12,11 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/li
 import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
 
 class PetBreedScreen extends StatelessWidget {
-  final PetModel petModel ;
-  const PetBreedScreen({super.key, required this.petModel,});
+  final PetModel petModel;
+  const PetBreedScreen({
+    super.key,
+    required this.petModel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +64,8 @@ class PetBreedScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: PetYardTextButton(
                 onPressed: () {
-           
-                  petModel.breed = "Scottish Fold" ; 
-                  context.pushNamed(Routes.KPetInfo,extra : petModel) ; 
-
+                  petModel.breed = "Scottish Fold";
+                  context.pushNamed(Routes.kAddPetInfo, extra: petModel);
                 },
                 style: Styles.styles16BoldWhite,
                 text: 'Continue',
@@ -86,7 +87,7 @@ class BreedNameListView extends StatefulWidget {
 
 class _BreedNameListViewState extends State<BreedNameListView> {
   int selectedIndex = -1;
-   late  String breed ; 
+  late String breed;
   void handleSelection(int index) {
     if (selectedIndex == index) {
       setState(() {
@@ -95,7 +96,6 @@ class _BreedNameListViewState extends State<BreedNameListView> {
     } else {
       setState(() {
         selectedIndex = index;
-  
       });
     }
   }
@@ -133,7 +133,7 @@ class BreedNameItem extends StatelessWidget {
         children: [
           heightSizedBox(10),
           InkWell(
-              onTap: onTap ,
+              onTap: onTap,
               splashColor: kPrimaryGreen.withOpacity(0.3),
               child: SizedBox(
                 // height: 40,

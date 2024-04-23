@@ -17,6 +17,7 @@ import 'package:petowner_frontend/features/provider%20profile/presentation/view/
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/signup.dart';
+import 'package:petowner_frontend/features/reserve%20service/presentation/view/reserve_appointment_screen.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
 
 abstract class AppRouter {
@@ -97,17 +98,16 @@ abstract class AppRouter {
       ),
       // Navigate to chosse breed of pet screen
       GoRoute(
-        name: Routes.kPetBreed,
-        path: Routes.kPetBreed,
-        pageBuilder: (context, state) {
-          final PetModel pet = state.extra as PetModel;
-          return transitionGoRoute(
-          context: context,
-          state: state,
-          child:  PetBreedScreen(petModel: pet),
-        );
-        }
-      ),
+          name: Routes.kPetBreed,
+          path: Routes.kPetBreed,
+          pageBuilder: (context, state) {
+            final PetModel pet = state.extra as PetModel;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: PetBreedScreen(petModel: pet),
+            );
+          }),
       // Navigate to personal information screen
       GoRoute(
         path: Routes.kPersonalInformation,
@@ -127,13 +127,18 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
-        path: Routes.kPetInformation,
-        pageBuilder: (context, state) => transitionGoRoute(
-          context: context,
-          state: state,
-          child: const PetInformationScreen(),
-        ),
-      ),
+          name: Routes.kPetInformation,
+          path: Routes.kPetInformation,
+          pageBuilder: (context, state) {
+            final int id = state.extra as int;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: PetInformationScreen(
+                id: id,
+              ),
+            );
+          }),
       GoRoute(
         path: Routes.kProfileLocation,
         pageBuilder: (context, state) => transitionGoRoute(
@@ -143,30 +148,39 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
-       name: Routes.KPetInfo,
-       path: Routes.kPetInfo,
-       pageBuilder: (context, state) { 
-         //final Object? breed = state.extra; 
-          final PetModel pet = state.extra as PetModel;
-          return transitionGoRoute(
+        path: Routes.kbookAppointment,
+        pageBuilder: (context, state) => transitionGoRoute(
           context: context,
           state: state,
-          child: PetInfo(petModel: pet,), 
-    );
-  },
-),
-       
-       GoRoute(
-        name :Routes.KPetRecap,
-        path: Routes.KPetRecap,
-        pageBuilder: (context, state) { 
+          child: const BookAppointment(),
+        ),
+      ),
+      GoRoute(
+        name: Routes.kAddPetInfo,
+        path: Routes.kAddPetInfo,
+        pageBuilder: (context, state) {
+          //final Object? breed = state.extra;
           final PetModel pet = state.extra as PetModel;
           return transitionGoRoute(
-          context: context,
-          state: state,
-          child:  Recap(petModel: pet),
-        );
-        }
+            context: context,
+            state: state,
+            child: PetInfo(
+              petModel: pet,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kPetRecap,
+        path: Routes.kPetRecap,
+        pageBuilder: (context, state) {
+          final PetModel pet = state.extra as PetModel;
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: Recap(petModel: pet),
+          );
+        },
       ),
     ],
   );

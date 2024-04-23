@@ -93,7 +93,7 @@ class ProfileRepoImpl extends ProfileRepo {
           message: response['message'],
           data: [datum],
         );
-        allPets.add(allPetsModel);
+        // allPets.add(allPetsModel);
       }
       // print(allPetsModel.data![0].name);
       return right(allPetsModel);
