@@ -31,18 +31,7 @@ class Recap extends StatelessWidget {
         centerTitle: true,
       ),
       backgroundColor: kPrimaryGreen,
-      body:RecapDetails(petModel: petModel,),
-
-   
-   
-
-
-
-
-        
-        
-        
-          
+      body:RecapDetails(petModel: petModel,),  
         );
       
     
