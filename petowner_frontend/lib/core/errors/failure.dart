@@ -10,43 +10,42 @@ class ServerFailure extends Failure {
   ServerFailure(super.errorMessage);
 
   factory ServerFailure.fromDioError(DioException dioError) {
-    // print(dioError.type);
-    // print('object  ${dioError.response!.statusCode}');
-    // print('object  ${dioError.response}');
     switch (dioError.type) {
       case DioExceptionType.connectionTimeout:
-        return ServerFailure('Connection Time out!');
+        return ServerFailure('Connection Timeout!');
       case DioExceptionType.sendTimeout:
-        return ServerFailure('Send Time out!');
+        return ServerFailure('Send Timeout!');
       case DioExceptionType.receiveTimeout:
-        return ServerFailure('Receive Time out!');
-      case DioExceptionType.badCertificate:
-        return ServerFailure('BAD CERTIFICATE OR WHATEVER DOES THAT MEAN!');
+        return ServerFailure('Receive Timeout!');
       case DioExceptionType.badResponse:
-        // print('anahenaa');
-        return ServerFailure('Connection Time out!');
+        if (dioError.response?.statusCode == 401) {
+          return ServerFailure('Invalid token');
+        } else {
+          return ServerFailure('Bad Request!');
+        }
       case DioExceptionType.cancel:
         return ServerFailure('Request was canceled!');
-      case DioExceptionType.connectionError:
-        return ServerFailure('Connection Time out!');
       case DioExceptionType.unknown:
-        return ServerFailure('AAAANNNND UNknown! :D');
+        return ServerFailure('Unknown Error!');
       default:
-        return ServerFailure('oops :D!');
+        return ServerFailure('Oops, something went wrong!');
     }
   }
 
   factory ServerFailure.fromResponse(int? statusCode, dynamic response) {
     switch (statusCode) {
-      case 400 || 401 || 403:
-        // print('response $response["message"]');
-        return ServerFailure(response['message']);
+      case 400:
+        return ServerFailure(response['message'] ?? 'Bad Request!');
+      case 401:
+        return ServerFailure('Unauthorized!');
+      case 403:
+        return ServerFailure('Forbidden!');
       case 404:
-        return ServerFailure('Error 404, Not Found!');
+        return ServerFailure('Not Found!');
       case 500:
         return ServerFailure('Internal Server Error!');
       default:
-        return ServerFailure('oops :D!');
+        return ServerFailure('Oops, something went wrong!');
     }
   }
 }
