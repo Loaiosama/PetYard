@@ -5,6 +5,7 @@ class Routes {
   static const String kSigninScreen = '/signIn';
   static const String kForgotPasswordScreen = '/forgetPassword';
   static const String kHomeScreen = '/home';
+  static const String kProfileScreen = '/profileScreen';
   static const String kChooseType = '/ChooseType';
   static const String kPetInfo = '/petInfo';
   static const String kPetBreed = '/petBreed';
@@ -15,4 +16,5 @@ class Routes {
   static const String kbookAppointment = '/bookAppointment';
   static const String kAddPetInfo = '/addPetInfo';
   static const String kPetRecap = '/Recap';
+  static const String kServiceProviders = '/ServiceProviders';
 }

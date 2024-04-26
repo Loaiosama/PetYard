@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
+import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
 import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
 // import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
@@ -13,6 +14,7 @@ import 'package:petowner_frontend/features/pet%20profile/presentation/recap.dart
 import 'package:petowner_frontend/features/profile/presentation/view/location_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';
+import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
@@ -58,13 +60,19 @@ abstract class AppRouter {
       ),
       // Navigate to home screen
       GoRoute(
-        path: Routes.kHomeScreen,
-        pageBuilder: (context, state) => transitionGoRoute(
-          context: context,
-          state: state,
-          child: const HomeScreen(),
-        ),
-      ),
+          name: Routes.kHomeScreen,
+          path: Routes.kHomeScreen,
+          pageBuilder: (context, state) {
+            // final int index = state.extra as int;
+
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: const HomeScreen(
+                  // initialIndex: index,
+                  ),
+            );
+          }),
       // Navigate to forget password screen
       GoRoute(
         path: Routes.kForgotPasswordScreen,
@@ -72,6 +80,14 @@ abstract class AppRouter {
           context: context,
           state: state,
           child: const ForgotPasswordScreen(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.kProfileScreen,
+        pageBuilder: (context, state) => transitionGoRoute(
+          context: context,
+          state: state,
+          child: const ProfileScreen(),
         ),
       ),
       // GoRoute(
@@ -119,13 +135,17 @@ abstract class AppRouter {
       ),
       // Navigate to provider profile screen
       GoRoute(
-        path: Routes.kProviderProfile,
-        pageBuilder: (context, state) => transitionGoRoute(
-          context: context,
-          state: state,
-          child: const ProviderProfileScreen(),
-        ),
-      ),
+          name: Routes.kProviderProfile,
+          path: Routes.kProviderProfile,
+          pageBuilder: (context, state) {
+            final int id = state.extra as int;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: ProviderProfileScreen(
+                  id: id,
+                ));
+          }),
       GoRoute(
           name: Routes.kPetInformation,
           path: Routes.kPetInformation,
@@ -153,6 +173,14 @@ abstract class AppRouter {
           context: context,
           state: state,
           child: const BookAppointment(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.kServiceProviders,
+        pageBuilder: (context, state) => transitionGoRoute(
+          context: context,
+          state: state,
+          child: const ServiceProvidersScreen(),
         ),
       ),
       GoRoute(
