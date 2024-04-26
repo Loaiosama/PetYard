@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/constants/constants.dart';
+import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -64,6 +65,39 @@ class ALternativeSignupOptionColumn extends StatelessWidget {
             ],
           ),
         ),
+        heightSizedBox(16),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+          child: RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+                text: 'By logging, you agree to our ',
+                style: Styles.styles12NormalHalfBlack.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 11.sp,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Terms & Conditions ',
+                    style: Styles.styles10w400.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11.sp,
+                    ),
+                  ),
+                  const TextSpan(
+                    text: 'and ',
+                  ),
+                  TextSpan(
+                    text: 'PrivacyPolicy.',
+                    style: Styles.styles10w400.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11.sp,
+                    ),
+                  )
+                ]),
+          ),
+        ),
+        heightSizedBox(8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

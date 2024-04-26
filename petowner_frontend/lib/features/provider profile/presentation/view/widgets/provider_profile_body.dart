@@ -11,8 +11,8 @@ import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
 
 class ProviderProfileBody extends StatelessWidget {
-  const ProviderProfileBody({super.key});
-
+  const ProviderProfileBody({super.key, required this.id});
+  final int id;
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -30,7 +30,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(right: 12.0.w, left: 14.0.w, top: 20.0.h),
+          padding: EdgeInsets.only(right: 12.0.w, left: 14.0.w, top: 50.0.h),
           child: Form(
             key: formKey,
             child: Column(
@@ -86,10 +86,10 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                 PetYardTextButton(
                   onPressed: () async {
                     // await _signIn();
-                    // if (formKey.currentState!.validate()) {
-                    //   await _signIn();
-                    // }
-                    GoRouter.of(context).push(Routes.kHomeScreen);
+                    if (formKey.currentState!.validate()) {
+                      await _signIn();
+                    }
+                    // GoRouter.of(context).push(Routes.kHomeScreen);
                   },
                   text: 'Login!',
                   style: Styles.styles16BoldWhite,
