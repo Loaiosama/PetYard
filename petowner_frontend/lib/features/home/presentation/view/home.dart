@@ -8,7 +8,12 @@ import 'package:petowner_frontend/features/profile/presentation/view/profile_scr
 import 'widgets/home_screen_body.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  // final int initialIndex;
+
+  const HomeScreen({
+    super.key,
+    // this.initialIndex = 0,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,6 +21,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
+
+  // late int currentIndex;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   currentIndex = widget.initialIndex;
+  // }
+
   List screens = [
     const HomeScreenBody(),
     const Center(
