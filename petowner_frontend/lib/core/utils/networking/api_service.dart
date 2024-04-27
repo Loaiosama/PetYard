@@ -14,13 +14,6 @@ class ApiService {
 
   var headers = {'Content-Type': 'application/json'};
 
-  // Future<void> setAuthorizationHeader() async {
-  //   final token = await _storage.read(key: 'token');
-  //   print('TOKEENNNNN $token');
-  //   if (token != null) {
-  //     headers['Authorization'] = 'Bearer $token';
-  //   }
-  // }
   Future<void> setAuthorizationHeader() async {
     try {
       // Retrieve token from secure storage
@@ -70,6 +63,22 @@ class ApiService {
     );
 
     return response.data;
+  }
+
+  Future<Response> delete({required String endPoints}) async {
+    try {
+      var response = await dio.delete(
+        '$baseUrl$endPoints',
+        options: Options(
+          method: 'DELETE',
+          headers: headers,
+        ),
+      );
+      return response;
+    } catch (error) {
+      debugPrint('Delete error: $error');
+      rethrow;
+    }
   }
   // Future<Response> addPet () async
   // {

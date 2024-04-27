@@ -8,7 +8,7 @@ import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/profile/data/repo/get_all_pets_repo.dart';
+import 'package:petowner_frontend/features/profile/data/repo/profile_repo_impl.dart';
 import 'package:petowner_frontend/features/profile/presentation/view_model/active_pets_cubit/active_pets_cubit_cubit.dart';
 
 import 'pet_profile_circle.dart';
