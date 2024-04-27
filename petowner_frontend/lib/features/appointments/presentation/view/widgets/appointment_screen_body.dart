@@ -13,7 +13,7 @@ class AppointmentsScreenBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Padding(
         padding: EdgeInsets.only(top: 24.0.h, right: 16.0.w, left: 16.0.w),
         child: Column(
@@ -29,6 +29,7 @@ class AppointmentsScreenBody extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               tabs: const [
                 Text('Upcoming'),
+                Text('Pending'),
                 Text('Completed'),
                 Text('Cancelled'),
               ],
@@ -40,6 +41,7 @@ class AppointmentsScreenBody extends StatelessWidget {
                 // controller: tabController,
                 children: [
                   UpcomingTabColumn(),
+                  PendingTabColumn(),
                   CompletedTabColumn(),
                   CancelledTabColumn(),
                 ],
@@ -48,6 +50,24 @@ class AppointmentsScreenBody extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PendingTabColumn extends StatelessWidget {
+  const PendingTabColumn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 20,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        return CompletedCancelledTabCard(
+          appointmentStatus: 'Appointment Pending.',
+          statusColor: Colors.yellow.shade700,
+        );
+      },
     );
   }
 }
@@ -62,7 +82,8 @@ class CancelledTabColumn extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return const CompletedCancelledTabCard(
-          isCompleted: false,
+          appointmentStatus: 'Appointment Cancelled.',
+          statusColor: Colors.red,
         );
       },
     );
@@ -79,7 +100,8 @@ class CompletedTabColumn extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return const CompletedCancelledTabCard(
-          isCompleted: true,
+          appointmentStatus: 'Appointment Done.',
+          statusColor: kPrimaryGreen,
         );
       },
     );
@@ -89,10 +111,11 @@ class CompletedTabColumn extends StatelessWidget {
 class CompletedCancelledTabCard extends StatelessWidget {
   const CompletedCancelledTabCard({
     super.key,
-    required this.isCompleted,
+    required this.appointmentStatus,
+    required this.statusColor,
   });
-
-  final bool isCompleted;
+  final String appointmentStatus;
+  final Color statusColor;
 
   @override
   Widget build(BuildContext context) {
@@ -126,11 +149,10 @@ class CompletedCancelledTabCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isCompleted
-                              ? 'Appointment Done.'
-                              : 'Appointment Cancelled.',
+                          appointmentStatus,
                           style: Styles.styles12RegularOpacityBlack.copyWith(
-                              color: isCompleted ? kPrimaryGreen : Colors.red),
+                            color: statusColor,
+                          ),
                         ),
                         heightSizedBox(4),
                         Text(
