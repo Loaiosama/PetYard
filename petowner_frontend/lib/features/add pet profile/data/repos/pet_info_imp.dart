@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:petowner_frontend/core/errors/failure.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/repos/pet_info_repo.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/data/repos/pet_info_repo.dart';
 
 class PetInfoRepoImp extends PetInfoRepo {
   final ApiService apiService;

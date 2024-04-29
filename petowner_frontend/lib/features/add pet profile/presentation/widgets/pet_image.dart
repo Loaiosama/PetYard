@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PetImage extends StatefulWidget {
   const PetImage({
@@ -40,7 +41,7 @@ class _AddPetPhotoState extends State<PetImage> {
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  radius: 70,
+                  radius: 56.r,
                   foregroundImage: image != null ? FileImage(image!) : null,
                 ),
               ),

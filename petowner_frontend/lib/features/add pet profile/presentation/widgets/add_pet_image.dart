@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class AddPetPhoto extends StatefulWidget {
   const AddPetPhoto({
@@ -25,8 +28,9 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
               end: Alignment.centerLeft,
               begin: Alignment.centerRight,
               colors: [
-                Colors.blue,
+                // Colors.blue,
                 Colors.green,
+                kPrimaryGreen
               ],
             ),
           ),
@@ -40,7 +44,10 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
               child: FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  radius: 70,
+                  radius: 60.r,
+                  backgroundColor: Colors.white,
+                  // backgroundImage:
+                  //     const AssetImage('assets/images/default.png'),
                   foregroundImage: image != null ? FileImage(image!) : null,
                 ),
               ),
@@ -52,7 +59,7 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
           bottom: 0,
           right: 0,
           child: InkWell(
-            onTap: () async {},
+            onTap: () {},
             child: Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.symmetric(horizontal: 180.0),
@@ -66,12 +73,17 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
                   end: Alignment.centerLeft,
                   begin: Alignment.centerRight,
                   colors: [
-                    Colors.blue,
+                    // Colors.blue,
                     Colors.green,
+                    kPrimaryGreen
                   ],
                 ),
               ),
-              child: const Icon(Icons.photo),
+              child: Icon(
+                FontAwesomeIcons.camera,
+                color: Colors.white,
+                size: 18.sp,
+              ),
             ),
           ),
         )

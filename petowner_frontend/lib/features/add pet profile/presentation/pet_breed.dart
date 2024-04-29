@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
-import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/linear_percent_indecator.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_bar.dart';
 
 class PetBreedScreen extends StatelessWidget {
   final PetModel petModel;
@@ -39,20 +39,33 @@ class PetBreedScreen extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Column(
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Search for Breed',
-                      hintStyle: TextStyle(
-                        color: Colors.black.withOpacity(0.5),
-                        fontSize: 14.sp,
-                      ),
-                      enabledBorder: customEnabledOutlinedBorder,
-                      focusedBorder: customFocusedOutlinedBorder,
-                      errorBorder: customErrorOutlinedBorder,
-                      border: customEnabledOutlinedBorder,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.black.withOpacity(0.5),
+                  SizedBox(
+                    height: 50.h,
+                    width: double.infinity,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: 'Search For Breed',
+                        fillColor: Colors.grey.withOpacity(0.2),
+                        hintStyle: Styles.styles12NormalHalfBlack
+                            .copyWith(fontSize: 14.sp),
+                        filled: true,
+                        prefixIcon: Icon(
+                          FontAwesomeIcons.magnifyingGlass,
+                          size: 16.sp,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                        disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                            borderSide: BorderSide(
+                                color: Colors.black.withOpacity(0.5))),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                            borderSide: BorderSide(
+                                color: Colors.black.withOpacity(0.5))),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                            borderSide: BorderSide(
+                                color: Colors.black.withOpacity(0.5))),
                       ),
                     ),
                   ),
@@ -61,13 +74,15 @@ class PetBreedScreen extends StatelessWidget {
             ),
             const Expanded(child: BreedNameListView()),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  EdgeInsets.only(left: 20.0.w, right: 20.0.w, bottom: 20.0.h),
               child: PetYardTextButton(
                 onPressed: () {
                   petModel.breed = "Scottish Fold";
                   context.pushNamed(Routes.kAddPetInfo, extra: petModel);
                 },
-                style: Styles.styles16BoldWhite,
+                style: Styles.styles14NormalBlack.copyWith(color: Colors.white),
+                height: 50.h,
                 text: 'Continue',
               ),
             ),

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/pet%20profile/data/repos/pet_info_imp.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/data/repos/pet_info_imp.dart';
 
 part 'add_pet_info_state.dart';
 

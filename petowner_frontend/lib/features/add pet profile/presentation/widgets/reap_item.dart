@@ -18,21 +18,21 @@ class RecapItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300.w,
-      height: 60.h,
+      width: double.infinity,
+      height: 56.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16.r),
         color: Colors.white,
         border: Border.all(
           color: Colors.white,
-          width: 2.w,
+          width: 1.w,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.7),
-            spreadRadius: 2,
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 0.5,
             blurRadius: 4,
-            offset: const Offset(0, 3),
+            offset: const Offset(0, 2),
           ),
         ],
       ),

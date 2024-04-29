@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/linear_percent_indecator.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 
-import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_image_button.dart';
-import 'package:petowner_frontend/features/pet%20profile/presentation/widgets/pet_type_bar.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_image_button.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_bar.dart';
 
 class ChooseType extends StatelessWidget {
   const ChooseType({super.key});
@@ -16,7 +16,10 @@ class ChooseType extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const PetTypeBar(subtitle: 'Type',step: '1',),
+            const PetTypeBar(
+              subtitle: 'Type',
+              step: '1',
+            ),
             SizedBox(
               height: 10.h,
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
@@ -31,22 +32,25 @@ class _DatePickerState extends State<DatePicker> {
       },
       child: AbsorbPointer(
         absorbing: true,
-        child: TextField(
-          controller: _dateController,
-          decoration: InputDecoration(
-            iconColor: kPrimaryGreen,
-            focusColor: kPrimaryGreen,
-            hintText: widget.labelText,
-            filled: true,
-            prefixIcon: const Icon(
-              Icons.calendar_month,
-              color: kPrimaryGreen,
+        child: SizedBox(
+          height: 56.h,
+          child: TextField(
+            controller: _dateController,
+            decoration: InputDecoration(
+              iconColor: kPrimaryGreen,
+              focusColor: kPrimaryGreen,
+              hintText: widget.labelText,
+              // filled: true,
+              prefixIcon: const Icon(
+                Icons.calendar_month,
+                color: kPrimaryGreen,
+              ),
+              enabledBorder: customFocusedOutlinedBorder,
+              focusedBorder: customFocusedOutlinedBorder,
+              errorBorder: customErrorOutlinedBorder,
             ),
-            enabledBorder: customFocusedOutlinedBorder,
-            focusedBorder: customFocusedOutlinedBorder,
-            errorBorder: customErrorOutlinedBorder,
+            readOnly: true,
           ),
-          readOnly: true,
         ),
       ),
     );

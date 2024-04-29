@@ -36,12 +36,12 @@ class PetTypeBar extends StatelessWidget {
               ),
             ],
           ),
-           Column(
+          Column(
             children: [
               const Text(
                 'Steps',
               ),
-               SizedBox(
+              SizedBox(
                 height: 2.h,
               ),
               Row(
