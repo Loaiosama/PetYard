@@ -21,6 +21,26 @@ class PetInfoCubit extends Cubit<PetInfoState> {
     });
   }
 
+  Future<void> deletePet({required int id}) async {
+    try {
+      // print('Function Called');
+      emit(PetDeleteLoading());
+      // print('Function loading');
+
+      await profileRepo.deletePet(id: id);
+      emit(const PetDeleteSuccess('Pet Deleted Successfully'));
+      // result.fold((failure) {
+      //   print('Function failure: ${failure.errorMessage}');
+      //   emit(PetDeleteFailure(failure.errorMessage));
+      // }, (message) {
+      //   print('Function success: $message');
+      //   emit(PetDeleteSuccess(message));
+      // });
+    } catch (e) {
+      emit(PetDeleteFailure(e.toString()));
+    }
+  }
+
   int calculateAge(AllPetsModel pet) {
     if (pet.data!.isNotEmpty) {
       DateTime now = DateTime.now();

@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
@@ -40,7 +41,7 @@ class PetInfromationScreenBody extends StatelessWidget {
           ),
         ),
       )..getPetInfo(id: id),
-      child: BlocBuilder<PetInfoCubit, PetInfoState>(
+      child: BlocConsumer<PetInfoCubit, PetInfoState>(
         builder: (context, state) {
           if (state is PetInfoLoading) {
             return const Center(
@@ -139,7 +140,23 @@ class PetInfromationScreenBody extends StatelessWidget {
                                         child: Tooltip(
                                           message: 'Delete Pet Profile',
                                           child: IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (alertcontext) {
+                                                  return AlertWidget(
+                                                    yesOnPressed: () =>
+                                                        BlocProvider.of<
+                                                                    PetInfoCubit>(
+                                                                context)
+                                                            .deletePet(id: id),
+                                                    noOnPressed: () =>
+                                                        GoRouter.of(context)
+                                                            .pop(),
+                                                  );
+                                                },
+                                              );
+                                            },
                                             icon: Icon(
                                               FontAwesomeIcons.trash,
                                               color: Colors.redAccent,
@@ -199,10 +216,29 @@ class PetInfromationScreenBody extends StatelessWidget {
                 ),
               ],
             );
+          } else if (state is PetDeleteLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is PetDeleteFailure) {
+            return AlertDialog(
+              content: Text(state.errorMessage),
+            );
+          } else if (state is PetDeleteSuccess) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: kPrimaryGreen,
+              ),
+            );
           } else {
             return const Center(
               child: Text('oops!'),
             );
+          }
+        },
+        listener: (BuildContext context, PetInfoState state) {
+          if (state is PetDeleteSuccess) {
+            GoRouter.of(context).push(Routes.kHomeScreen, extra: 4);
           }
         },
       ),
@@ -295,6 +331,52 @@ class AgeGenderWeightRow extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AlertWidget extends StatelessWidget {
+  const AlertWidget({super.key, this.noOnPressed, this.yesOnPressed});
+
+  final void Function()? noOnPressed;
+  final void Function()? yesOnPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      title: Text(
+        'Delete Pet Profile?',
+        style: Styles.styles16BoldBlack
+            .copyWith(fontWeight: FontWeight.w700, color: Colors.red),
+      ),
+      content: Text(
+        'Are you sure you want to delete this pet profile?',
+        style: Styles.styles12NormalHalfBlack,
+      ),
+      actions: [
+        TextButton(
+          onPressed: noOnPressed,
+          child: const Text(
+            'No, back.',
+            style: TextStyle(
+              color: kPrimaryGreen,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: yesOnPressed,
+          child: const Text(
+            'Yes, Delete!',
+            style: TextStyle(
+              color: Colors.red,
+            ),
+          ),
+        ),
+      ],
+      shape: ContinuousRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0.r),
       ),
     );
   }

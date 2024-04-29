@@ -106,4 +106,23 @@ class ProfileRepoImpl extends ProfileRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<String> deletePet({required int id}) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response =
+          await apiService.delete(endPoints: 'PetOwner/RemovePet/$id');
+      return response.data['message'];
+    } catch (e) {
+      return e.toString();
+      // if (e is DioException) {
+      //   // print('tagroba${ServerFailure.fromDioError(e)}');
+      //   return left(ServerFailure.fromDioError(e));
+      // }
+      // // print('fail 2');
+      // return left(ServerFailure(e.toString()));
+    }
+  }
 }
