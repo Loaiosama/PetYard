@@ -5,8 +5,19 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class AboutTabColumn extends StatelessWidget {
-  const AboutTabColumn({super.key, required this.serviceName});
+  const AboutTabColumn(
+      {super.key,
+      required this.serviceName,
+      required this.bio,
+      required this.email,
+      required this.phoneNumber,
+      required this.userName});
+  final String userName;
   final String serviceName;
+  final String bio;
+  final String email;
+  // final String age;
+  final String phoneNumber;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -21,7 +32,7 @@ class AboutTabColumn extends StatelessWidget {
           ),
           heightSizedBox(8),
           Text(
-            'Dr. Jenny Watson is the top most Immunologists specialist in Christ Hospital at London. She achived several awards for her wonderful contribution in medical field. She is available for private consultation.',
+            bio,
             style: Styles.styles12NormalHalfBlack,
           ),
           heightSizedBox(18),
@@ -36,12 +47,12 @@ class AboutTabColumn extends StatelessWidget {
           ),
           heightSizedBox(18),
           Text(
-            'Working Time',
+            'Other Services Provided By $userName',
             style: Styles.styles14w600,
           ),
           heightSizedBox(8),
           Text(
-            'Monday - Friday, 08.00 AM - 20.00 PM',
+            'services ya back',
             style: Styles.styles12NormalHalfBlack,
           ),
           heightSizedBox(18),
@@ -59,7 +70,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                '+201016768605',
+                phoneNumber,
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],
@@ -74,7 +85,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                'oliviaaustin@gmail.com',
+                email,
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],
@@ -89,7 +100,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                '26 years old.',
+                '26 years old."age ya back"',
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],
@@ -108,7 +119,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                '20 Completed bookings',
+                '20 Completed bookings hmm',
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],

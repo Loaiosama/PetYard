@@ -14,9 +14,20 @@ import 'review_tab.dart';
 
 class ProviderProfileBody extends StatelessWidget {
   const ProviderProfileBody(
-      {super.key, required this.id, required this.serviceName});
+      {super.key,
+      required this.id,
+      required this.serviceName,
+      required this.bio,
+      required this.email,
+      required this.phoneNumber,
+      required this.userName});
   final int id;
   final String serviceName;
+  final String bio;
+  final String email;
+  // final String age;
+  final String phoneNumber;
+  final String userName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,6 +65,10 @@ class ProviderProfileBody extends StatelessWidget {
                       children: [
                         AboutTabColumn(
                           serviceName: serviceName,
+                          bio: bio,
+                          email: email,
+                          phoneNumber: phoneNumber,
+                          userName: userName,
                         ),
                         const LocationTabColumn(),
                         const ReviewsTabColumn(),

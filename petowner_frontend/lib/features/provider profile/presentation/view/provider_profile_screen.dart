@@ -1,15 +1,12 @@
-// import 'package:dio/dio.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
-// import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view%20model/cubit/provider_info_cubit.dart';
-// import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/widgets/provider_profile_body.dart';
 
 class ProviderProfileScreen extends StatelessWidget {
@@ -63,12 +60,7 @@ class ProviderProfileScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: IconButton(
-                        onPressed: () {
-                          // ProviderInfoRepo(apiService: ApiService(dio: Dio()))
-                          //     .getProviderInfo(id: id);
-                          // print('id = $id');
-                          print(serviceName);
-                        },
+                        onPressed: () {},
                         icon: Tooltip(
                           message: 'More',
                           child: Icon(
@@ -85,6 +77,12 @@ class ProviderProfileScreen extends StatelessWidget {
               body: ProviderProfileBody(
                 id: id,
                 serviceName: serviceName,
+                bio: state.providerInfoModel.data!.bio ?? 'No Bio Provided',
+                email:
+                    state.providerInfoModel.data!.email ?? 'No Email Address.',
+                phoneNumber:
+                    state.providerInfoModel.data!.phone ?? 'No Phone Number.',
+                userName: state.providerInfoModel.data!.username ?? 'No name.',
               ),
             );
           } else if (state is ProviderInfoLoading) {
