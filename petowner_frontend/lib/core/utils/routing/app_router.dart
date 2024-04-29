@@ -138,13 +138,18 @@ abstract class AppRouter {
           name: Routes.kProviderProfile,
           path: Routes.kProviderProfile,
           pageBuilder: (context, state) {
-            final int id = state.extra as int;
+            final Map<String, dynamic> extras =
+                state.extra as Map<String, dynamic>;
+            final int id = extras['id'] as int;
+            final String serviceName = extras['serviceName'] as String;
             return transitionGoRoute(
-                context: context,
-                state: state,
-                child: ProviderProfileScreen(
-                  id: id,
-                ));
+              context: context,
+              state: state,
+              child: ProviderProfileScreen(
+                id: id,
+                serviceName: serviceName,
+              ),
+            );
           }),
       GoRoute(
           name: Routes.kPetInformation,

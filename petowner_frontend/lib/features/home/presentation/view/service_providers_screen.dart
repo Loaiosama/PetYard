@@ -79,6 +79,7 @@ class ServiceProvidersBody extends StatelessWidget {
                         return ProviderListItem(
                           id: state.providersList[index].data![0].providerId ??
                               -1,
+                          serviceName: serviceName,
                           userName:
                               state.providersList[index].data![0].username ??
                                   'no name',
@@ -138,9 +139,11 @@ class ProviderListItem extends StatelessWidget {
     super.key,
     required this.userName,
     required this.id,
+    required this.serviceName,
   });
   final String userName;
   final int id;
+  final String serviceName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -149,7 +152,15 @@ class ProviderListItem extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              context.pushNamed(Routes.kProviderProfile, extra: id);
+              GoRouter.of(context).pushNamed(
+                Routes.kProviderProfile,
+                extra: {
+                  'id': id,
+                  'serviceName': serviceName,
+                },
+              );
+              // context
+              //     .pushNamed(Routes.kProviderProfile, extra: {id, serviceName});
             },
             child: Material(
               color: Colors.white,

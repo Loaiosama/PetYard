@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/provider%20profile/presentation/view/widgets/provider_profile_body.dart';
+import '../../../../provider profile/presentation/view/widgets/provider_profile_card.dart';
 
 class SummaryTab extends StatelessWidget {
   const SummaryTab({super.key});

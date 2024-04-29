@@ -26,7 +26,7 @@ class SignUpRepo {
           "dateOfBirth": dateOfBirth,
         },
       );
-      print('RESPONSE CODE ==== ${response.statusCode}');
+      // print('RESPONSE CODE ==== ${response.statusCode}');
       // Check if response is successful
       if (response.statusCode == 201) {
         debugPrint(
