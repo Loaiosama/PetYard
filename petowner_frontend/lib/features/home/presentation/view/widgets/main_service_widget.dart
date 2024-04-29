@@ -37,7 +37,10 @@ class DiscoverServiceWidget extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        GoRouter.of(context).push(Routes.kServiceProviders);
+                        GoRouter.of(context).push(
+                          Routes.kServiceProviders,
+                          extra: homeServicesMap[index]['service'],
+                        );
                       },
                       splashColor: kPrimaryGreen.withOpacity(0.4),
                       child: CircleAvatar(

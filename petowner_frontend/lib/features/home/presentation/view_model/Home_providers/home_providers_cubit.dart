@@ -10,7 +10,7 @@ class HomeProvidersCubit extends Cubit<HomeProvidersState> {
 
   final HomeRepo homeRepo;
 
-  Future<void> getAllProviders() async {
+  Future<void> getAllProvidersOfService() async {
     emit(HomeProvidersLoading());
     var result = await homeRepo.fetchAllProvidersOfService();
 
