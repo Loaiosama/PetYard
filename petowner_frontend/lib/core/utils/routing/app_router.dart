@@ -63,14 +63,14 @@ abstract class AppRouter {
           name: Routes.kHomeScreen,
           path: Routes.kHomeScreen,
           pageBuilder: (context, state) {
-            // final int index = state.extra as int;
+            final int index = state.extra as int;
 
             return transitionGoRoute(
               context: context,
               state: state,
-              child: const HomeScreen(
-                  // initialIndex: index,
-                  ),
+              child: HomeScreen(
+                initialIndex: index,
+              ),
             );
           }),
       // Navigate to forget password screen
@@ -176,12 +176,18 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
+        name: Routes.kServiceProviders,
         path: Routes.kServiceProviders,
-        pageBuilder: (context, state) => transitionGoRoute(
-          context: context,
-          state: state,
-          child: const ServiceProvidersScreen(),
-        ),
+        pageBuilder: (context, state) {
+          final String service = state.extra as String;
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: ServiceProvidersScreen(
+              serviceName: service,
+            ),
+          );
+        },
       ),
       GoRoute(
         name: Routes.kAddPetInfo,

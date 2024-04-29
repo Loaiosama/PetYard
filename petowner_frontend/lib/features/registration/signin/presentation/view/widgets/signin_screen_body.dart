@@ -112,7 +112,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
         password: passwordController.text,
         email: emailController.text,
       );
-      GoRouter.of(context).push(Routes.kHomeScreen);
+      GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
       // await apiService.login();
       // Navigate to the next screen upon successful login
     } catch (error) {
