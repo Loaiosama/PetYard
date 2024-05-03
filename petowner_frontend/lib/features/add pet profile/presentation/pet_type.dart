@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_image_button.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_bar.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_button.dart';
 
 class ChooseType extends StatelessWidget {
   const ChooseType({super.key});
@@ -16,39 +19,63 @@ class ChooseType extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const PetTypeBar(
-              subtitle: 'Type',
-              step: '1',
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            const LinearIndicator(
-              percent: 0.2,
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Text('Choose the type of your pet',
-                style: Styles.styles20BoldBlack),
-            SizedBox(
-              height: 70.h,
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RPetImageButton(),
-              ],
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0.r) , 
+                  bottomRight: Radius.circular(30.0.r),
+                ),
+                color: kPrimaryGreen ,
+              ),
+              width: double.infinity,
+              height: MediaQuery.sizeOf(context).height*0.7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/dog_and_cat_5.png" ,
+                    width: 350.w,
+                    height: 350.h,
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Choose Your Pet Type " , 
+                        style: Styles.styles14NormalBlack.copyWith(height: 3 ,fontWeight: FontWeight.bold , fontSize: 16),
+                        
+                      ),
+                      SizedBox(
+                        width: 5.w,
+                      ),
+                      Image.asset(
+                        "assets/images/happy_dog.png",
+                        width: 40,
+                        height: 40,
+                        
+                      )
+                    ],
+                  ),
+                ],
+              ) ,
             ),
             SizedBox(
               height: 30.h,
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ), 
+             Column(
               children: [
-                LPetImageButton(),
+                const PetTypeButton(type: 'Cat' , imagePath: "assets/images/cat_type.png"),
+                SizedBox(
+                  height: 20.h,
+                ),
+                const PetTypeButton(type: 'Dog' , imagePath: "assets/images/dog_type.png",)
               ],
-            ),
+            )
+
+
           ],
         ),
       ),
