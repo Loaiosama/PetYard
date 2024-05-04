@@ -11,21 +11,29 @@ class Requests extends StatelessWidget {
   @override
   List services = [
 
-      const ServiceReqTile(title: 'Walking',
+      ServiceReqTile(title: 'Walking',
       subTitle: 'get a carer that will give your pet a nice walk insde the area that you want ',
-      imagePath: 'assets/images/pet_walking.png',),
+      imagePath: 'assets/images/pet_walking.png',
+       onTap: (){},
+      ),
 
-      const ServiceReqTile(title: 'Boarding',
+      ServiceReqTile(title: 'Boarding',
       subTitle: 'get a carer that give your pet a nice treatment inside his home',
-      imagePath: 'assets/images/pet_boarding.png',),
+      imagePath: 'assets/images/pet_boarding.png',
+       onTap: () {},
+       ),
 
-      const ServiceReqTile(title: 'Sitting',
+      ServiceReqTile(title: 'Sitting',
       subTitle: 'get a carer that will give your pet a nice treatment inside your home',
-      imagePath: 'assets/images/pet_setting.png',),
+      imagePath: 'assets/images/pet_setting.png', 
+      onTap: () {},
+      ),
 
-      const ServiceReqTile(title: 'Grooming',
+      ServiceReqTile(title: 'Grooming',
       subTitle: 'Make your pet extra happy with alot of grooming services here',
-      imagePath: 'assets/images/cat-bath_1810158.png',),
+      imagePath: 'assets/images/cat-bath_1810158.png',
+       onTap: () {},
+       ),
 
   ];
   Widget build(BuildContext context) {
