@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
+
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/widgets/service_req_tile.dart';
 
@@ -30,32 +30,34 @@ class Requests extends StatelessWidget {
   ];
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              "Choose Service" , 
-               style: Styles.styles22BoldGreen.copyWith(fontSize: 18),
-              ),
-          ), 
-
-            SizedBox(
-              height: 25.h,
-            ) , 
-            Expanded(
-              child: ListView.builder(
-                itemBuilder: (context,index) =>services[index],
-                itemCount: services.length,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "Choose Service" , 
+                 style: Styles.styles22BoldGreen.copyWith(fontSize: 18),
                 ),
-            ),
-
-
-            
-
-        ],
+            ), 
         
+              SizedBox(
+                height: 25.h,
+              ) , 
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context,index) =>services[index],
+                  itemCount: services.length,
+                  ),
+              ),
+        
+        
+              
+        
+          ],
+          
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -26,18 +27,21 @@ class ServiceReqTile extends StatelessWidget {
         ),
         
         color: Colors.grey[200],
-        child: ListTile(
-        
-          title:Text(
-            title, 
-            style: Styles.styles18RegularBlack,
-            ),
-            subtitle: Text(
-              subTitle , 
-              style: Styles.styles14NormalBlack.copyWith(color: Colors.grey[700]),
-            ),
-            trailing: Image.asset(imagePath),
-        
+        child: SizedBox(
+          height: 110.h,
+          child: ListTile(
+          
+            title:Text(
+              title, 
+              style: Styles.styles18RegularBlack,
+              ),
+              subtitle: Text(
+                subTitle , 
+                style: Styles.styles14NormalBlack.copyWith(color: Colors.grey[700]),
+              ),
+              trailing: Image.asset(imagePath),
+          
+          ),
         ),
       ),
     );
