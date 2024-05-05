@@ -28,10 +28,12 @@ CREATE TABLE ServiceProvider (
     Phone VARCHAR(225) UNIQUE, -- Making Phone unique
     Email VARCHAR(225) UNIQUE, -- Making Email unique
     Bio VARCHAR(350) ,
+    ResetToken VARCHAR(225),
     Date_of_birth DATE,
     Location POINT,
     Image VARCHAR(255) -- Assuming 255 characters for the image path or URL
 );
+
 
 CREATE TYPE PetType AS ENUM ('Dog', 'Cat');
 
@@ -78,6 +80,7 @@ CREATE TABLE Reservation (
     Owner_ID INT,
     Start_time DATE,
     End_time DATE,
+    expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
     Type Status DEFAULT 'Pending',
     FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
@@ -174,5 +177,6 @@ CREATE TABLE Shipping (
     postal_code VARCHAR(20) NOT NULL,
     country VARCHAR(100) NOT NULL,
     Phone VARCHAR(225) UNIQUE,
+    Address VARCHAR(500) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
