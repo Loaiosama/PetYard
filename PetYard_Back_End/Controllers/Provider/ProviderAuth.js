@@ -245,6 +245,122 @@ const updateInfo = async (req, res) => {
 };
 
 
+/*
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        if (!email) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill Your Email"
+            });
+        }
+
+        const result = await pool.query('SELECT * FROM ServiceProvider WHERE Email = $1', [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Incorrect email"
+            });
+        }
+
+        const { resetToken,PasswordResetToken} = Model.CreatePasswordResetToken();
+
+       await pool.query('UPDATE Petowner SET ResetToken = $1 WHERE email = $2', [PasswordResetToken, email]);
+
+        const resetURL = `${req.protocol}://${req.get('host')}/PetOwner/Resetpassword/${resetToken}`;
+
+        const message = `Forgot Your password? Submit A put request with your new password to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your password reset token (valid for 10 min) ',
+            message
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Token sent to email!'
+        });
+
+    } catch (error) {
+
+        console.error("Error sending email:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+
+    }
+}
+
+const resetPassword = async (req,res)=>{
+
+    const { token } = req.params;
+    const { pass, email } = req.body;   
+    const hashedToken1 = crypto.createHash('sha256').update(token).digest('hex'); 
+    const {PasswordResetExpires} = Model.CreatePasswordResetToken();
+   try {
+   
+    if(!pass || !email)
+    {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Please Fill All Information"
+        });
+
+    }
+        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1', [email]);
+        const hashedToken2 = result.rows[0].resettoken;
+        ;
+      
+        
+        if (!hashedToken2) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "No password reset token found for this email"
+            });
+        }
+                
+    if ( !hashedToken2 || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Token is invalid or has expired"
+        });
+    }
+    const hashedPassword = await bcrypt.hash(pass, saltRounds);
+    const newpass = 'UPDATE Petowner SET Password = $1 , ResetToken = NULL WHERE Email = $2';
+    await pool.query(newpass, [hashedPassword, email]);  
+    res.status(200).json({ message: "Password Changed correctly" });
+    
+   } catch (error) {
+
+    res.status(500).json({ error: "Internal server error" });
+   }
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const SelectServices = async (req, res) => {
     const provider_id = req.ID;
     const { Type } = req.body;
