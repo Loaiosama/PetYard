@@ -66,7 +66,7 @@ router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,Reservatio
 router.get('/GetProviderInfo/:Provider_id',authMiddleware,ReservationController.getProviderInfo);
 router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
 
-
+router.get('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
 
 
 // Use express-session middleware

@@ -258,6 +258,59 @@ const ReserveSlot = async(req, res) => {
 
 
 
+const FeesDisplay=async (req,res)=>{
+    const ownerId = req.ID;
+    const { Slot_ID, Pet_ID, Start_time, End_time } = req.body;
+
+    try {
+
+        if (!Slot_ID || !Pet_ID || !Start_time || !End_time) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+        const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const result1 = await pool.query(Query, [ownerId]);
+
+        if (result1.rows.length === 0) {
+            return res.status(401).json({
+                    status: "Fail",
+                    message: "User doesn't exist"
+            });
+        }
+         
+        // Parse dates from ISO 8601 format
+        const startDate = new Date(Date.parse(Start_time));
+        const endDate = new Date(Date.parse(End_time));
+  
+          // Calculate number of days between Start_time and End_time inclusively
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) ;
+
+          
+          
+
+        const Provider=await pool.query('SELECT * FROM ServiceSlots WHERE Slot_ID=$1',[Slot_ID]);
+        
+        const Final_cost=numDays*Provider.rows[0].price;
+        res.status(201).json({
+            status: "Success",
+            Finalcost:Final_cost
+        });
+
+    }
+    catch(error){
+
+        console.error("Error ", error);
+        res.status(500).json({
+            message: "Internal server error."
+        });
+
+    }
+}
+
+
 
 const GetProviderReservations=async(req,res)=>{
     const provider_id = req.ID;
@@ -504,6 +557,7 @@ module.exports = {
    ReserveSlot,
    GetProviderReservations,
    UpdateReservation,
-   GetOwnerReservations
+   GetOwnerReservations,
+   FeesDisplay
     
 };
