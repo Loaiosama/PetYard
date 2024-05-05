@@ -200,11 +200,12 @@ const ReserveSlot = async(req, res) => {
         const Provider_id=Provider.rows[0].provider_id;
 
         
-
+        const currentTime = Date.now();
+        expirationTime = currentTime + (6 * 60 * 60 * 1000);
 
         const client = await pool.connect();
-        const insertReservation =  'INSERT INTO Reservation (Slot_ID, Pet_ID, Start_time, End_time,Final_Price, Owner_ID) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *';
-        const result = await client.query(insertReservation, [Slot_ID, Pet_ID, Start_time, End_time,Final_cost ,ownerId]);
+        const insertReservation =  'INSERT INTO Reservation (Slot_ID, Pet_ID, Start_time, End_time,Final_Price, Owner_ID,expirationTime) VALUES ($1, $2, $3, $4, $5,$6,$7) RETURNING *';
+        const result = await client.query(insertReservation, [Slot_ID, Pet_ID, Start_time, End_time,Final_cost ,ownerId,expirationTime]);
 
         client.release();
 
@@ -212,8 +213,7 @@ const ReserveSlot = async(req, res) => {
         
         const email= q.rows[0].email;
                 
-        const currentTime = Date.now();
-        expirationTime = currentTime + (6 * 60 * 60 * 1000);
+        
 
         const message = `Your have new Reservation Request \nOpen The Application To Enjoy💸`;
 
@@ -309,9 +309,11 @@ const UpdateReservation=async(req,res)=>{
                 message: "User doesn't exist."
             });
         }
-
+     
+        const Query = 'SELECT * FROM Reservation WHERE Slot_ID = $1 AND Pet_ID=$2 AND Owner_ID=$3';
+        const Result = await pool.query(Query, [slot_id,pet_id,owner_id]);
       
-       let time=expirationTime;
+       let time=Result.rows[0].expirationTime;
       
         if ( time <= Date.now()) {
             Type = "Rejected"; // Set type to Rejected if expired
