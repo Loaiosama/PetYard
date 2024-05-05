@@ -1,6 +1,6 @@
 const pool = require('../../db');
 const sendemail = require("./../../Utils/email");
-let expirationTime = null;
+
 
 const getProvidersByType = async(req, res)=>{
 
@@ -430,8 +430,55 @@ const GetOwnerReservations = async (req, res) => {
 }
 
 
-// Owner get reservations  /  After a certain amount of hours Reject automatically  /  Notify provider  /  Notify Owner Accept or Reject 
 
+
+
+
+//  After a certain amount of hours Reject automatically  
+
+const checkAndUpdateExpiredReservations = async () => {
+    try {
+        const currentTime = Date.now();
+        const expiredReservations = await pool.query('SELECT * FROM Reservation WHERE expirationTime < $1 AND Type = $2', [currentTime, 'Pending']);
+         
+        for (const reservation of expiredReservations.rows) {
+            // Update status to "Rejected"
+            await pool.query('UPDATE Reservation SET Type = $1 WHERE Reserve_ID = $2', ['Rejected', reservation.reserve_id]);
+            
+            // Retrieve provider name for the expired reservation slot
+            const providerNameQuery = await pool.query(
+                `SELECT sp.UserName AS Provider_Name
+                 FROM ServiceSlots ss
+                 JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+                 WHERE ss.Slot_ID = $1`,
+                [reservation.slot_id]
+            );
+            const providerName = providerNameQuery.rows[0].provider_name; // Fixed typo here
+
+            // Notify user about the rejection
+            const ownerEmailQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1', [reservation.owner_id]);
+            const ownerEmail = ownerEmailQuery.rows[0].email;
+          
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [reservation.pet_id]);
+            const petName = petQuery.rows[0].name;
+            const message = `Your reservation got Rejected 😞\nProvider_Name:${providerName}\nYour_Pet:${petName}\nStart_Time:${reservation.start_time}\nEnd_Time:${reservation.end_time}`;
+                
+            await sendemail.sendemail({
+                email: ownerEmail,
+                subject: 'Your recent reservation status 😄',
+                message
+            });
+        }
+    } catch (error) {
+        console.error("Error checking and updating expired reservations:", error);
+    }
+}
+
+// Schedule periodic execution of the function
+setInterval(checkAndUpdateExpiredReservations, 5000);
+
+// Call the function immediately to handle potentially expired reservations
+checkAndUpdateExpiredReservations();
 
 module.exports = {  
    GetSlotProvider,
