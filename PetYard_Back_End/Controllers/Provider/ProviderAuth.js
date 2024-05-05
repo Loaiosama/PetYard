@@ -245,7 +245,7 @@ const updateInfo = async (req, res) => {
 };
 
 
-/*
+
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -268,9 +268,9 @@ const forgotPassword = async (req, res) => {
 
         const { resetToken,PasswordResetToken} = Model.CreatePasswordResetToken();
 
-       await pool.query('UPDATE Petowner SET ResetToken = $1 WHERE email = $2', [PasswordResetToken, email]);
+       await pool.query('UPDATE ServiceProvider SET ResetToken = $1 WHERE Email = $2', [PasswordResetToken, email]);
 
-        const resetURL = `${req.protocol}://${req.get('host')}/PetOwner/Resetpassword/${resetToken}`;
+        const resetURL = `${req.protocol}://${req.get('host')}/Provider/Resetpassword/${resetToken}`;
 
         const message = `Forgot Your password? Submit A put request with your new password to: ${resetURL}.\n If you didnt forget your password, please ignore this email!`;
 
@@ -312,7 +312,7 @@ const resetPassword = async (req,res)=>{
         });
 
     }
-        const result = await pool.query('SELECT * FROM Petowner WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM ServiceProvider WHERE Email = $1', [email]);
         const hashedToken2 = result.rows[0].resettoken;
         ;
       
@@ -331,7 +331,7 @@ const resetPassword = async (req,res)=>{
         });
     }
     const hashedPassword = await bcrypt.hash(pass, saltRounds);
-    const newpass = 'UPDATE Petowner SET Password = $1 , ResetToken = NULL WHERE Email = $2';
+    const newpass = 'UPDATE ServiceProvider SET Password = $1 , ResetToken = NULL WHERE Email = $2';
     await pool.query(newpass, [hashedPassword, email]);  
     res.status(200).json({ message: "Password Changed correctly" });
     
@@ -340,7 +340,6 @@ const resetPassword = async (req,res)=>{
     res.status(500).json({ error: "Internal server error" });
    }
 }
-*/
 
 
 
@@ -596,7 +595,9 @@ module.exports = {
     Killservice,
     startChat,
     getallservices,
-    getService
+    getService,
+    forgotPassword,
+    resetPassword
     
   
     

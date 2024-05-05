@@ -18,8 +18,8 @@ router.post('/SignUp',ProviderController.uploadphoto,ProviderController.resizePh
 router.post('/SignIn', ProviderController.signIn);
 router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
 router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
-
-
+router.post('/Forgotpassword', ProviderController.forgotPassword);
+router.put('/Resetpassword/:token', ProviderController.resetPassword);
 router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
 router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
