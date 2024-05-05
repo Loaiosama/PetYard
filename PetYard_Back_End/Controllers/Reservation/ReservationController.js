@@ -26,7 +26,7 @@ const getProvidersByType = async(req, res)=>{
             }
 
             const client = await pool.connect();
-            const providers = 'SELECT provider_id, username, phone, email, bio, date_of_birth, location, image FROM ServiceProvider WHERE Provider_Id IN (SELECT Provider_Id FROM Services WHERE Type = $1)';
+            const providers = 'SELECT sp.*, s.service_id, s.type FROM ServiceProvider sp JOIN Services s ON sp.Provider_Id = s.Provider_Id WHERE s.Type = $1;';
             const result = await client.query(providers, [type]);
                 
             if (result.rows.length === 0) {
@@ -90,9 +90,26 @@ const getProviderInfo = async (req, res) => {
             });
         }
 
+
+        
+        const provider = result.rows[0];
+        
+        // Calculate age of the provider
+        const dob = new Date(provider.date_of_birth);
+        const ageDiffMs = Date.now() - dob.getTime();
+        const ageDate = new Date(ageDiffMs); // milliseconds from epoch
+        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+
+        const q = 'SELECT * FROM Services WHERE Provider_Id = $1';
+        const res1 = await pool.query(q, [Provider_id]);
+
+
         res.status(200).json({
             status: "Success",
-            data: result.rows[0]
+            data: result.rows[0],
+            data1:res1.rows,
+            Age :age
         });
 
     } catch (error) {
