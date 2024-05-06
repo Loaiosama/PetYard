@@ -312,17 +312,17 @@ const FeesDisplay=async (req,res)=>{
 
 
 
-const GetProviderReservations=async(req,res)=>{
+const GetProviderReservations = async (req, res) => {
     const provider_id = req.ID;
   
     try {
-
         if (!provider_id) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Info not complete."
             });
         }
+
         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const providerResult = await pool.query(providerQuery, [provider_id]);
 
@@ -332,25 +332,29 @@ const GetProviderReservations=async(req,res)=>{
                 message: "User doesn't exist."
             });
         }
-        const status="Pending";
-        const Reservation=await pool.query('SELECT * FROM Reservation WHERE Type=$1 AND Slot_ID IN (SELECT Slot_ID FROM ServiceSlots WHERE Provider_ID = $2)',[status,provider_id]);
 
-    
+        const status = "Pending";
+        const reservations = await pool.query(
+            `SELECT R.*, R.Start_time , R.End_time,
+            S.Start_time AS slot_start_time,
+            S.End_time AS slot_end_time
+             FROM Reservation R
+             INNER JOIN ServiceSlots S ON R.Slot_ID = S.Slot_ID
+             WHERE R.Type = $1 AND S.Provider_ID = $2`,
+            [status, provider_id]
+        );
+
         res.status(200).json({
-            status :"Done",
-            message : "One Data Is Here",
-            data :Reservation.rows
+            status: "Done",
+            message: "Data retrieved successfully",
+            data: reservations.rows
         });
-
-
-
         
     } catch (error) {
-        console.error("Error ", error);
+        console.error("Error:", error);
         res.status(500).json({
             message: "Internal server error."
         });
-        
     }
 }
 
@@ -502,6 +506,143 @@ const GetOwnerReservations = async (req, res) => {
 
 
 
+const GetAllAcceptedandfinished = async (req, res) => {
+    const ownerId = req.ID;
+
+    try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID not provided."
+            });
+        }
+
+        // Check if the owner exists
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+        // Query to retrieve reservations along with provider information
+        const reservationsQuery = `
+        SELECT *
+        FROM Reservation
+        WHERE Owner_ID = $1
+            AND Type = 'Accepted'
+            AND $2 >= End_time;
+    `;
+        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId, new Date()]);
+
+
+        res.status(200).json({
+            status: "Success",
+            message: "Accepted and finished reservations retrieved.",
+            data: reservations
+        });
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+}
+
+
+const updateCompletedReservations=async(req,res)=>{
+    const reserve_id=req.params.reserve_id;
+    const ownerId = req.ID;
+    let {slot_id,pet_id,start_time,end_time,Type}=req.body;
+    try {
+
+
+        if (!ownerId || !reserve_id ) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+       
+
+        const updateQuery = 'UPDATE Reservation SET Slot_ID =$1,  Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5 , Type=$6 WHERE Reserve_ID = $7';
+        await pool.query(updateQuery, [slot_id, pet_id, ownerId, start_time,end_time,Type,reserve_id]);
+
+       
+        res.status(200).json({
+            status: "Success",
+            message: "Reservation updated successfully"
+        });
+        
+    } catch (error) {
+
+        console.error("Error ", error);
+        res.status(500).json({
+            message: "Internal server error."
+        });
+        
+    }
+}
+
+
+const GetALLCompleted = async (req, res) => {
+    const ownerId = req.ID;
+
+    try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID not provided."
+            });
+        }
+
+        // Check if the owner exists
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+        // Query to retrieve completed reservations
+        const reservationsQuery = `
+            SELECT *
+            FROM Reservation
+            WHERE Owner_ID = $1
+            AND Type = 'Completed'
+        `;
+        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Completed reservations retrieved.",
+            data: reservations
+        });
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+}
 
 
 //  After a certain amount of hours Reject automatically  
@@ -550,6 +691,73 @@ setInterval(checkAndUpdateExpiredReservations, 5000);
 // Call the function immediately to handle potentially expired reservations
 checkAndUpdateExpiredReservations();
 
+
+
+
+
+
+// Create a Set to store processed email addresses
+const processedEmails = new Set();
+
+const checkAndUpdateCompleteReservations = async () => {
+    try {
+
+      
+        const currentTime = new Date().toISOString();
+        
+        // Select reservations with End_time less than or equal to the current time and type as "Accepted"
+        const reservations = await pool.query('SELECT * FROM Reservation WHERE End_time <= $1 AND Type = $2', [currentTime, 'Accepted']);
+         
+        for (const reservation of reservations.rows) {
+            // Retrieve provider name for the expired reservation slot
+            const providerNameQuery = await pool.query(
+                `SELECT sp.UserName AS Provider_Name
+                 FROM ServiceSlots ss
+                 JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+                 WHERE ss.Slot_ID = $1`,
+                [reservation.slot_id]
+            );
+            const providerName = providerNameQuery.rows[0].provider_name;
+
+            // Notify user to open the app and update the reservation status
+            const ownerEmailQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1', [reservation.owner_id]);
+            const ownerEmail = ownerEmailQuery.rows[0].email;
+          
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [reservation.pet_id]);
+            const petName = petQuery.rows[0].name;
+
+            // Format the start time and end time of the reservation
+            const startTime = new Date(reservation.start_time).toLocaleString();
+            const endTime = new Date(reservation.end_time).toLocaleString();
+
+            // Compose message with emojis, start time, and end time
+            const message = `🐾 Hello ${petName} Owner! 🐾\n\nYour reservation with ${providerName} has ended. 
+                            Please open the app and update the status to "complete". 📲\n
+                            Start Time: ${startTime}\nEnd Time: ${endTime}`;
+
+            // Check if the email has already been processed
+            if (!processedEmails.has(ownerEmail)) {
+                // Send email with subject and message
+                await sendemail.sendemail({
+                    email: ownerEmail,
+                    subject: '🐾 Update Reservation Status 🐾',
+                    message
+                });
+                // Add the email to the set of processed emails
+                processedEmails.add(ownerEmail);
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating completed reservations:", error);
+    }
+}
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateCompleteReservations, 60000);
+
+// Initial invocation of the function
+checkAndUpdateCompleteReservations();
+
 module.exports = {  
    GetSlotProvider,
    getProviderInfo,
@@ -558,6 +766,9 @@ module.exports = {
    GetProviderReservations,
    UpdateReservation,
    GetOwnerReservations,
-   FeesDisplay
+   FeesDisplay,
+   GetAllAcceptedandfinished,
+   updateCompletedReservations,
+   GetALLCompleted
     
 };

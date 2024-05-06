@@ -48,6 +48,7 @@ CREATE TABLE Pet (
     Adoption_Date DATE,
     Weight DOUBLE PRECISION, 
     Image VARCHAR(255), 
+    Bio VARCHAR(350) ,
     Owner_Id INTEGER,
     FOREIGN KEY (Owner_Id) REFERENCES PetOwner(Owner_Id)
 );
@@ -64,22 +65,22 @@ CREATE TABLE ServiceSlots (
     Slot_ID SERIAL PRIMARY KEY,
     Provider_ID INT,
     Service_ID INT,
-    Start_time DATE,
-    End_time DATE,
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP,
     Price DOUBLE PRECISION,
     FOREIGN KEY (Service_ID) REFERENCES Services(Service_ID),
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
-CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected');
+CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected','Completed');
 
 CREATE TABLE Reservation (
     Reserve_ID SERIAL PRIMARY KEY,
     Slot_ID INT,
     Pet_ID INT,
     Owner_ID INT,
-    Start_time DATE,
-    End_time DATE,
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP,
     expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
     Type Status DEFAULT 'Pending',

@@ -24,15 +24,12 @@ router.get('/getAllPet',authMiddleware, PetProfileController.GetAllPet);
 router.get('/getPet/:Pet_Id',authMiddleware, PetProfileController.GetPet);
 router.delete('/RemoveAllPets',authMiddleware, PetProfileController.RemoveAllPet);
 router.delete('/RemovePet/:Pet_Id',authMiddleware, PetProfileController.RemovePet);
-router.put('/UpdatePet/:Pet_Id',authMiddleware, PetProfileController.updatePetProfile);
+router.put('/UpdatePet/:Pet_Id',authMiddleware,PetProfileController.uploadpetphoto,PetProfileController.resizePhoto, PetProfileController.updatePetProfile);
 
 router.post('/Forgotpassword', PetOwnerController.forgotPassword);
 router.put('/Resetpassword/:token', PetOwnerController.resetPassword);
 router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
-
-
-router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
 
 
 router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
@@ -65,6 +62,13 @@ router.get('/GetProvidersByType/:type',authMiddleware, ReservationController.get
 router.get('/GetSlotProvider/:Provider_id/:Service_id',authMiddleware,ReservationController.GetSlotProvider);
 router.get('/GetProviderInfo/:Provider_id',authMiddleware,ReservationController.getProviderInfo);
 router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
+router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
+
+
+router.get('/GetAllAcceptedandfinishedReservations', authMiddleware, ReservationController.GetAllAcceptedandfinished);
+router.put('/updateCompletedReservations/:reserve_id',authMiddleware,ReservationController.updateCompletedReservations);
+router.get('/GetALLCompleted', authMiddleware, ReservationController.GetALLCompleted);
+
 
 router.get('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
 

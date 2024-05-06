@@ -40,12 +40,12 @@ const resizePhoto=(req,res,next)=>{
 
 const AddPet = async(req,res)=>
 {
-    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight}=req.body;
+    const {Type,Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Bio}=req.body;
     const owner_id = req.ID; 
     let Image = req.file ? req.file.filename : 'default.png';
     try 
     {
-        if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight) 
+        if (!Type || !Name || !Gender || !Breed || !Date_of_birth || !Adoption_Date || !Image || !Weight || !Bio) 
         {
             return res.status(400).json({
                 status: "Fail",
@@ -53,8 +53,8 @@ const AddPet = async(req,res)=>
             });
         }
 
-        const addPetQuery = 'INSERT INTO Pet (Type, Name, Gender, Breed, Date_of_birth, Adoption_Date, Image, Weight ,Owner_Id) VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9)';
-        await pool.query(addPetQuery, [Type, Name, Gender, Breed, Date_of_birth, Adoption_Date, Image, Weight,owner_id]);
+        const addPetQuery = 'INSERT INTO Pet (Type, Name, Gender, Breed, Date_of_birth, Adoption_Date, Image, Weight ,Owner_Id,Bio) VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9,$10)';
+        await pool.query(addPetQuery, [Type, Name, Gender, Breed, Date_of_birth, Adoption_Date, Image, Weight,owner_id,Bio]);
         
         res.json({ message: "Add Pet successful" })
     } catch (error) 
@@ -203,7 +203,7 @@ const updatePetProfile = async(req,res)=>{
     
     const {Pet_Id}=req.params;
     const owner_id = req.ID; 
-    const {Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight} = req.body;
+    const {Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Bio} = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
 
 
@@ -212,7 +212,7 @@ const updatePetProfile = async(req,res)=>{
         {
             return res.status(400).json({
                 status: "Fail",
-                message: "Some Error Haben"
+                message: "Please Fill All Information"
             });
         }
 
@@ -227,8 +227,8 @@ const updatePetProfile = async(req,res)=>{
             });
         }
 
-        const updateQuery = 'UPDATE Pet SET  Name=$1,Gender=$2,Breed=$3,Date_of_birth=$4,Adoption_Date=$5,Weight=$6,Image=$7 WHERE Pet_Id=$8 AND owner_id=$9';
-        const UpdatePet =await pool.query(updateQuery ,[Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image,Pet_Id,owner_id]);
+        const updateQuery = 'UPDATE Pet SET  Name=$1,Gender=$2,Breed=$3,Date_of_birth=$4,Adoption_Date=$5,Weight=$6,Image=$7,Bio=$8 WHERE Pet_Id=$9 AND owner_id=$10';
+        const UpdatePet =await pool.query(updateQuery ,[Name,Gender,Breed,Date_of_birth,Adoption_Date,Weight,Image,Bio,Pet_Id,owner_id]);
 
         res.status(200).json({
             status: "Success",
@@ -236,7 +236,7 @@ const updatePetProfile = async(req,res)=>{
         }); 
 
         }catch (error){
-            console.error("Error Add Pet:", error);
+            console.error("Error:", error);
             res.status(500).json({
                 status: "Fail",
                 message: "Internal server error"
