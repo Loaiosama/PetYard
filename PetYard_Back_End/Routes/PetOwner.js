@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const ReservationController = require('../Controllers/Reservation/ReservationController');
-const MessageController = require('../Controllers/Messages/MessageController');
+const publisher = require('../Controllers/Messages/publisher');
+const subscriber = require('../Controllers/Messages/subscriber');
 const ChatController=require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/Authentication/AuthMiddle');
@@ -32,12 +33,14 @@ router.get('/ValidationCode/:ValidCode', PetOwnerController.validationCode);
 router.put('/updateInfo',authMiddleware,PetOwnerController.uploadphoto,PetOwnerController.resizePhoto, PetOwnerController.updateInfo);
 
 
+
 router.post('/CreateChat/:Second_id',authMiddleware,ChatController.CreateChat);
 router.get('/GetAllChat',authMiddleware,ChatController.FindUserChats);
 router.get('/GetChat/:First_id/:Second_id',ChatController.FindChat);
 
-router.post('/CreateMessage/:chat_id',authMiddleware,MessageController.CreateMessage);
-router.get('/GetMessages/:chat_id',authMiddleware,MessageController.GetMessages);
+
+router.post('/CreateMessage/:Chat_ID',authMiddleware,publisher.publish);
+router.post('/GetMessages/:Chat_ID',authMiddleware,subscriber.subscribe);
 
 
 router.post('/MakeOrder',authMiddleware,OrderController.MakeOrder);
