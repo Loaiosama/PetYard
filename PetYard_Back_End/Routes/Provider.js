@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const publisher = require('../Controllers/Messages/publisher');
 const subscriber = require('../Controllers/Messages/subscriber');
+const SocialMedia = require('../Controllers/Community/SocialMedia');
 const ChatController=require('../Controllers/Chat/ChatController');
 const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
@@ -56,6 +57,15 @@ router.get('/GetProviderReservations',authMiddleware,ReservationController.GetPr
 router.put('/UpdateReservation/:reserve_id',authMiddleware,ReservationController.UpdateReservation);
 
 router.post('/authenticate',authMiddleware,ProviderController.startChat);
+
+
+
+router.post('/FollowUsers/:user_id',authMiddleware,SocialMedia.FollowUser);
+router.get('/SearchByName/:name',authMiddleware,SocialMedia.SearchUsersByName);
+router.delete('/UnfollowUsers/:user_id',authMiddleware,SocialMedia.UnfollowUsers);
+
+
+
 
 // Use express-session middleware
 router.use(session({

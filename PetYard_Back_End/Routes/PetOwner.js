@@ -3,6 +3,7 @@ const router = express.Router();
 const ReservationController = require('../Controllers/Reservation/ReservationController');
 const publisher = require('../Controllers/Messages/publisher');
 const subscriber = require('../Controllers/Messages/subscriber');
+const SocialMedia = require('../Controllers/Community/SocialMedia');
 const ChatController=require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const  authMiddleware=require('../Controllers/Authentication/AuthMiddle');
@@ -74,6 +75,22 @@ router.get('/GetALLCompleted', authMiddleware, ReservationController.GetALLCompl
 
 
 router.get('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
+
+
+
+
+router.post('/FollowUsers/:user_id',authMiddleware,SocialMedia.FollowUser);
+router.get('/SearchByName/:name',authMiddleware,SocialMedia.SearchUsersByName);
+router.delete('/UnfollowUsers/:user_id',authMiddleware,SocialMedia.UnfollowUsers);
+
+
+
+
+
+
+
+
+
 
 
 // Use express-session middleware
