@@ -181,3 +181,31 @@ CREATE TABLE Shipping (
     Address VARCHAR(500) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
+//////////////////////////////////////////////////
+
+
+CREATE TABLE Followers (
+    id SERIAL PRIMARY KEY,
+    Follower_ID INTEGER NOT NULL,
+    Follower_Type VARCHAR(50) NOT NULL,
+    Followee_ID INTEGER NOT NULL,
+    Followee_Type VARCHAR(50) NOT NULL,
+    UNIQUE (Follower_ID, Follower_Type, Followee_ID, Followee_Type)
+);
+
+-- Define the composite type
+CREATE TYPE like_info AS (
+    user_id INTEGER,
+    user_type VARCHAR(50)  -- No CHECK constraint here
+);
+
+CREATE TABLE Posts (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('Petowner', 'ServiceProvider')),
+    image VARCHAR(255) NOT NULL,
+    description TEXT,
+    likes like_info[] DEFAULT '{}'::like_info[],
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+

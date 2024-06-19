@@ -63,10 +63,12 @@ router.post('/authenticate',authMiddleware,ProviderController.startChat);
 router.post('/FollowUsers/:user_id',authMiddleware,SocialMedia.FollowUser);
 router.get('/SearchByName/:name',authMiddleware,SocialMedia.SearchUsersByName);
 router.delete('/UnfollowUsers/:user_id',authMiddleware,SocialMedia.UnfollowUsers);
-
-
-
-
+router.post('/Createpost',authMiddleware,SocialMedia.uploadphoto,SocialMedia.resizePhoto,SocialMedia.CreatePosts);
+router.put('/updatePost/:post_id',authMiddleware,SocialMedia.uploadphoto,SocialMedia.resizePhoto,SocialMedia.updatePost);
+router.delete('/DeletePost/:post_id',authMiddleware,SocialMedia.DeletePost);
+router.put('/LikeOrDislikePost/:post_id', authMiddleware, SocialMedia.LikeOrDislikePost);
+router.get('/GetPost/:post_id',authMiddleware,SocialMedia.getpost);
+router.get('/GetTimelinePost',authMiddleware,SocialMedia.getTimelinePosts);
 // Use express-session middleware
 router.use(session({
     secret: 'X-h2tDeZTUMVBmVL', // Set your own secret key

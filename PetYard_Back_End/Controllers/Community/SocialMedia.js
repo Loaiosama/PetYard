@@ -1,5 +1,46 @@
 const { query } = require('express');
 const pool = require('../../db');
+const multer =require('multer');
+const sharp = require('sharp');
+const { use } = require('passport');
+
+
+
+
+const multerStorage=multer.memoryStorage();
+
+const multerFilter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true);
+    }
+    else{
+        cb("Not an image! please upload only images.",false)
+    }
+}
+
+
+const upload=multer({
+
+    storage:multerStorage,
+    fileFilter:multerFilter
+});
+
+const uploadphoto=upload.single('Image');
+
+const resizePhoto=(req,res,next)=>{
+
+    if(!req.file) return next();
+
+    req.file.filename=`Posts-${req.ID}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/Posts/${req.file.filename}`);
+    next();
+}
+
+
+
+
+
 
 
 // Follow a user
@@ -46,10 +87,12 @@ const FollowUser = async (req, res) => {
                 message: "Follower not found"
             });
         }
+       
 
         // Verify the existence of the followee
         if (user_type === "Petowner") {
             resultFollowee = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [userIdNumber]);
+          
         } else if (user_type === "ServiceProvider") {
             resultFollowee = await pool.query('SELECT * FROM ServiceProvider WHERE Provider_Id = $1', [userIdNumber]);
         } else {
@@ -222,11 +265,333 @@ const SearchUsersByName = async (req, res) => {
     }
 };
 
+//Create posts
+const CreatePosts = async (req, res) => {
+    const id = req.ID;
+    const { description, user_type } = req.body;
+    let Image = req.file.filename;
+
+     
+    try {
+        if (!id || !user_type || !description || !Image) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide all information"
+            });
+        }
+
+        let result;
+        if (user_type === "Petowner") {
+            result = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [id]);
+        } else if (user_type === "ServiceProvider") {
+            result = await pool.query('SELECT * FROM ServiceProvider WHERE Provider_Id = $1', [id]);
+        } else {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Invalid user type specified."
+            });
+        }
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "User not found"
+            });
+        }
+
+        const insertQuery = 'INSERT INTO Posts (user_id, user_type, description, image) VALUES ($1, $2, $3, $4) RETURNING *';
+        const newPost = await pool.query(insertQuery, [id, user_type, description, Image]);
+
+        res.status(201).json({
+            status: "Success",
+            message: "Post successfully created",
+            data: newPost.rows[0]
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+//update posts
+const updatePost =async (req,res)=>{
+    const id =req.ID;
+    const {description,user_type}=req.body;
+    const {post_id}=req.params;
+    let Image = req.file.filename;
+    
+
+    try {
+
+
+        if (!id || !user_type || !description || !Image || !post_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide all information"
+            });
+        }
+
+
+        const selectQuery = 'SELECT * FROM Posts WHERE id = $1 AND user_id = $2 AND user_type = $3';
+        const selectResult = await pool.query(selectQuery, [post_id, id, user_type]);
+
+        if (selectResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Post not found or you do not have permission to update this post"
+            });
+        }
+
+        const updateQuery = 'UPDATE Posts SET  description=$1,Image=$2 WHERE id=$3';
+        const UpdatePet =await pool.query(updateQuery ,[description,Image,post_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: " update successfully",
+        }); 
+
+
+
+        
+    } catch (error) {
+
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+        
+    }
+    
+};
+
+//delete posts
+const DeletePost=async(req,res)=>{
+    const id =req.ID;
+    const {post_id}=req.params;
+    try {
+        if(!id || !post_id){
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide all information"
+            });
+        }
+        const selectQuery = 'SELECT * FROM Posts WHERE id = $1 ';
+        const selectResult = await pool.query(selectQuery, [post_id]);
+
+        if (selectResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Post not found or you do not have permission to update this post"
+            });
+        }
+            
+        const deleteQuery =await pool.query('DELETE FROM Posts WHERE id = $1',[post_id]); 
+        res.status(200).json({
+            status: "Success",
+            message: "Post deleted successfully"
+        });
+        
+    } catch (error) {
+
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+        
+    }
+
+
+};
+//Like Or Dislike  posts
+const LikeOrDislikePost = async (req, res) => {
+    const id = req.ID; // Assuming this is the authenticated user's ID
+    const { user_type } = req.body; // Assuming user_type is provided in the request body
+    const { post_id } = req.params; // Assuming post_id is provided as a route parameter
+
+    try {
+        // Check if any required information is missing
+        if (!id || !post_id || !user_type) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide all required information"
+            });
+        }
+
+        // Fetch the post including its likes JSONB
+        const selectQuery = 'SELECT * FROM Posts WHERE id = $1';
+        const selectResult = await pool.query(selectQuery, [post_id]);
+
+        // Check if the post exists
+        if (selectResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Post not found"
+            });
+        }
+
+        const post = selectResult.rows[0];
+        let updateQuery, updateResult;
+
+        // Initialize the likes array as an empty object if it's null or undefined
+        const likesObject = post.likes || {};
+
+        // Check if the likeInfo exists in the likes array
+        const likeKey = `${id}_${user_type}`;
+        const likeExists = likesObject.hasOwnProperty(likeKey);
+
+        if (likeExists) {
+            // If the user has already liked the post, remove the like (dislike)
+            delete likesObject[likeKey];
+        } else {
+            // If the user hasn't liked the post yet, add the like
+            likesObject[likeKey] = true;
+        }
+
+        // Update the likes field in the database
+        updateQuery = 'UPDATE Posts SET likes = $1 WHERE id = $2 RETURNING *';
+        updateResult = await pool.query(updateQuery, [likesObject, post_id]);
+
+        res.status(200).json({
+            status: "Success",
+            message: likeExists ? "Post disliked successfully" : "Post liked successfully",
+            data: updateResult.rows[0]
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
+
+
+
+//get post
+const getpost = async (req, res) => {
+    const id = req.ID;
+    const { post_id } = req.params;
+
+    try {
+        if (!id || !post_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide all required information"
+            });
+        }
+
+        const selectQuery = 'SELECT * FROM Posts WHERE id = $1';
+        const selectResult = await pool.query(selectQuery, [post_id]);
+
+        if (selectResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Post not found"
+            });
+        }
+
+        const post = selectResult.rows[0];
+
+        res.status(200).json({
+            status: "Success",
+            data: post
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+//get timeline posts
+const getTimelinePosts = async (req, res) => {
+    const id = req.ID;
+    const { user_type } = req.body; // Assuming user_type is in the body
+    const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
+
+    try {
+        if (!id || !user_type) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "User ID and User Type are required"
+            });
+        }
+
+        const offset = (page - 1) * limit;
+
+        // Fetch total number of posts for pagination
+        const countQuery = `
+            SELECT COUNT(*) FROM Posts 
+            WHERE user_id = $1 
+            OR (user_id, user_type) IN (
+                SELECT Followee_ID, Followee_Type 
+                FROM Followers 
+                WHERE Follower_ID = $1 AND Follower_Type = $2
+            )
+        `;
+        const countResult = await pool.query(countQuery, [id, user_type]);
+        const total = parseInt(countResult.rows[0].count, 10);
+
+        // Fetch posts for the user's timeline
+        const selectQuery = `
+            SELECT * FROM Posts 
+            WHERE user_id = $1 
+            OR (user_id, user_type) IN (
+                SELECT Followee_ID, Followee_Type 
+                FROM Followers 
+                WHERE Follower_ID = $1 AND Follower_Type = $2
+            )
+            ORDER BY created_at DESC
+            LIMIT $3 OFFSET $4
+        `;
+        const selectResult = await pool.query(selectQuery, [id, user_type, limit, offset]);
+
+        const posts = selectResult.rows;
+
+        res.status(200).json({
+            status: "Success",
+            data: posts,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
+
+
+
+
 
 
 
 module.exports = {
     FollowUser,
     UnfollowUsers,
-    SearchUsersByName
+    SearchUsersByName,
+    uploadphoto,
+    resizePhoto,
+    CreatePosts,
+    updatePost,
+    DeletePost,
+    LikeOrDislikePost,
+    getpost,
+    getTimelinePosts
 };
