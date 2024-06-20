@@ -1,13 +1,27 @@
-const express =require('express');
-const app = express();
+const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
-const PetOwnerRoutes = require('./Routes/PetOwner');
-const ProviderRoutes = require('./Routes/Provider');
+const app = express();
+
+const PetOwnerRoutes = require('./routes/PetOwner');
+const ProviderRoutes = require('./routes/Provider');
 
 app.use(morgan('tiny'));
 app.use(express.json());
 
-app.use('/PetOwner',PetOwnerRoutes);
-app.use('/Provider',ProviderRoutes);
+// Set 'views' directory for any views
+app.set('views', path.join(__dirname, 'views'));
 
-module.exports=app;
+// Set view engine to ejs
+app.set('view engine', 'ejs');
+
+// Routes
+app.use('/PetOwner', PetOwnerRoutes);
+app.use('/Provider', ProviderRoutes);
+
+// Serve the checkout page
+app.get('/checkout-page', (req, res) => {
+    res.render('checkout');
+});
+
+module.exports = app;

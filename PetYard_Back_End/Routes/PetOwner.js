@@ -13,6 +13,8 @@ require('../Controllers/Owner/GoogleAuth');
 require('../Controllers/Owner/Facebook');
 const passport = require('passport');
 const session = require('express-session');
+const payment=require('../Controllers/Payment/payment');
+const Shipping=require('../Controllers/Shipping/ShippingController')
 
 
 
@@ -90,12 +92,12 @@ router.get('/GetPost/:post_id',authMiddleware,SocialMedia.getpost);
 router.get('/GetTimelinePost',authMiddleware,SocialMedia.getTimelinePosts);
 
 
+router.get('/checkout',payment.checkout);
 
 
 
-
-
-
+router.post('/AddShipping/:order_id',authMiddleware,Shipping.AddShipping);
+router.put('/UpdateStatus/:Shipping_id',authMiddleware,Shipping.updateStatus);
 
 // Use express-session middleware
 router.use(session({

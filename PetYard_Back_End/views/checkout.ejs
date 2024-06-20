@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Checkout</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <button id="checkout-button">Checkout</button>
+
+    <script>
+        document.getElementById('checkout-button').addEventListener('click', async () => {
+            try {
+                // Call your backend to create the Checkout Session
+                const response = await fetch('/PetOwner/checkout', {
+                    method: 'Get',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'Success') {
+                    // Initialize Stripe.js
+                    const stripe = Stripe('pk_test_51PTJooRs2c4dEAvUPxn1tSL84BXqKQXtmYWbiJcWB8QvCsZU4tqh0QdyiSasfyG8CoxrKKEPGNqpzHulX4ONGA3N00TLU5OyPA'); // Replace with your actual Stripe publishable key
+
+                    // Redirect to Stripe Checkout
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: data.sessionId
+                    });
+
+                    if (result.error) {
+                        console.error(result.error.message);
+                    }
+                } else {
+                    console.error('Failed to create session:', data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>

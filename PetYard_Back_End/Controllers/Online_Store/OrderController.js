@@ -6,6 +6,12 @@ const MakeOrder = async (req, res) =>{
     const owner_id = req.ID; // Assuming req.ID correctly provides the owner_id
 
     try {
+        if (!owner_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -43,6 +49,14 @@ const MakeOrder = async (req, res) =>{
 const GetAllOrders=async(req,res)=>{
     const owner_id = req.ID; 
     try {
+
+        if (!owner_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
+        
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
 
@@ -72,6 +86,12 @@ const GetOrder=async(req,res)=>{
     const owner_id = req.ID; 
     const order_id=req.params.order_id;
     try {
+        if (!owner_id || !order_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
 
@@ -103,6 +123,13 @@ const DeleteOrder=async(req,res)=>{
     const owner_id = req.ID; 
     const order_id=req.params.order_id;
     try {
+
+        if (!owner_id || !order_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
 
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -138,6 +165,12 @@ const SearchByname = async (req, res) => {
     const { name } = req.body;
 
     try {
+        if (!owner_id || !name) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -180,6 +213,12 @@ const SearchBycategory = async (req, res) => {
     const { Type } = req.body;
 
     try {
+        if (!owner_id || !Type) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -222,6 +261,12 @@ const SearchBybrand = async (req, res) => {
     const { brand } = req.body;
 
     try {
+        if (!owner_id || !brand) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -268,6 +313,12 @@ const AddOrderItem = async (req, res) => {
     const { quantity } = req.body;
    
     try {
+        if (!owner_id || !order_id || !product_id || !quantity) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -373,6 +424,12 @@ const UpdateOrderItem = async (req, res) => {
 
    
     try {
+        if (!owner_id || !order_id || !product_id || !quantity || !order_item_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);
@@ -495,6 +552,13 @@ const RemoveOrderItem = async (req, res) => {
     const order_item_id = req.params.order_item_id;
 
     try {
+
+        if (!owner_id || !order_id || !product_id  || !order_item_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Required fields are missing"
+            });
+        }
         // Check if the pet owner with the specified owner_id exists
         const queryPetOwner = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const resultPetOwner = await pool.query(queryPetOwner, [owner_id]);

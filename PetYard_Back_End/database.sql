@@ -170,15 +170,17 @@ CREATE TYPE Pay AS ENUM ('Cash','Online');
 
 CREATE TABLE Shipping (
     shipping_id SERIAL PRIMARY KEY,
-    Type Pay,
+    type Pay,
     order_id INT,
-    Location POINT,
+    location POINT,
     city VARCHAR(100) NOT NULL,
     state VARCHAR(100) NOT NULL,
     postal_code VARCHAR(20) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    Phone VARCHAR(225) UNIQUE,
-    Address VARCHAR(500) NOT NULL,
+    phone VARCHAR(225) NOT NULL,
+    address VARCHAR(500) NOT NULL,
+    status BOOLEAN DEFAULT FALSE, -- FALSE indicates the order is not received, TRUE indicates it is received
+    paid BOOLEAN DEFAULT FALSE, -- FALSE indicates the order is not paid, TRUE indicates it is paid
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
 //////////////////////////////////////////////////
@@ -192,12 +194,12 @@ CREATE TABLE Followers (
     Followee_Type VARCHAR(50) NOT NULL,
     UNIQUE (Follower_ID, Follower_Type, Followee_ID, Followee_Type)
 );
-
+/*
 -- Define the composite type
 CREATE TYPE like_info AS (
     user_id INTEGER,
     user_type VARCHAR(50)  -- No CHECK constraint here
-);
+);*/
 
 CREATE TABLE Posts (
     id SERIAL PRIMARY KEY,
@@ -205,7 +207,7 @@ CREATE TABLE Posts (
     user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('Petowner', 'ServiceProvider')),
     image VARCHAR(255) NOT NULL,
     description TEXT,
-    likes like_info[] DEFAULT '{}'::like_info[],
+    likes JSONB DEFAULT '{}'::JSONB,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
