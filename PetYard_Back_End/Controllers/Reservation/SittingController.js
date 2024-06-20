@@ -138,11 +138,49 @@ const getSittingApplications = async(req, res) => {
 }
 
 
+const acceptSittingApplication = async (req, res) => {
+    const ownerId = req.ID;
+    const { Reserve_ID, Provider_ID } = req.body;
+
+    try {
+        const query = 'SELECT * FROM SittingReservation WHERE Reserve_ID = $1 AND Owner_ID = $2';
+        const result = await pool.query(query, [Reserve_ID, ownerId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Sitting reservation not found or not authorized"
+            });
+        }
+
+        const updateQuery = 'UPDATE SittingReservation SET Provider_ID = $1, Status = $2 WHERE Reserve_ID = $3 RETURNING *';
+        const updateResult = await pool.query(updateQuery, [Provider_ID, 'Accepted', Reserve_ID]);
+
+        const applicationQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
+        await pool.query(applicationQuery, ['Accepted', Reserve_ID, Provider_ID]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Sitting reservation confirmed successfully",
+            reservation: updateResult.rows[0]
+        });
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+
+
 
 
 module.exports = {
     makeRequest,
     applySittingRequest,
     GetSittingReservations,
-    getSittingApplications
+    getSittingApplications,
+    acceptSittingApplication
 };

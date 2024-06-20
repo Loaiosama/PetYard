@@ -104,7 +104,7 @@ router.put('/UpdateStatus/:Shipping_id',authMiddleware,Shipping.updateStatus);
 router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest);
 router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingReservations);
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
-
+router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 
 
 
