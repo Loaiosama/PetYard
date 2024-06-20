@@ -48,7 +48,7 @@ const applySittingRequest = async(req, res) =>{
 
         if(!providerId){
             return res.status(400).json({
-                status: "Failed",
+                status: "Fail",
                 message: "ID not provided."
             })
         }
@@ -63,7 +63,7 @@ const applySittingRequest = async(req, res) =>{
             });
         }
 
-        const applyQuery = "INSER INTO SittingApplication (Reserve_ID, Provider_ID) VALUES ($1, $2) RETURNING *"
+        const applyQuery = "INSERT INTO SittingApplication (Reserve_ID, Provider_ID) VALUES ($1, $2) RETURNING *"
         const applyRes = await pool.query(applyQuery, [Reserve_ID, providerId]);
 
         res.status(201).json({
@@ -75,7 +75,7 @@ const applySittingRequest = async(req, res) =>{
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
-            status: "Failed",
+            status: "Fail",
             message: "Internal Server Error."
         })
     }
@@ -102,10 +102,47 @@ const GetSittingReservations = async (req, res) => {
 }
 
 
+const getSittingApplications = async(req, res) => {
+
+    const reserveId = req.params.Reserve_ID;
+
+    try {
+
+        if(!reserveId){
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide reservation ID."
+            })
+        }
+
+        const appQuery = "SELECT * FROM SittingApplication WHERE Reserve_ID = $1";
+        const result = await pool.query(appQuery, [reserveId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Applications retrieved successfuly.",
+            data: result.rows
+        })
+
+
+        
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal Server Error."
+        })
+    }
+
+
+}
+
+
 
 
 module.exports = {
     makeRequest,
     applySittingRequest,
-    GetSittingReservations
+    GetSittingReservations,
+    getSittingApplications
 };

@@ -100,8 +100,16 @@ router.get('/checkout',payment.checkout);
 router.post('/AddShipping/:order_id',authMiddleware,Shipping.AddShipping);
 router.put('/UpdateStatus/:Shipping_id',authMiddleware,Shipping.updateStatus);
 
-// ROUTES FOR SITTING CONTROLLER
+//------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest);
+router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingReservations);
+router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
+
+
+
+
+
+
 
 // Use express-session middleware
 router.use(session({

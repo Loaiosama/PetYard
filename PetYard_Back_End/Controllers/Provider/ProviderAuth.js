@@ -38,7 +38,8 @@ const resizePhoto=(req,res,next)=>{
 
 const signUp = async (req, res) => {
     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
-    const Image=req.file.filename;
+    // const Image=req.file.filename;
+    let Image = req.file ? req.file.filename : 'default.png';
     
     try {
 

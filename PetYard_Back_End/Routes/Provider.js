@@ -13,6 +13,7 @@ require('../Controllers/Provider/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');
 const Shipping=require('../Controllers/Shipping/ShippingController');
+const SittingController = require('../Controllers/Reservation/SittingController');
 
 
 
@@ -76,6 +77,14 @@ router.get('/GetTimelinePost',authMiddleware,SocialMedia.getTimelinePosts);
 
 router.delete('/RemoveShipping/:Shipping_id',authMiddleware,Shipping.RemoveShipping);
 router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
+
+
+
+//------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
+router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
+
+
+
 
 
 // Use express-session middleware
