@@ -21,8 +21,14 @@ const sendemail = async options=>{
         text : options.message
     }
 
-    //3 Actually send the email 
-    await transporter.sendMail(mailOptions);
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
     
 }
 

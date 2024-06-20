@@ -15,6 +15,7 @@ const passport = require('passport');
 const session = require('express-session');
 const payment=require('../Controllers/Payment/payment');
 const Shipping=require('../Controllers/Shipping/ShippingController')
+const SittingController = require('../Controllers/Reservation/SittingController');
 
 
 
@@ -99,6 +100,9 @@ router.get('/checkout',payment.checkout);
 router.post('/AddShipping/:order_id',authMiddleware,Shipping.AddShipping);
 router.put('/UpdateStatus/:Shipping_id',authMiddleware,Shipping.updateStatus);
 
+// ROUTES FOR SITTING CONTROLLER
+router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest);
+
 // Use express-session middleware
 router.use(session({
   secret: 'X-h2tDeZTUMVBmVL', // Set your own secret key
@@ -134,6 +138,7 @@ router.get('/success', (req, res) => {
 router.get('/failure', (req, res) => {
   res.send('Authentication failed');
 });
+
 
 
 module.exports = router;

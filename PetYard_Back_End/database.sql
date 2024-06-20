@@ -89,6 +89,33 @@ CREATE TABLE Reservation (
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
 
+CREATE TABLE SittingReservation (
+    Reserve_ID SERIAL PRIMARY KEY,
+    Pet_ID INT,
+    Owner_ID INT,
+    Location POINT,
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP,
+    expirationTime BIGINT,
+    Final_Price DOUBLE PRECISION,
+    Status Status DEFAULT 'Pending',
+    Provider_ID INT,  -- Nullable, will be set when the owner accepts a provider
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
+    FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+-- Table to handle applications from service providers for a sitting reservation
+CREATE TABLE SittingApplication (
+    Application_ID SERIAL PRIMARY KEY,
+    Reserve_ID INT,
+    Provider_ID INT,
+    Application_Status Status DEFAULT 'Pending',
+    Application_Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Reserve_ID) REFERENCES SittingReservation(Reserve_ID),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
 CREATE TABLE Review (
     Rating_ID SERIAL PRIMARY KEY,
     Reservation_ID INT,
@@ -122,16 +149,6 @@ CREATE TABLE Messages (
     FOREIGN KEY (Chat_Id) REFERENCES Chat(Chat_ID)
 );
 
-
-
-/*
-
-Each Product is associated with a User (provider) who added the product (provider_id).
-Each Order is linked to a User who placed the order (user_id).
-OrderItems represent the products included in each order (product_id).
-
-
-*/
 
 CREATE TYPE category AS ENUM ('Accessories','Food');
 
@@ -183,7 +200,7 @@ CREATE TABLE Shipping (
     paid BOOLEAN DEFAULT FALSE, -- FALSE indicates the order is not paid, TRUE indicates it is paid
     FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
-//////////////////////////////////////////////////
+
 
 
 CREATE TABLE Followers (
@@ -194,12 +211,7 @@ CREATE TABLE Followers (
     Followee_Type VARCHAR(50) NOT NULL,
     UNIQUE (Follower_ID, Follower_Type, Followee_ID, Followee_Type)
 );
-/*
--- Define the composite type
-CREATE TYPE like_info AS (
-    user_id INTEGER,
-    user_type VARCHAR(50)  -- No CHECK constraint here
-);*/
+
 
 CREATE TABLE Posts (
     id SERIAL PRIMARY KEY,
