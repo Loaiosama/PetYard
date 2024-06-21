@@ -191,8 +191,6 @@ const GetAllRequset = async (req, res) => {
 };
 
 
-
-
 const GetSittingReservations = async (req, res) => {
     const ownerId = req.ID;
 
@@ -219,15 +217,6 @@ const GetSittingReservations = async (req, res) => {
         });
     }
 }
-
-
-
-
-
-
-
-
-
 
 
 const getSittingApplications = async(req, res) => {
@@ -282,8 +271,6 @@ const getSittingApplications = async(req, res) => {
         })
     }
 }
-
-
 
 
 
@@ -385,6 +372,61 @@ const acceptSittingApplication = async (req, res) => {
 
 
 
+const checkAndUpdateAllPendingRequestToReject = async () => {
+    try {
+        const selectAllAccepted = await pool.query('SELECT * FROM SittingReservation WHERE Status = $1', ['Accepted']);
+        for (const reservation of selectAllAccepted.rows) {
+            const pendingApplicationsQuery = await pool.query(
+                'SELECT * FROM SittingApplication WHERE Reserve_ID = $1 AND Application_Status = $2',
+                [reservation.reserve_id, 'Pending']
+            );
+
+            for (const application of pendingApplicationsQuery.rows) {
+                const providerId = application.provider_id;
+
+                const providerQuery = await pool.query('SELECT * FROM ServiceProvider WHERE Provider_Id = $1', [providerId]);
+                if (providerQuery.rows.length === 0) continue;
+
+                const provider = providerQuery.rows[0];
+                const providerName = provider.username;
+                const providerEmail = provider.email;
+
+                // Update the application status to 'Rejected'
+                await pool.query('UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3', ['Rejected', reservation.reserve_id, providerId]);
+
+                const message = `
+                🐾 Pet Sitting Application Update 🐾
+
+                Dear ${providerName},
+
+                We regret to inform you that your application for the following pet sitting request has been rejected:
+
+                - **Reservation ID:** ${reservation.reserve_id}
+
+                While this request wasn't successful, we appreciate your interest and encourage you to apply for other pet sitting opportunities available on PetYard.
+
+                Thank you for your understanding and for being a valued member of our community.
+
+                Best regards,
+                The PetYard Team
+                `;
+
+                await sendemail.sendemail({
+                    email: providerEmail,
+                    subject: 'Pet Sitting Application Update 🐾',
+                    message
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating pending requests to reject:", error);
+    }
+
+}
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateAllPendingRequestToReject, 6000);
+
 
 module.exports = {
     makeRequest,
@@ -394,3 +436,4 @@ module.exports = {
     acceptSittingApplication,
     GetAllRequset
 };
+
