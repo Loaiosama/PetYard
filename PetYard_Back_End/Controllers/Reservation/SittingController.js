@@ -372,7 +372,7 @@ const acceptSittingApplication = async (req, res) => {
 
 
 
-const checkAndUpdateAllPendingRequestToReject = async () => {
+const checkAndUpdateAllPendingRequestToRejectForProvider = async () => {
     try {
         const selectAllAccepted = await pool.query('SELECT * FROM SittingReservation WHERE Status = $1', ['Accepted']);
         for (const reservation of selectAllAccepted.rows) {
@@ -425,7 +425,62 @@ const checkAndUpdateAllPendingRequestToReject = async () => {
 }
 
 // Set interval to run the function periodically
-setInterval(checkAndUpdateAllPendingRequestToReject, 6000);
+setInterval(checkAndUpdateAllPendingRequestToRejectForProvider, 6000);
+
+
+
+const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
+    try {
+        const selectAll = await pool.query('SELECT * FROM SittingReservation WHERE Status = $1', ['Pending']);
+        
+        for (const reservation of selectAll.rows) {
+            const currentTime = new Date().toISOString();
+            
+            if (currentTime >= reservation.start_time.toISOString()) {
+                await pool.query('UPDATE SittingReservation SET Status = $1 WHERE Reserve_ID = $2 AND Owner_ID = $3', ['Rejected', reservation.reserve_id, reservation.owner_id]);
+
+                const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+                const ownerRes = await pool.query(ownerQuery, [reservation.owner_id]);
+                if (ownerRes.rows.length === 0) continue;
+
+                const owner = ownerRes.rows[0];
+                const name = owner.first_name;
+                const email = owner.email;
+               
+
+                const message = `
+                🐾 Pet Sitting Request Update 🐾
+
+                Dear ${name},
+
+                We regret to inform you that your pet sitting request has been automatically rejected because the start time has passed without a sitter being assigned.
+
+                - **Reservation ID:** ${reservation.reserve_id}
+
+                We understand this may be disappointing, and we encourage you to post another request for pet sitting. Our service providers are always eager to help care for your pet.
+
+                Thank you for your understanding and for being a valued member of our community.
+
+                Best regards,
+                The PetYard Team
+                `;
+
+                await sendemail.sendemail({
+                    email: email,
+                    subject: 'Pet Sitting Request Update 🐾',
+                    message
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating pending requests to reject:", error);
+    }
+}
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateAllPendingRequestToRejectForPetowner, 60000);
+
+
 
 
 module.exports = {
