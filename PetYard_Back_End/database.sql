@@ -95,10 +95,10 @@ CREATE TABLE SittingReservation (
     Owner_ID INT,
     Location POINT,
     Start_time TIMESTAMP,
-    End_time TIMESTAMP,
+    End_time TIMESTAMP ,
     expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
-    Status Status DEFAULT 'Pending',
+    Status VARCHAR(20) DEFAULT 'Pending',
     Provider_ID INT,  -- Nullable, will be set when the owner accepts a provider
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID),
@@ -111,7 +111,7 @@ CREATE TABLE SittingApplication (
     Reserve_ID INT,
     Provider_ID INT,
     Application_Status Status DEFAULT 'Pending',
-    Application_Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Application_Date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Reserve_ID) REFERENCES SittingReservation(Reserve_ID),
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );

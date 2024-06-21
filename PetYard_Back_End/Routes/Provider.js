@@ -82,7 +82,7 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
-
+router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
 
 
 

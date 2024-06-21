@@ -7,8 +7,8 @@ const sendemail = async options=>{
      service:"gmail",
      auth :{
         user: "pet.connect.team100@gmail.com",
-        pass: "uuih xxyp crtl muem"
-     }
+        pass: "dsgb khnb xjft qojs"
+     }//dsgb khnb xjft qojs
 
     });
     
