@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px; /* Adjust the height of the map as needed */
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Example data array
+        var locations = [
+            {
+                "lat": 30.0131,
+                "lng": 31.2089,
+                "name": "Reservation ID: 11"
+            },
+
+            {
+                "lat": 30.2090,
+                "lng": 31.3682,
+                "name": "Reservation ID: 12 (El Khanka, Cairo)"
+            },
+            {
+                "lat": 30.2165,
+                "lng": 31.4182,
+                "name": "Reservation ID: 13 (Salah Eldeen Street, El Khanka, Cairo)"
+            }
+            // Add more locations here if needed
+        ];
+
+        // Initialize the map and set its view to the first location
+        var map = L.map('map').setView([locations[0].lat, locations[0].lng], 13);
+
+        // Add a tile layer to the map (OpenStreetMap tiles in this case)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Loop through the locations array and add markers
+        locations.forEach(function(location) {
+            L.marker([location.lat, location.lng]).addTo(map)
+                .bindPopup(location.name)
+                .openPopup();
+        });
+    </script>
+</body>
+</html>

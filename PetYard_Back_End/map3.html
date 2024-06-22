@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Location Picker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <button id="saveLocationBtn">Save Location</button>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([30.0444, 31.2357], 10); // Centered on Cairo
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var marker;
+
+        // Function to send the coordinates to the server
+        async function saveLocation(lat, lng) {
+            try {
+                const response = await fetch('http://localhost:3000/api/save-location', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ lat, lng })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Location saved successfully');
+                } else {
+                    alert('Failed to save location: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error saving location:', error);
+                alert('Failed to save location: ' + error.message);
+            }
+        }
+
+        // Event listener for button click
+        document.getElementById('saveLocationBtn').addEventListener('click', function() {
+            if (marker) {
+                const { lat, lng } = marker.getLatLng();
+                saveLocation(lat, lng);
+            } else {
+                alert('No location selected. Click on the map to select a location.');
+            }
+        });
+
+        // Click event to place a marker and get coordinates
+        map.on('click', function(e) {
+            const { lat, lng } = e.latlng;
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+    </script>
+</body>
+</html>
