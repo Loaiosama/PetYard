@@ -72,9 +72,12 @@ router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
 router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
 
 
-router.get('/GetAllAcceptedandfinishedReservations', authMiddleware, ReservationController.GetAllAcceptedandfinished);
+router.get('/GetAllAcceptedandfinishedReservations', authMiddleware, ReservationController.GetAllAccepted);
 router.put('/updateCompletedReservations/:reserve_id',authMiddleware,ReservationController.updateCompletedReservations);
 router.get('/GetALLCompleted', authMiddleware, ReservationController.GetALLCompleted);
+router.get('/GetAllPending', authMiddleware, ReservationController.GetAllPending);
+
+
 
 
 router.get('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
