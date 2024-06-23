@@ -2,58 +2,76 @@ const pool = require('../../db');
 const sendemail = require("./../../Utils/email");
 
 
-const getProvidersByType = async(req, res)=>{
+const getProvidersByType = async (req, res) => {
+    const ownerId = req.ID;
+    const { type } = req.params;
 
-    const ownerId = req.ID
-    const {type} = req.params;
     try {
-        if(!type)
-        {
+        if (!type) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
         }
-        else{
-            const Query = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
-            const result1 = await pool.query(Query, [ownerId]);
 
-            if (result1.rows.length === 0) {
-                return res.status(401).json({
-                    status: "Fail",
-                    message: "User doesn't exist"
-                });
-            }
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
 
-            const client = await pool.connect();
-            const providers = 'SELECT sp.*, s.service_id, s.type FROM ServiceProvider sp JOIN Services s ON sp.Provider_Id = s.Provider_Id WHERE s.Type = $1;';
-            const result = await client.query(providers, [type]);
-                
-            if (result.rows.length === 0) {
-                return res.status(401).json({
-                    status: "Fail",
-                    message: "No providers of given type."
-                });
-            }
-
-            res.status(200).json({
-                status: "Success",
-                message: "Providers found",
-                data: result.rows
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist"
             });
-
         }
-    }catch (error) {
+
+        const client = await pool.connect();
+        const providersQuery = `
+            SELECT sp.*, s.service_id, s.type 
+            FROM ServiceProvider sp 
+            JOIN Services s ON sp.Provider_Id = s.Provider_Id 
+            WHERE s.Type = $1
+        `;
+        const providersResult = await client.query(providersQuery, [type]);
+
+        const providersWithSlots = [];
+
+        for (const provider of providersResult.rows) {
+            const slotsQuery = `
+                SELECT * 
+                FROM ServiceSlots 
+                WHERE Provider_ID = $1 
+                AND Service_ID = $2 
+                AND Start_time > NOW()
+            `;
+            const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
+
+            if (slotsResult.rows.length > 0) {
+                providersWithSlots.push(provider);
+            }
+        }
+
+        client.release();
+
+        if (providersWithSlots.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No providers with available service slots of the given type."
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Providers found",
+            data: providersWithSlots
+        });
+
+    } catch (error) {
         console.error("Error finding providers:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
-
-
-        
-    } 
-
+    }
 }
 
 
@@ -90,26 +108,24 @@ const getProviderInfo = async (req, res) => {
             });
         }
 
-
-        
         const provider = result.rows[0];
-        
+
         // Calculate age of the provider
         const dob = new Date(provider.date_of_birth);
         const ageDiffMs = Date.now() - dob.getTime();
         const ageDate = new Date(ageDiffMs); // milliseconds from epoch
         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
 
+        // Add age to the provider object
+        provider.age = age;
 
         const q = 'SELECT * FROM Services WHERE Provider_Id = $1';
         const res1 = await pool.query(q, [Provider_id]);
 
-
         res.status(200).json({
             status: "Success",
-            data: result.rows[0],
-            data1:res1.rows,
-            Age :age
+            provider,
+            services: res1.rows
         });
 
     } catch (error) {
@@ -120,6 +136,7 @@ const getProviderInfo = async (req, res) => {
         });
     }
 }
+
 
 
 const GetSlotProvider=async(req,res)=>{
@@ -150,7 +167,12 @@ const GetSlotProvider=async(req,res)=>{
 
         const Slot = 'SELECT * FROM ServiceSlots WHERE Provider_ID = $1 And Service_ID=$2';
         const res1 = await pool.query(Slot, [Provider_id,Service_id]);
-
+        if (res1.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Service Slots doesn't exist."
+            });
+        }
         const slot_id=res1.rows[0].slot_id;
         const status="Accepted";
 
