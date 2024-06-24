@@ -5,10 +5,21 @@ import 'package:iconsax/iconsax.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import '../../../../provider profile/presentation/view/widgets/provider_profile_card.dart';
+import 'package:intl/intl.dart';
 
 class SummaryTab extends StatelessWidget {
-  const SummaryTab({super.key});
-
+  const SummaryTab(
+      {super.key,
+      required this.providerName,
+      required this.startDate,
+      this.endDate,
+      required this.fees,
+      required this.selectedPetName});
+  final String providerName;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final int fees;
+  final String selectedPetName;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -18,7 +29,7 @@ class SummaryTab extends StatelessWidget {
           'Booking Information',
           style: Styles.styles14w600,
         ),
-        heightSizedBox(16),
+        heightSizedBox(10),
         //  const Color.fromRGBO(36, 124, 255, 1),
         // const Color.fromRGBO(34, 197, 94, 1),
         Row(
@@ -39,18 +50,19 @@ class SummaryTab extends StatelessWidget {
                 ),
                 heightSizedBox(2),
                 Text(
-                  '-From Wednesday, 08 May 2023',
+                  // '-From Wednesday, 08 May 2023',
+                  '-From ${DateFormat('EEEE, d MMM, yyyy').format(startDate!)}',
                   style: Styles.styles12NormalHalfBlack,
                 ),
                 Text(
-                  '-To Friday, 10 May 2023',
+                  '-To ${DateFormat('EEEE, d MMM, yyyy').format(endDate!)}',
                   style: Styles.styles12NormalHalfBlack,
                 ),
               ],
             ),
           ],
         ),
-        heightSizedBox(16),
+        heightSizedBox(12),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -76,19 +88,47 @@ class SummaryTab extends StatelessWidget {
             ),
           ],
         ),
-        heightSizedBox(20),
+        heightSizedBox(12),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SummaryIconContainer(
+              containerColor: Color.fromRGBO(250, 233, 250, 1),
+              iconColor: Color.fromRGBO(197, 34, 170, 1),
+              icon: FontAwesomeIcons.paw,
+            ),
+            widthSizedBox(10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pet',
+                  style: Styles.styles12w600,
+                ),
+                heightSizedBox(2),
+                Text(
+                  selectedPetName,
+                  style: Styles.styles12NormalHalfBlack,
+                ),
+              ],
+            ),
+          ],
+        ),
+        heightSizedBox(14),
         Text(
           'Pet Carer Information',
           style: Styles.styles14w600,
         ),
-        heightSizedBox(16),
-        const ProviderProfileCard(),
-        heightSizedBox(20),
+        heightSizedBox(10),
+        ProviderProfileCard(
+          providerName: providerName,
+        ),
+        heightSizedBox(14),
         Text(
           'Payment Information',
           style: Styles.styles14w600,
         ),
-        heightSizedBox(16),
+        heightSizedBox(10),
         Row(
           children: [
             const SummaryIconContainer(
@@ -103,12 +143,12 @@ class SummaryTab extends StatelessWidget {
             ),
           ],
         ),
-        heightSizedBox(20),
+        heightSizedBox(14),
         Text(
           'Total Fees',
           style: Styles.styles14w600,
         ),
-        heightSizedBox(16),
+        heightSizedBox(10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -117,9 +157,9 @@ class SummaryTab extends StatelessWidget {
               style: Styles.styles12NormalHalfBlack,
             ),
             Text(
-              '\$290/EG',
+              '\$$fees/EG',
               style: Styles.styles14w600,
-            ),
+            )
           ],
         )
       ],
