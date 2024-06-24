@@ -19,7 +19,11 @@ class Styles {
     fontWeight: FontsHelper.bold,
     color: Colors.black,
   );
-
+  static TextStyle styles20MediumBlack = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontsHelper.medium,
+    color: Colors.black,
+  );
   static TextStyle styles18BoldBlack = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontsHelper.bold,

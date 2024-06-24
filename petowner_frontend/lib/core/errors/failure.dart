@@ -18,8 +18,12 @@ class ServerFailure extends Failure {
       case DioExceptionType.receiveTimeout:
         return ServerFailure('Receive Timeout!');
       case DioExceptionType.badResponse:
-        if (dioError.response?.statusCode == 401) {
-          return ServerFailure('Invalid token');
+        if (dioError.response?.statusCode == 401 ||
+            dioError.response?.statusCode == 400 ||
+            dioError.response?.statusCode == 404 ||
+            dioError.response?.statusCode == 403) {
+          // print(dioError.response!.data['message']);
+          return ServerFailure(dioError.response!.data['message']);
         } else {
           return ServerFailure('Bad Request!');
         }
@@ -49,3 +53,7 @@ class ServerFailure extends Failure {
     }
   }
 }
+
+
+// vudc syhh dnhq uywj 
+// nodemailer password in backend
