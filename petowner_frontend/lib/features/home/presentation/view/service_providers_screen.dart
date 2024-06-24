@@ -11,6 +11,7 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/data/repo/home_repo_impl.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
 import 'package:petowner_frontend/features/home/presentation/view_model/Home_providers/home_providers_cubit.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'widgets/provider_search_text_field.dart';
 
@@ -115,12 +116,25 @@ class ServiceProvidersBody extends StatelessWidget {
                 //   ),
                 // );
               } else if (state is HomeProvidersLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                    child: ListView.builder(
+                      itemCount: 5,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return const BuildShimmerListItem();
+                      },
+                    ),
+                  ),
                 );
               } else if (state is HomeProvidersFailure) {
-                return Center(
-                  child: Text(state.errorMessage),
+                return Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 200.h),
+                  child: Center(
+                    child: Text(state.errorMessage),
+                  ),
                 );
               }
               return const Center(
@@ -252,6 +266,54 @@ class ProviderGridItem extends StatelessWidget {
             style: Styles.styles12w600.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BuildShimmerListItem extends StatelessWidget {
+  const BuildShimmerListItem({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 14.0),
+        child: Column(
+          children: [
+            Material(
+              color: Colors.white,
+              elevation: 1.0,
+              borderRadius: BorderRadius.circular(10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 120.h,
+                    width: 110.w,
+                    color: Colors.white,
+                  ),
+                  widthSizedBox(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(
+                        3,
+                        (index) => Container(
+                          height: 16.0,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

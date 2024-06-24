@@ -51,7 +51,7 @@ class OnBoardingScreen2State extends State<OnBoardingScreen2> {
     Timer.periodic(const Duration(seconds: 3), (timer) {
       if (currentPageIndex < 2) {
         pageController.nextPage(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 1000),
           curve: Curves.ease,
         );
       } else {
