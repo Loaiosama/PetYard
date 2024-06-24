@@ -47,9 +47,20 @@ const getProvidersByType = async (req, res) => {
             const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
 
             if (slotsResult.rows.length > 0) {
-                providersWithSlots.push({
-                    ...provider,
-                    slots: slotsResult.rows
+                slotsResult.rows.forEach(slot => {
+                    providersWithSlots.push({
+                        provider_id: provider.provider_id,
+                        username: provider.username,
+                        phone: provider.phone,
+                        email: provider.email,
+                        bio: provider.bio,
+                        date_of_birth: provider.date_of_birth,
+                        location: provider.location,
+                        image: provider.image,
+                        service_id: provider.service_id,
+                        type: provider.type,
+                        slot
+                    });
                 });
             }
         }
@@ -76,7 +87,9 @@ const getProvidersByType = async (req, res) => {
             message: "Internal server error"
         });
     }
-}
+};
+
+
 
 
 
