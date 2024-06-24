@@ -4,10 +4,9 @@ const sendemail = async options=>{
     //1 create transporter
 
     const transporter =nodemailer.createTransport({
-     service:"gmail",
-     secure:false,
-     host: "smtp.gmail.com",
-     port: 587,
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
      auth :{
         user: "pet.connect.team100@gmail.com",
         pass: "dsgb khnb xjft qojs"

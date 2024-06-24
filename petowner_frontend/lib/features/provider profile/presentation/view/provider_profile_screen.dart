@@ -60,7 +60,10 @@ class ProviderProfileScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          print(id);
+                          print(serviceName);
+                        },
                         icon: Tooltip(
                           message: 'More',
                           child: Icon(
@@ -76,6 +79,7 @@ class ProviderProfileScreen extends StatelessWidget {
               ),
               body: ProviderProfileBody(
                 id: id,
+                age: state.providerInfoModel.data!.age ?? 0,
                 serviceName: serviceName,
                 bio: state.providerInfoModel.data!.bio ?? 'No Bio Provided',
                 email:

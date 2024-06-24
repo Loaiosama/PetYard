@@ -29,7 +29,6 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
         ),
         color: Colors.white,
         child: SizedBox(
-          height: 181,
           width: double.infinity,
           child: Padding(
             padding: EdgeInsets.only(top: 14.0.h, left: 16.0.w, bottom: 14.0.h),

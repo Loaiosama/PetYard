@@ -11,11 +11,13 @@ class AboutTabColumn extends StatelessWidget {
       required this.bio,
       required this.email,
       required this.phoneNumber,
-      required this.userName});
+      required this.userName,
+      required this.age});
   final String userName;
   final String serviceName;
   final String bio;
   final String email;
+  final int age;
   // final String age;
   final String phoneNumber;
   @override
@@ -100,7 +102,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                '26 years old."age ya back"',
+                '$age years old.',
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],

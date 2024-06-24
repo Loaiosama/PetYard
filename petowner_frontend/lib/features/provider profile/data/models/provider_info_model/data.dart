@@ -9,6 +9,7 @@ class Data extends Equatable {
   final DateTime? dateOfBirth;
   final dynamic location;
   final String? image;
+  final int? age; // Added age field
 
   const Data({
     this.providerId,
@@ -19,6 +20,7 @@ class Data extends Equatable {
     this.dateOfBirth,
     this.location,
     this.image,
+    this.age,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -32,6 +34,7 @@ class Data extends Equatable {
             : DateTime.parse(json['date_of_birth'] as String),
         location: json['location'] as dynamic,
         image: json['image'] as String?,
+        age: json['age'] as int?, // Added age field
       );
 
   Map<String, dynamic> toJson() => {
@@ -43,6 +46,7 @@ class Data extends Equatable {
         'date_of_birth': dateOfBirth?.toIso8601String(),
         'location': location,
         'image': image,
+        'age': age, // Added age field
       };
 
   @override
@@ -56,6 +60,30 @@ class Data extends Equatable {
       dateOfBirth,
       location,
       image,
+      age, // Added age field
     ];
   }
+}
+
+class Service extends Equatable {
+  final int? serviceId;
+  final int? providerId;
+  final String? type;
+
+  const Service({this.serviceId, this.providerId, this.type});
+
+  factory Service.fromJson(Map<String, dynamic> json) => Service(
+        serviceId: json['service_id'] as int?,
+        providerId: json['provider_id'] as int?,
+        type: json['type'] as String?,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'service_id': serviceId,
+        'provider_id': providerId,
+        'type': type,
+      };
+
+  @override
+  List<Object?> get props => [serviceId, providerId, type];
 }

@@ -10,6 +10,7 @@ import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/profile/data/repo/profile_repo_impl.dart';
 import 'package:petowner_frontend/features/profile/presentation/view_model/active_pets_cubit/active_pets_cubit_cubit.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'pet_profile_circle.dart';
 
@@ -89,7 +90,7 @@ class ActivePetProfileSection extends StatelessWidget {
                 ],
               );
             } else if (state is ActivePetsCubitLoading) {
-              return const CircularProgressIndicator();
+              return const BuildLoadingShimmer();
             } else if (state is ActivePetsCubitFailure) {
               return Text(state.errorMessage);
             }
@@ -97,4 +98,74 @@ class ActivePetProfileSection extends StatelessWidget {
           },
         ));
   }
+}
+
+class BuildLoadingShimmer extends StatelessWidget {
+  const BuildLoadingShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        heightSizedBox(16),
+        Shimmer.fromColors(
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.60,
+            height: 20.0,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4.0.r),
+            ),
+          ),
+        ),
+        heightSizedBox(8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              3, // Number of shimmer placeholders
+              (index) => _buildShimmerCircle(),
+            ),
+          ),
+        ),
+        heightSizedBox(16),
+      ],
+    );
+  }
+}
+
+Widget _buildShimmerCircle() {
+  return Padding(
+    padding: const EdgeInsets.only(right: 8.0),
+    child: Column(
+      children: [
+        Shimmer.fromColors(
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: 60.0,
+            height: 60.0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        heightSizedBox(3),
+        Shimmer.fromColors(
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: 40.0,
+            height: 10.0,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
 }

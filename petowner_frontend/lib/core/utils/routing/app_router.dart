@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
+import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
+import 'package:petowner_frontend/core/widgets/reservation_success.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
@@ -173,12 +175,24 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
+        name: Routes.kbookAppointment,
         path: Routes.kbookAppointment,
-        pageBuilder: (context, state) => transitionGoRoute(
-          context: context,
-          state: state,
-          child: const BookAppointment(),
-        ),
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> extras =
+              state.extra as Map<String, dynamic>;
+          final int providerId = extras['providerId'] as int;
+          final String serviceName = extras['serviceName'] as String;
+          final String providerName = extras['providerName'] as String;
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: BookAppointment(
+              serviceName: serviceName,
+              providerId: providerId,
+              providerName: providerName,
+            ),
+          );
+        },
       ),
       GoRoute(
         name: Routes.kServiceProviders,
@@ -218,6 +232,28 @@ abstract class AppRouter {
             context: context,
             state: state,
             child: Recap(petModel: pet),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kReservationSuccess,
+        path: Routes.kReservationSuccess,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ReservationSuccess(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kReservationFailure,
+        path: Routes.kReservationFailure,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ReservationFailure(),
           );
         },
       ),
