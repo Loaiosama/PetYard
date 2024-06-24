@@ -17,4 +17,6 @@ class Routes {
   static const String kAddPetInfo = '/addPetInfo';
   static const String kPetRecap = '/Recap';
   static const String kServiceProviders = '/ServiceProviders';
+  static const String kReservationSuccess = '/reserveSuccess';
+  static const String kReservationFailure = '/reserveFailure';
 }
