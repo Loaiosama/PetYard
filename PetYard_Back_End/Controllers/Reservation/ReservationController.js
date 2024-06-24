@@ -41,12 +41,16 @@ const getProvidersByType = async (req, res) => {
                 FROM ServiceSlots 
                 WHERE Provider_ID = $1 
                 AND Service_ID = $2 
-                AND Start_time > NOW()
+                AND End_time > NOW()
+                ORDER BY Start_time DESC
             `;
             const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
 
             if (slotsResult.rows.length > 0) {
-                providersWithSlots.push(provider);
+                providersWithSlots.push({
+                    ...provider,
+                    slots: slotsResult.rows
+                });
             }
         }
 
@@ -73,6 +77,7 @@ const getProvidersByType = async (req, res) => {
         });
     }
 }
+
 
 
 
