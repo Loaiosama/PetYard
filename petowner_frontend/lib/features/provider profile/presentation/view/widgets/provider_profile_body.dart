@@ -20,12 +20,13 @@ class ProviderProfileBody extends StatelessWidget {
       required this.bio,
       required this.email,
       required this.phoneNumber,
-      required this.userName});
+      required this.userName,
+      required this.age});
   final int id;
   final String serviceName;
   final String bio;
   final String email;
-  // final String age;
+  final int age;
   final String phoneNumber;
   final String userName;
   @override
@@ -34,8 +35,10 @@ class ProviderProfileBody extends StatelessWidget {
       padding: EdgeInsets.only(left: 16.0.w, top: 16.0.h),
       child: Column(
         children: [
-          const ProviderProfileCard(),
-          heightSizedBox(24),
+          ProviderProfileCard(
+            providerName: userName,
+          ),
+          heightSizedBox(20),
           Padding(
             padding: EdgeInsets.only(right: 12.0.w),
             child: DefaultTabController(
@@ -64,6 +67,7 @@ class ProviderProfileBody extends StatelessWidget {
                       // controller: tabController,
                       children: [
                         AboutTabColumn(
+                          age: age,
                           serviceName: serviceName,
                           bio: bio,
                           email: email,
@@ -79,7 +83,11 @@ class ProviderProfileBody extends StatelessWidget {
               ),
             ),
           ),
-          const MakeAppointmentButtonsRow(),
+          MakeAppointmentButtonsRow(
+            serviceName: serviceName,
+            id: id,
+            providerName: userName,
+          ),
         ],
       ),
     );
@@ -87,8 +95,14 @@ class ProviderProfileBody extends StatelessWidget {
 }
 
 class MakeAppointmentButtonsRow extends StatelessWidget {
-  const MakeAppointmentButtonsRow({super.key});
-
+  const MakeAppointmentButtonsRow(
+      {super.key,
+      required this.serviceName,
+      required this.id,
+      required this.providerName});
+  final String serviceName;
+  final int id;
+  final String providerName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -101,7 +115,14 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
               padding: EdgeInsets.only(right: 10.0.w),
               child: PetYardTextButton(
                 onPressed: () {
-                  GoRouter.of(context).push(Routes.kbookAppointment);
+                  context.pushNamed(
+                    Routes.kbookAppointment,
+                    extra: {
+                      'serviceName': serviceName,
+                      'providerId': id,
+                      'providerName': providerName,
+                    },
+                  );
                 },
                 text: 'Make An Appointment',
                 style: Styles.styles14w600.copyWith(
@@ -123,7 +144,10 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0.r),
               ),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  print(id);
+                  print(serviceName);
+                },
                 icon: Tooltip(
                   message: 'Send a message to Olivia.',
                   child: Icon(

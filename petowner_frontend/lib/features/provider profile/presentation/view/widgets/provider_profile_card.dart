@@ -6,8 +6,8 @@ import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_ca
 import '../../../../../core/utils/theming/styles.dart';
 
 class ProviderProfileCard extends StatelessWidget {
-  const ProviderProfileCard({super.key});
-
+  const ProviderProfileCard({super.key, required this.providerName});
+  final String providerName;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -31,7 +31,7 @@ class ProviderProfileCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Olivia Austin',
+              providerName,
               style: Styles.styles16BoldBlack.copyWith(
                 fontWeight: FontWeight.w700,
               ),
