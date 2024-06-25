@@ -85,7 +85,7 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
 
-//------------------------------ ROUTES FOR Grooming CONTROLLER ---------------------------------
+//------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
 router.post('/setGroomingTypes', authMiddleware, GroomingController.setGroomingTypesForProvider);
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
