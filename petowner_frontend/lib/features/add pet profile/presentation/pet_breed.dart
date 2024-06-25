@@ -7,6 +7,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
+import 'package:petowner_frontend/core/widgets/search_text_field.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/linear_percent_indecator.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_bar.dart';
@@ -33,45 +34,43 @@ class PetBreedScreen extends StatelessWidget {
             const LinearIndicator(
               percent: 0.4,
             ),
-            heightSizedBox(20),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 50.h,
-                    width: double.infinity,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Search For Breed',
-                        fillColor: Colors.grey.withOpacity(0.2),
-                        hintStyle: Styles.styles12NormalHalfBlack
-                            .copyWith(fontSize: 14.sp),
-                        filled: true,
-                        prefixIcon: Icon(
-                          FontAwesomeIcons.magnifyingGlass,
-                          size: 16.sp,
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14.0),
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.5))),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14.0),
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.5))),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14.0),
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.5))),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            heightSizedBox(10),
+            const Column(
+              children: [
+                // SizedBox(
+                //   height: 50.h,
+                //   width: double.infinity,
+                //   child: TextFormField(
+                //     decoration: InputDecoration(
+                //       hintText: 'Search For Breed',
+                //       fillColor: Colors.grey.withOpacity(0.2),
+                //       hintStyle: Styles.styles12NormalHalfBlack
+                //           .copyWith(fontSize: 14.sp),
+                //       filled: true,
+                //       prefixIcon: Icon(
+                //         FontAwesomeIcons.magnifyingGlass,
+                //         size: 16.sp,
+                //         color: Colors.black.withOpacity(0.5),
+                //       ),
+                //       disabledBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(14.0),
+                //           borderSide: BorderSide(
+                //               color: Colors.black.withOpacity(0.5))),
+                //       enabledBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(14.0),
+                //           borderSide: BorderSide(
+                //               color: Colors.black.withOpacity(0.5))),
+                //       focusedBorder: OutlineInputBorder(
+                //           borderRadius: BorderRadius.circular(14.0),
+                //           borderSide: BorderSide(
+                //               color: Colors.black.withOpacity(0.5))),
+                //     ),
+                //   ),
+                // ),
+                SearchTextField(),
+              ],
             ),
+            heightSizedBox(10),
             const Expanded(child: BreedNameListView()),
             Padding(
               padding:

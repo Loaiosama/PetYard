@@ -13,7 +13,7 @@ import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_ca
 import 'package:petowner_frontend/features/home/presentation/view_model/Home_providers/home_providers_cubit.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'widgets/provider_search_text_field.dart';
+import '../../../../core/widgets/search_text_field.dart';
 
 class ServiceProvidersScreen extends StatelessWidget {
   const ServiceProvidersScreen({
@@ -57,7 +57,7 @@ class ServiceProvidersBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const ProviderScreenSearchTextField(),
+        const SearchTextField(),
         heightSizedBox(20),
         BlocProvider(
           create: (context) => HomeProvidersCubit(HomeRepoImpl(
