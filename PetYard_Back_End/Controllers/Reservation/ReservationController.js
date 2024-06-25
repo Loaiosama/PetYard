@@ -648,9 +648,8 @@ const GetAllPending = async (req, res) => {
             JOIN ServiceProvider sp ON s.Provider_ID = sp.Provider_Id
             WHERE r.Owner_ID = $1
             AND r.Type = 'Pending'
-            AND $2 < ss.start_time;  -- Only select pending reservations where start_time is in the future
         `;
-        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId, new Date()]);
+        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId]);
 
         res.status(200).json({
             status: "Success",
