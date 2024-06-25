@@ -63,9 +63,9 @@ const createGroomingSlots = async(req, res) =>{
 
 const setGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingTypes } = req.body;
+    const { groomingType } = req.body;
 
-    if (!providerId || !groomingTypes || !Array.isArray(groomingTypes)) {
+    if (!providerId || !groomingType ) {
         return res.status(400).json({
             status: "Fail",
             message: "Missing or invalid information."
@@ -74,11 +74,9 @@ const setGroomingTypesForProvider = async (req, res) => {
 
     try {
 
-        await pool.query('DELETE FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+        
 
-        for (let type of groomingTypes) {
-            await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, GroomingType) VALUES ($1, $2)', [providerId, type]);
-        }
+        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type) VALUES ($1, $2)', [providerId, groomingType]);
 
         res.status(201).json({
             status: "Success",
@@ -97,10 +95,10 @@ const getGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
 
     try {
-        const result = await pool.query('SELECT GroomingType FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+        const result = await pool.query('SELECT Grooming_Type FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
         res.status(200).json({
             status: "Success",
-            groomingTypes: result.rows.map(row => row.groomingtype)
+            groomingTypes: result.rows
         });
     } catch (e) {
         console.error("Error: ", e);
@@ -128,7 +126,7 @@ const getGroomingSlots = async(req, res) =>{
         }
     
         const providerQuery = "SELECT FROM ServiceProvider WHERE Provider_Id = $1";
-        const providerRes = await pool.query(providerQuery, providerId);
+        const providerRes = await pool.query(providerQuery, [providerId]);
     
         if(providerRes.rows.length === 0){
             return res.status(400).json({
@@ -138,7 +136,7 @@ const getGroomingSlots = async(req, res) =>{
         }
 
         const slotsQuery = "SELECT * FROM GroomingServiceSlots WHERE Provider_ID = $1";
-        const slotsRes = await pool.query(slotsQuery, providerId);
+        const slotsRes = await pool.query(slotsQuery, [providerId]);
 
         if(slotsRes.rows.length === 0 ){
             return res.status(404).json({
@@ -201,7 +199,7 @@ const bookGroomingSlot = async (req, res) => {
         const slot = slotResult.rows[0];
 
         const insertQuery = `
-            INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Type)
+            INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Grooming_Type)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`;
 

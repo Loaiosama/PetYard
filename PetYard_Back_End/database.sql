@@ -138,19 +138,20 @@ CREATE TABLE GroomingReservation (
     End_time TIMESTAMP,
     expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
-    Type GroomingType,
+    Grooming_Type GroomingType,
     Type Status DEFAULT 'Pending',
-    FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
+    FOREIGN KEY (Slot_ID) REFERENCES GroomingServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
 
 CREATE TABLE ProviderGroomingTypes (
+    ID SERIAL PRIMARY KEY,
     Provider_ID INT,
-    GroomingType VARCHAR(50),
-    PRIMARY KEY (Provider_ID, GroomingType),
+    Grooming_Type GroomingType,
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
+
 
 
 CREATE TABLE Review (
