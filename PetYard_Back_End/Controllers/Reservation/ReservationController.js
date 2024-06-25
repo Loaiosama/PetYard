@@ -771,6 +771,64 @@ const GetALLCompleted = async (req, res) => {
 }
 
 
+const GetAllRejected = async (req, res) => {
+    const ownerId = req.ID;
+
+    try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID not provided."
+            });
+        }
+
+        // Check if the owner exists
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+        // Query to retrieve rejected reservations along with provider and service details
+        const reservationsQuery = `
+            SELECT r.*, 
+                   sp.username AS provider_name, 
+                   sp.email AS provider_email, 
+                   sp.phone AS provider_phone, 
+                   sp.bio AS provider_bio, 
+                   sp.image AS provider_image,
+                   s.type AS service_type,
+                   ss.start_time AS slot_start_time,
+                   ss.end_time AS slot_end_time,
+                   ss.price AS slot_price
+            FROM Reservation r
+            JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
+            JOIN Services s ON ss.Service_ID = s.Service_ID
+            JOIN ServiceProvider sp ON s.Provider_ID = sp.Provider_Id
+            WHERE r.Owner_ID = $1
+            AND r.Type = 'Rejected'
+        `;
+        const { rows: reservations } = await pool.query(reservationsQuery, [ownerId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Rejected reservations retrieved.",
+            data: reservations
+        });
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+}
+
+
 //  After a certain amount of hours Reject automatically  
 
 const checkAndUpdateExpiredReservations = async () => {
@@ -896,6 +954,6 @@ module.exports = {
    GetAllAccepted,
    updateCompletedReservations,
    GetALLCompleted,
-   GetAllPending
+   GetAllPending,GetAllRejected
     
 };

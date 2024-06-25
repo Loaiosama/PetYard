@@ -76,8 +76,7 @@ router.get('/GetAllAcceptedandfinishedReservations', authMiddleware, Reservation
 router.put('/updateCompletedReservations/:reserve_id',authMiddleware,ReservationController.updateCompletedReservations);
 router.get('/GetALLCompleted', authMiddleware, ReservationController.GetALLCompleted);
 router.get('/GetAllPending', authMiddleware, ReservationController.GetAllPending);
-
-
+router.get('/GetAllRejected', authMiddleware, ReservationController.GetAllRejected);
 
 
 router.get('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
