@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 
 class AboutTabColumn extends StatelessWidget {
-  const AboutTabColumn(
-      {super.key,
-      required this.serviceName,
-      required this.bio,
-      required this.email,
-      required this.phoneNumber,
-      required this.userName,
-      required this.age});
+  const AboutTabColumn({
+    super.key,
+    required this.serviceName,
+    required this.bio,
+    required this.email,
+    required this.phoneNumber,
+    required this.userName,
+    required this.age,
+    required this.services,
+  });
   final String userName;
   final String serviceName;
   final String bio;
   final String email;
   final int age;
+  final List<Service> services;
   // final String age;
   final String phoneNumber;
   @override
@@ -53,9 +58,20 @@ class AboutTabColumn extends StatelessWidget {
             style: Styles.styles14w600,
           ),
           heightSizedBox(8),
-          Text(
-            'services ya back',
-            style: Styles.styles12NormalHalfBlack,
+          SizedBox(
+            height: 20.h,
+            child: ListView.separated(
+              itemCount: services.length,
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => Text(
+                '  |  ',
+                style: Styles.styles12NormalHalfBlack,
+              ),
+              itemBuilder: (context, index) => Text(
+                services[index].type!,
+                style: Styles.styles12NormalHalfBlack,
+              ),
+            ),
           ),
           heightSizedBox(18),
           Text(

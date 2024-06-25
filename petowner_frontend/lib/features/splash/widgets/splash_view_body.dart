@@ -32,7 +32,7 @@ class SplashViewBody extends StatelessWidget {
     return Container(
       color: kPrimaryGreen,
       child: Center(
-        child: Image.asset('assets/images/test.png'),
+        child: Image.asset('assets/images/petyard_logo(1).png'),
       ),
     );
   }

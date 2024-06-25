@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view%20model/cubit/provider_info_cubit.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/widgets/provider_profile_body.dart';
@@ -27,6 +28,8 @@ class ProviderProfileScreen extends StatelessWidget {
       child: BlocBuilder<ProviderInfoCubit, ProviderInfoState>(
         builder: (context, state) {
           if (state is ProviderInfoSuccess) {
+            final List<Service> services =
+                state.providerInfoModel.services ?? [];
             return Scaffold(
               appBar: AppBar(
                 automaticallyImplyLeading: false,
@@ -80,6 +83,7 @@ class ProviderProfileScreen extends StatelessWidget {
               body: ProviderProfileBody(
                 id: id,
                 age: state.providerInfoModel.data!.age ?? 0,
+                services: services,
                 serviceName: serviceName,
                 bio: state.providerInfoModel.data!.bio ?? 'No Bio Provided',
                 email:
