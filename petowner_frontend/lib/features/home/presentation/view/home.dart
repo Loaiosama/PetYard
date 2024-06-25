@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/requests.dart';
 import 'package:petowner_frontend/features/appointments/presentation/view/appointments_screen.dart';
+import 'package:petowner_frontend/features/chat/presentation/view/chat_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
 import 'widgets/home_screen_body.dart';
 
@@ -33,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List screens = [
     const HomeScreenBody(),
-     Requests() ,
-    Container(),
+    Requests(),
+    const ChatScreen(),
     const AppointmentsScreen(),
     const ProfileScreen(),
   ];
@@ -42,6 +43,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //to discuss
+      // floatingActionButtonLocation:
+      //     FloatingActionButtonLocation.miniCenterDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   mini: true,
+      // ),
       body: screens[currentIndex],
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (value) {
