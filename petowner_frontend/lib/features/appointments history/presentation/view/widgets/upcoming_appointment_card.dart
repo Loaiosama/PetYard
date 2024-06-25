@@ -1,14 +1,28 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 
 class UpcomingAppointmentCard extends StatelessWidget {
-  const UpcomingAppointmentCard({super.key});
-
+  const UpcomingAppointmentCard({
+    super.key,
+    required this.providerName,
+    required this.service,
+    required this.providerImage,
+    this.boardingStartDate,
+    this.boardingEndDate,
+    // required this.providerID,
+  });
+  final String providerName;
+  final String service;
+  final String providerImage;
+  final DateTime? boardingStartDate;
+  final DateTime? boardingEndDate;
+  // final int providerID;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,21 +66,23 @@ class UpcomingAppointmentCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Olivia Austin',
+                          providerName,
                           style: Styles.styles16BoldBlack.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         heightSizedBox(4),
                         Text(
-                          'Pet Sitting',
+                          'Pet $service',
                           style: Styles.styles12NormalHalfBlack,
                         ),
                         heightSizedBox(2),
-                        Text(
-                          'Wed, 17 May | 08.30 AM',
-                          style: Styles.styles12NormalHalfBlack,
-                        ),
+                        service == 'Boarding'
+                            ? Text(
+                                '-${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} \n-${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
+                                style: Styles.styles12NormalHalfBlack,
+                              )
+                            : Container(),
                       ],
                     ),
                     // widthSizedBox(10),
@@ -74,7 +90,7 @@ class UpcomingAppointmentCard extends StatelessWidget {
                     IconButton(
                       onPressed: () {},
                       icon: Tooltip(
-                        message: 'Send a message to Olivia.',
+                        message: 'Send a message to $providerName.',
                         child: Icon(
                           FluentIcons.chat_20_regular,
                           color: kPrimaryGreen,

@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:petowner_frontend/features/appointments%20history/data/models/acceptedmodel/acceptedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/completedmodel/completedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/pendingmodel/pendingmodel.dart';
+import 'package:petowner_frontend/features/appointments%20history/data/models/rejectedmodel/rejectedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/repo/appointments_history_repo.dart';
 part 'appointments_history_state.dart';
 
@@ -29,5 +31,25 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
             emit(PendingAppointmentFailure(errorMessage: failure.toString())),
         (pending) =>
             emit(PendingAppointmentSuccess(pendingReservations: pending)));
+  }
+
+  Future fetchRejectedReservations() async {
+    emit(RejectedAppointmentLoading());
+    var result = await appointmentHistoryRepo.fetchRejectedReservations();
+    result.fold(
+        (failure) =>
+            emit(RejectedAppointmentFailure(errorMessage: failure.toString())),
+        (rejected) =>
+            emit(RejectedAppointmentSuccess(rejectedReservations: rejected)));
+  }
+
+  Future fetchAcceptedReservations() async {
+    emit(AcceptedAppointmentLoading());
+    var result = await appointmentHistoryRepo.fetchAcceptedReservations();
+    result.fold(
+        (failure) =>
+            emit(AcceptedAppointmentFailure(errorMessage: failure.toString())),
+        (accepted) =>
+            emit(AcceptedAppointmentSuccess(acceptedReservations: accepted)));
   }
 }

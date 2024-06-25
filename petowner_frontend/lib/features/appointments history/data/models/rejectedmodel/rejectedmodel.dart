@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-import 'datum.dart';
+import 'rejected_datum.dart';
 
 class Rejectedmodel extends Equatable {
   final String? status;
   final String? message;
-  final List<Datum>? data;
+  final List<RejectedDatum>? data;
 
   const Rejectedmodel({this.status, this.message, this.data});
 
@@ -13,7 +13,7 @@ class Rejectedmodel extends Equatable {
         status: json['status'] as String?,
         message: json['message'] as String?,
         data: (json['data'] as List<dynamic>?)
-            ?.map((e) => Datum.fromJson(e as Map<String, dynamic>))
+            ?.map((e) => RejectedDatum.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
 

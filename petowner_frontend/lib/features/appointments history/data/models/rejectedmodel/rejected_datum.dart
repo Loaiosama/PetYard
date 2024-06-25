@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class Datum extends Equatable {
+class RejectedDatum extends Equatable {
   final int? reserveId;
   final int? slotId;
   final int? petId;
@@ -20,7 +20,7 @@ class Datum extends Equatable {
   final DateTime? slotEndTime;
   final int? slotPrice;
 
-  const Datum({
+  const RejectedDatum({
     this.reserveId,
     this.slotId,
     this.petId,
@@ -41,7 +41,7 @@ class Datum extends Equatable {
     this.slotPrice,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory RejectedDatum.fromJson(Map<String, dynamic> json) => RejectedDatum(
         reserveId: json['reserve_id'] as int?,
         slotId: json['slot_id'] as int?,
         petId: json['pet_id'] as int?,

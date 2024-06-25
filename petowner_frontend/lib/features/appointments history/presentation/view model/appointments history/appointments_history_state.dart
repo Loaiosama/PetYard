@@ -36,3 +36,31 @@ final class PendingAppointmentFailure extends AppointmentsHistoryState {
 
   const PendingAppointmentFailure({required this.errorMessage});
 }
+
+final class RejectedAppointmentLoading extends AppointmentsHistoryState {}
+
+final class RejectedAppointmentSuccess extends AppointmentsHistoryState {
+  final List<Rejectedmodel> rejectedReservations;
+
+  const RejectedAppointmentSuccess({required this.rejectedReservations});
+}
+
+final class RejectedAppointmentFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const RejectedAppointmentFailure({required this.errorMessage});
+}
+
+final class AcceptedAppointmentLoading extends AppointmentsHistoryState {}
+
+final class AcceptedAppointmentSuccess extends AppointmentsHistoryState {
+  final List<Acceptedmodel> acceptedReservations;
+
+  const AcceptedAppointmentSuccess({required this.acceptedReservations});
+}
+
+final class AcceptedAppointmentFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const AcceptedAppointmentFailure({required this.errorMessage});
+}
