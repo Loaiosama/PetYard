@@ -4,6 +4,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
 import 'package:petowner_frontend/core/widgets/reservation_success.dart';
+import 'package:petowner_frontend/features/chat/presentation/view/chat_screen.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
@@ -254,6 +255,17 @@ abstract class AppRouter {
             context: context,
             state: state,
             child: const ReservationFailure(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kChatScreen,
+        path: Routes.kChatScreen,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ChatScreen(),
           );
         },
       ),
