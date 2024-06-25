@@ -47,7 +47,10 @@ const getProvidersByType = async (req, res) => {
             const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
 
             if (slotsResult.rows.length > 0) {
-                slotsResult.rows.forEach(slot => {
+                // Check if the provider is already in the array
+                const existingProvider = providersWithSlots.find(p => p.provider_id === provider.provider_id);
+
+                if (!existingProvider) {
                     providersWithSlots.push({
                         provider_id: provider.provider_id,
                         username: provider.username,
@@ -59,9 +62,9 @@ const getProvidersByType = async (req, res) => {
                         image: provider.image,
                         service_id: provider.service_id,
                         type: provider.type,
-                        slot
+                      
                     });
-                });
+                } 
             }
         }
 
@@ -88,6 +91,7 @@ const getProvidersByType = async (req, res) => {
         });
     }
 };
+
 
 
 
