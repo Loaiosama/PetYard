@@ -16,6 +16,7 @@ const session = require('express-session');
 const payment=require('../Controllers/Payment/payment');
 const Shipping=require('../Controllers/Shipping/ShippingController')
 const SittingController = require('../Controllers/Reservation/SittingController');
+const GroomingController = require('../Controllers/Reservation/GroomingController');
 
 
 
@@ -108,7 +109,11 @@ router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingRe
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 
-
+//------------------------------ ROUTES FOR Grooming CONTROLLER ---------------------------------
+router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
+router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
+router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
 
 
 

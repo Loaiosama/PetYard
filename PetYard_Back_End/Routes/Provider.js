@@ -14,6 +14,7 @@ const passport = require('passport');
 const session = require('express-session');
 const Shipping=require('../Controllers/Shipping/ShippingController');
 const SittingController = require('../Controllers/Reservation/SittingController');
+const GroomingController = require('../Controllers/Reservation/GroomingController');
 
 
 
@@ -84,6 +85,11 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
 
+//------------------------------ ROUTES FOR Grooming CONTROLLER ---------------------------------
+router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
+router.post('/setGroomingTypes', authMiddleware, GroomingController.setGroomingTypesForProvider);
+router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
 
 
 

@@ -121,12 +121,10 @@ CREATE TYPE GroomingType AS ENUM ('Bathing', 'Nail trimming', 'Fur trimming','Fu
 CREATE TABLE GroomingServiceSlots (
     Slot_ID SERIAL PRIMARY KEY,
     Provider_ID INT,
-    Service_ID INT,
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
     Price DOUBLE PRECISION,
     Grooming_Type GroomingType,
-    FOREIGN KEY (Service_ID) REFERENCES Services(Service_ID),
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
@@ -146,6 +144,14 @@ CREATE TABLE GroomingReservation (
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
+
+CREATE TABLE ProviderGroomingTypes (
+    Provider_ID INT,
+    GroomingType VARCHAR(50),
+    PRIMARY KEY (Provider_ID, GroomingType),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
+);
+
 
 CREATE TABLE Review (
     Rating_ID SERIAL PRIMARY KEY,
