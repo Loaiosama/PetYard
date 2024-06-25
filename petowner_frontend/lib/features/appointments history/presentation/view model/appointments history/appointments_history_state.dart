@@ -22,3 +22,17 @@ final class CompletedAppointmentsSuccses extends AppointmentsHistoryState {
 
   const CompletedAppointmentsSuccses({required this.completedReservations});
 }
+
+final class PendingAppointmentLoading extends AppointmentsHistoryState {}
+
+final class PendingAppointmentSuccess extends AppointmentsHistoryState {
+  final List<Pendingmodel> pendingReservations;
+
+  const PendingAppointmentSuccess({required this.pendingReservations});
+}
+
+final class PendingAppointmentFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const PendingAppointmentFailure({required this.errorMessage});
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
@@ -9,10 +10,19 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
     super.key,
     required this.appointmentStatus,
     required this.statusColor,
+    required this.service,
+    required this.providerName,
+    required this.providerImage,
+    this.boardingStartDate,
+    this.boardingEndDate,
   });
   final String appointmentStatus;
   final Color statusColor;
-
+  final String service;
+  final String providerName;
+  final String providerImage;
+  final DateTime? boardingStartDate;
+  final DateTime? boardingEndDate;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,14 +60,19 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                           ),
                         ),
                         heightSizedBox(4),
-                        Text(
-                          'Wed, 17 May | 08.30 AM',
-                          style: Styles.styles12RegularOpacityBlack,
-                        ),
+                        service == 'Boarding'
+                            ? Text(
+                                '${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} | ${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
+                                style: Styles.styles12RegularOpacityBlack,
+                              )
+                            : Text(
+                                'Monday, 24 Jun | 8:30',
+                                style: Styles.styles12RegularOpacityBlack,
+                              ),
                       ],
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {},
                       icon: Tooltip(
                         message: 'More',
                         child: Icon(
@@ -99,14 +114,14 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Olivia Austin',
+                            providerName,
                             style: Styles.styles16BoldBlack.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           heightSizedBox(4),
                           Text(
-                            'Pet Sitting',
+                            'Pet $service',
                             style: Styles.styles12NormalHalfBlack,
                           ),
                           heightSizedBox(2),

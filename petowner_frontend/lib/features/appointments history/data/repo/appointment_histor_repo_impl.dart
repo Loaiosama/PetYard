@@ -7,6 +7,7 @@ import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/acceptedmodel/acceptedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/completedmodel/completedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/completedmodel/datum.dart';
+import 'package:petowner_frontend/features/appointments%20history/data/models/pendingmodel/pended_datum.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/pendingmodel/pendingmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/models/rejectedmodel/rejectedmodel.dart';
 import 'package:petowner_frontend/features/appointments%20history/data/repo/appointments_history_repo.dart';
@@ -14,6 +15,7 @@ import 'package:petowner_frontend/features/appointments%20history/data/repo/appo
 class AppointmentHistoryImpl extends AppointmentHistoryRepo {
   ApiService apiService;
   List<Completedmodel> completedReservations = [];
+  List<Pendingmodel> pendingReservations = [];
 
   AppointmentHistoryImpl({
     required this.apiService,
@@ -28,13 +30,10 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
   @override
   Future<Either<Failure, List<Completedmodel>>>
       fetchCompletedReservations() async {
-    print('object');
     try {
-      print('object/');
       await apiService.setAuthorizationHeader();
 
-      var response = await apiService.get(
-          endpoint: 'PetOwner/GetAllAcceptedandfinishedReservations');
+      var response = await apiService.get(endpoint: 'PetOwner/GetALLCompleted');
 
       for (var item in response['data']) {
         var datum = Datum.fromJson(item);
@@ -45,7 +44,6 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
         );
         completedReservations.add(completedModel);
       }
-      print(completedReservations[0]);
       return right(completedReservations);
     } catch (e) {
       if (e is DioException) {
@@ -56,9 +54,28 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
   }
 
   @override
-  Future<Either<Failure, List<Pendingmodel>>> fetchPendingReservations() {
-    // TODO: implement fetchPendingReservations
-    throw UnimplementedError();
+  Future<Either<Failure, List<Pendingmodel>>> fetchPendingReservations() async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.get(endpoint: 'PetOwner/GetAllPending');
+
+      for (var item in response['data']) {
+        var datum = PendedDatum.fromJson(item);
+        var pendedModel = Pendingmodel(
+          status: response['status'],
+          message: response['message'],
+          data: [datum],
+        );
+        pendingReservations.add(pendedModel);
+      }
+      return right(pendingReservations);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
   }
 
   @override

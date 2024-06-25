@@ -41,18 +41,25 @@ class AppointmentsScreenBody extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * 0.6924,
               margin: EdgeInsets.only(top: 20.0.h),
-              child: BlocProvider(
-                create: (context) => AppointmentsHistoryCubit(
-                    AppointmentHistoryImpl(apiService: ApiService(dio: Dio())))
-                  ..fetchCompletedReservations(),
-                child: const TabBarView(
-                  children: [
-                    UpcomingTabColumn(),
-                    PendingTabColumn(),
-                    CompletedTabColumn(),
-                    CancelledTabColumn(),
-                  ],
-                ),
+              child: TabBarView(
+                children: [
+                  const UpcomingTabColumn(),
+                  BlocProvider(
+                    create: (context) => AppointmentsHistoryCubit(
+                        AppointmentHistoryImpl(
+                            apiService: ApiService(dio: Dio())))
+                      ..fetchPendingReservations(),
+                    child: const PendingTabColumn(),
+                  ),
+                  BlocProvider(
+                    create: (context) => AppointmentsHistoryCubit(
+                        AppointmentHistoryImpl(
+                            apiService: ApiService(dio: Dio())))
+                      ..fetchCompletedReservations(),
+                    child: const CompletedTabColumn(),
+                  ),
+                  const CancelledTabColumn(),
+                ],
               ),
             ),
           ],
@@ -67,17 +74,46 @@ class PendingTabColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 20,
-      physics: const BouncingScrollPhysics(),
-      itemBuilder: (context, index) {
-        return CompletedCancelledPendingTabCard(
-          appointmentStatus: 'Appointment Pending.',
-          statusColor: Colors.yellow.shade700,
-          providerImage: '',
-          providerName: '',
-          service: '',
-        );
+    return BlocBuilder<AppointmentsHistoryCubit, AppointmentsHistoryState>(
+      builder: (context, state) {
+        if (state is PendingAppointmentLoading) {
+          return ListView.builder(
+            itemCount: 10,
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return const CompletedPendingCancelledShimmerCard();
+            },
+          );
+        } else if (state is PendingAppointmentSuccess) {
+          List pendingReservations = state.pendingReservations;
+          return ListView.builder(
+            itemCount: pendingReservations.length,
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return CompletedCancelledPendingTabCard(
+                boardingStartDate:
+                    state.pendingReservations[index].data?[0].startTime,
+                boardingEndDate:
+                    state.pendingReservations[index].data?[0].endTime,
+                providerImage:
+                    state.pendingReservations[index].data?[0].providerImage ??
+                        '',
+                providerName:
+                    state.pendingReservations[index].data?[0].providerName ??
+                        'no name',
+                service:
+                    state.pendingReservations[index].data?[0].serviceType ??
+                        'no service',
+                appointmentStatus: 'Appointment Pending.',
+                statusColor: Colors.yellow.shade700,
+              );
+            },
+          );
+        } else if (state is PendingAppointmentFailure) {
+          return Center(child: Text(state.errorMessage));
+        } else {
+          return const Text('oops!');
+        }
       },
     );
   }
@@ -113,10 +149,10 @@ class CompletedTabColumn extends StatelessWidget {
       builder: (context, state) {
         if (state is CompletedAppointmentsLoading) {
           return ListView.builder(
-            itemCount: 20,
+            itemCount: 10,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return const CompletedShimmerCard();
+              return const CompletedPendingCancelledShimmerCard();
             },
           );
         } else if (state is CompletedAppointmentsSuccses) {
@@ -169,8 +205,8 @@ class UpcomingTabColumn extends StatelessWidget {
   }
 }
 
-class CompletedShimmerCard extends StatelessWidget {
-  const CompletedShimmerCard({super.key});
+class CompletedPendingCancelledShimmerCard extends StatelessWidget {
+  const CompletedPendingCancelledShimmerCard({super.key});
 
   @override
   Widget build(BuildContext context) {
