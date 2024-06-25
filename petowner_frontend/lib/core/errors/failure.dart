@@ -54,6 +54,5 @@ class ServerFailure extends Failure {
   }
 }
 
-
-// vudc syhh dnhq uywj 
+// vudc syhh dnhq uywj
 // nodemailer password in backend
