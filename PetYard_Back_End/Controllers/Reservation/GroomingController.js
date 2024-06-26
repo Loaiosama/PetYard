@@ -344,28 +344,44 @@ const getGroomingSlots = async (req, res) => {
     }
 };
 
+
 const getAllGroomingProviders = async (req, res) => {
+    const ownerId = req.ID;
     try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID is missing."
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
         const query = `
-            SELECT 
-                ServiceProvider.Provider_Id,
-                ServiceProvider.UserName,
-                ServiceProvider.Phone,
-                ServiceProvider.Email,
-                ServiceProvider.Bio,
-                ServiceProvider.Date_of_birth,
-                ServiceProvider.Location,
-                ServiceProvider.Image
+            SELECT DISTINCT 
+                sp.Provider_Id,
+                sp.UserName,
+                sp.Phone,
+                sp.Email,
+                sp.Bio,
+                sp.Date_of_birth,
+                sp.Location::text AS Location, -- Convert point type to text
+                sp.Image
             FROM 
-                ServiceProvider
+                ServiceProvider sp
             JOIN 
-                Services ON ServiceProvider.Provider_Id = Services.Provider_ID
-            WHERE 
-                Services.Type = $1
+                GroomingServiceSlots gss ON sp.Provider_Id = gss.Provider_ID
         `;
         
-        const values = ['Grooming'];
-        const result = await pool.query(query, values);
+        const result = await pool.query(query);
 
         if (result.rows.length === 0) {
             return res.status(404).json({
@@ -388,6 +404,12 @@ const getAllGroomingProviders = async (req, res) => {
         });
     }
 };
+
+
+
+
+
+
 
 const getGroomingSlotsForProvider = async (req, res) => {
     const ownerId = req.ID;
