@@ -80,6 +80,29 @@ class ApiService {
       rethrow;
     }
   }
+
+  Future<Response> put({
+    required String endPoints,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await setAuthorizationHeader(); // Ensure authorization header is set
+
+      var response = await dio.put(
+        '$baseUrl$endPoints',
+        data: data,
+        options: Options(
+          method: 'PUT',
+          headers: headers,
+        ),
+      );
+      return response;
+    } catch (error) {
+      debugPrint('Put error: $error');
+      rethrow; // Re-throw the error for handling in the caller
+    }
+  }
+
   // Future<Response> addPet () async
   // {
   //    try {

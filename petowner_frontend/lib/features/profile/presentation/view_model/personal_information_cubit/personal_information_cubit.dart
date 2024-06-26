@@ -1,5 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/features/profile/data/repo/profile_repo.dart';
+import 'package:petowner_frontend/features/profile/data/repo/profile_repo_impl.dart';
 
 part 'personal_information_state.dart';
 
@@ -9,19 +14,49 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
     lNameController = TextEditingController(text: lName);
     emailController = TextEditingController(text: mail);
     dateController = TextEditingController(text: selectedDate);
+    phoneNumberController = TextEditingController(text: phoneNumber);
   }
 
   bool isEdit = false;
-  String fName = 'Mohamed';
-  String lName = ' Hamdy';
+  String fName = '';
+  String lName = '';
+  String phoneNumber = '';
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
-  String mail = 'mohamedhamdy@gmail.com';
+  TextEditingController phoneNumberController = TextEditingController();
+  String mail = '';
   TextEditingController emailController = TextEditingController();
   String selectedGender = '';
   TextEditingController genderController = TextEditingController();
-  String selectedDate = '26-10-2003';
+  String selectedDate = '';
   TextEditingController dateController = TextEditingController();
+
+  static ProfileRepo profileRepo =
+      ProfileRepoImpl(apiService: ApiService(dio: Dio()));
+
+  Future<void> getOwnerInfo() async {
+    var result = await profileRepo.getOwnerInfo();
+    result.fold((failure) {
+      // Handle failure case
+    }, (ownerInfo) {
+      fName = ownerInfo.data?.firstName ?? '';
+      lName = ownerInfo.data?.lastName ?? '';
+      mail = ownerInfo.data?.email ?? '';
+      phoneNumber = ownerInfo.data?.phone ?? '';
+      // Format date using DateFormat from intl package
+      selectedDate = ownerInfo.data?.dateOfBirth != null
+          ? DateFormat('dd-MM-yyyy')
+              .format(ownerInfo.data!.dateOfBirth!.toLocal())
+          : '';
+
+      fNameController.text = fName;
+      lNameController.text = lName;
+      emailController.text = mail;
+      dateController.text = selectedDate;
+      phoneNumberController.text = phoneNumber;
+      emit(PersonalInformationLoadedState());
+    });
+  }
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -30,16 +65,18 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != selectedDate as DateTime) {
-      selectedDate = picked as String;
-      dateController.text = '${picked.month}-${picked.day}-${picked.year}';
+    if (picked != null) {
+      // Format date using DateFormat from intl package
+      selectedDate = DateFormat('dd-MM-yyyy').format(picked.toLocal());
+      dateController.text = selectedDate;
+      emit(PersonalInformationDateSelectedState());
     }
   }
 
-  void changeGender({String? value}) {
-    selectedGender = value!;
-    emit(PersonalInformationEditGenderState());
-  }
+  // void changeGender({String? value}) {
+  //   selectedGender = value!;
+  //   emit(PersonalInformationEditGenderState());
+  // }
 
   void save() {
     isEdit = !isEdit;
@@ -60,5 +97,37 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
       dateController.text = selectedDate;
     }
     emit(PersonalInformationEditState());
+  }
+
+  Future<void> updateOwnerInformation({
+    required String firstName,
+    required String lastName,
+    required String pass,
+    required String email,
+    required String phoneNumber,
+    required DateTime dateOfBirth,
+  }) async {
+    emit(UpdateOwnerInformationLoading());
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      bool isSuccess = await profileRepo.updateOwnerInfo(
+        firstName: firstName,
+        lastName: lastName,
+        pass: pass,
+        email: email,
+        phoneNumber: phoneNumber,
+        dateOfBirth: dateOfBirth,
+      );
+      print(isSuccess);
+      if (isSuccess) {
+        emit(UpdateOwnerInformationSuccess(isSuccess: true));
+        await getOwnerInfo();
+      } else {
+        emit(UpdateOwnerInformationFailure(isFail: true));
+      }
+    } catch (e) {
+      emit(UpdateOwnerInformationFailure(isFail: true));
+    }
   }
 }

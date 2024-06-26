@@ -10,6 +10,7 @@ class PersonalInformationTextField extends StatelessWidget {
     required this.label,
     this.isEmail = false,
     this.isDate = false,
+    this.keyboardType,
   });
 
   final TextEditingController controller;
@@ -17,7 +18,7 @@ class PersonalInformationTextField extends StatelessWidget {
   final String label;
   final bool? isEmail;
   final bool? isDate;
-
+  final TextInputType? keyboardType;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -25,6 +26,7 @@ class PersonalInformationTextField extends StatelessWidget {
       enabled: !isEmail! ? (isEdit ? true : false) : false,
       readOnly: isDate! ? true : false,
       // enabled: isEdit ? true : false,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.grey.shade200,
