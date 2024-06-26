@@ -8,6 +8,8 @@ CREATE DATABASE PetYard;
     7ot el tables
 */
 
+
+
 CREATE TABLE Petowner (
     Owner_Id SERIAL PRIMARY KEY,
     First_name VARCHAR(225),
@@ -125,6 +127,7 @@ CREATE TABLE GroomingServiceSlots (
     End_time TIMESTAMP,
     Price DOUBLE PRECISION,
     Grooming_Type GroomingType,
+    Type Status DEFAULT 'Pending',
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
@@ -136,14 +139,13 @@ CREATE TABLE GroomingReservation (
     Owner_ID INT,
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
-    expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
     Grooming_Type GroomingType,
-    Type Status DEFAULT 'Pending',
     FOREIGN KEY (Slot_ID) REFERENCES GroomingServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
+
 
 CREATE TABLE ProviderGroomingTypes (
     ID SERIAL PRIMARY KEY,

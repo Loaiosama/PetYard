@@ -88,9 +88,10 @@ router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequse
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
 router.post('/setGroomingTypes', authMiddleware, GroomingController.setGroomingTypesForProvider);
-router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+router.put('/updateGroomingTypes/:oldgroomingTypeid',authMiddleware,GroomingController.updateGroomingTypesForProvider);
+router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingController.DeleteGroomingTypesForProvider);
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
-
+router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 
 
 // Use express-session middleware

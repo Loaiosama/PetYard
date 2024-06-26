@@ -110,9 +110,10 @@ router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingControl
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
+router.get('/getGroomingSlotsForProvider/:provider_id',authMiddleware,GroomingController.getGroomingSlotsForProvider);
 router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
 router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
-
+router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
 
 
 

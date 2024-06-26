@@ -92,11 +92,6 @@ const createGroomingSlots = async (req, res) => {
 };
 
 
-
-
-
-
-
 const setGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
     const { groomingType } = req.body;
@@ -146,12 +141,12 @@ const setGroomingTypesForProvider = async (req, res) => {
         }
     
 };
-
 const getGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
+ 
 
     try {
-        if (!providerId) {
+        if (!providerId ) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or invalid information."
@@ -174,6 +169,8 @@ const getGroomingTypesForProvider = async (req, res) => {
             status: "Success",
             groomingTypes: result.rows
         });
+
+        
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
@@ -182,10 +179,115 @@ const getGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
+const updateGroomingTypesForProvider = async (req, res) => {
+    const providerId = req.ID;
+    const { groomingType } = req.body;
+    const { oldgroomingTypeid } = req.params;
 
+    try {
 
+        if (!providerId || !groomingType || !oldgroomingTypeid) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing or invalid information."
+            });
+        }
 
+        const query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(query, [providerId]);
 
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const existingGroomingTypeQuery = 'SELECT * FROM ProviderGroomingTypes WHERE ID = $1';
+        const existingGroomingTypeResult = await pool.query(existingGroomingTypeQuery, [oldgroomingTypeid]);
+
+        if (existingGroomingTypeResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Provider does not have this grooming type."
+            });
+        }
+
+        // Check if the new grooming type already exists for the same provider
+        const duplicateCheckQuery = 'SELECT * FROM ProviderGroomingTypes WHERE Provider_ID = $1 AND Grooming_Type = $2';
+        const duplicateCheckResult = await pool.query(duplicateCheckQuery, [providerId, groomingType]);
+
+        if (duplicateCheckResult.rows.length > 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "This grooming type already exists for the provider."
+            });
+        }
+
+        const updateQuery = 'UPDATE ProviderGroomingTypes SET Grooming_Type = $1 WHERE ID = $2';
+        await pool.query(updateQuery, [groomingType, oldgroomingTypeid]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Grooming types updated successfully."
+        });
+
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Failed",
+            message: "Internal server error."
+        });
+    }
+};
+const DeleteGroomingTypesForProvider = async (req, res) => {
+    const providerId = req.ID;
+    const { groomingTypeId } = req.params;
+
+    try {
+        if (!providerId || !groomingTypeId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing or invalid information."
+            });
+        }
+
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const groomingTypeQuery = 'SELECT * FROM ProviderGroomingTypes WHERE ID = $1 AND Provider_ID = $2';
+        const groomingTypeResult = await pool.query(groomingTypeQuery, [groomingTypeId, providerId]);
+
+        if (groomingTypeResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Grooming type not found for this provider."
+            });
+        }
+
+        const deleteQuery = 'DELETE FROM ProviderGroomingTypes WHERE ID = $1 AND Provider_ID = $2';
+        await pool.query(deleteQuery, [groomingTypeId, providerId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Grooming type deleted successfully."
+        });
+
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Failed",
+            message: "Internal server error."
+        });
+    }
+};
 const getGroomingSlots = async (req, res) => {
     const providerId = req.ID;
 
@@ -243,19 +345,86 @@ const getGroomingSlots = async (req, res) => {
 };
 
 
+const getGroomingSlotsForProvider = async (req, res) => {
+    const ownerId = req.ID;
+    const provider_id = req.params.provider_id;
+    try {
+        if (!provider_id || !ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider ID or Owner ID is missing."
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const providerQuery = "SELECT * FROM ServiceProvider WHERE Provider_Id = $1";
+        const providerResult = await pool.query(providerQuery, [provider_id]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider is not registered in the database."
+            });
+        }
+
+        const slotsQuery = "SELECT * FROM GroomingServiceSlots WHERE Provider_ID = $1 AND Type = 'Pending'";
+        const slotsResult = await pool.query(slotsQuery, [provider_id]);
+
+        if (slotsResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No pending slots created."
+            });
+        }
+
+        // Adjusting the times for display (+3 hours)
+        const slots = slotsResult.rows.map(slot => ({
+            slot_id: slot.slot_id,
+            provider_id: slot.provider_id,
+            start_time: moment.utc(slot.start_time).add(3, 'hours').toISOString(), // Adding 3 hours to start_time
+            end_time: moment.utc(slot.end_time).add(3, 'hours').toISOString(),     // Adding 3 hours to end_time
+            price: slot.price,
+            grooming_type: slot.grooming_type
+        }));
+
+        res.status(200).json({
+            status: "Success",
+            message: "Pending slots retrieved successfully.",
+            data: slots
+        });
+
+    } catch (error) {
+        console.error("Error: ", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
 
 const bookGroomingSlot = async (req, res) => {
-    const ownerId = req.ID;  
-    const { slot_id, pet_id, final_price, grooming_type } = req.body;
+    const ownerId = req.ID;
+    const { slot_id, pet_id, grooming_type } = req.body;
 
     try {
-        if (!ownerId || !slot_id || !pet_id || !final_price || !grooming_type) {
+        if (!ownerId || !slot_id || !pet_id || !grooming_type) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
             });
         }
 
+        // Check if owner exists
         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const ownerResult = await pool.query(ownerQuery, [ownerId]);
 
@@ -266,6 +435,20 @@ const bookGroomingSlot = async (req, res) => {
             });
         }
 
+        const name = ownerResult.rows[0].first_name;
+
+        // Check if pet exists
+        const petQuery = 'SELECT * FROM Pet WHERE Pet_ID = $1';
+        const petResult = await pool.query(petQuery, [pet_id]);
+
+        if (petResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Pet not found."
+            });
+        }
+
+        // Check if grooming slot exists
         const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
         const slotResult = await pool.query(slotQuery, [slot_id]);
 
@@ -277,13 +460,75 @@ const bookGroomingSlot = async (req, res) => {
         }
 
         const slot = slotResult.rows[0];
+        const price = slot.price;
+        const providerId = slot.provider_id;
 
+        // Check if provider exists
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Provider is not registered in the database."
+            });
+        }
+
+        const provider = providerResult.rows[0];
+        const email = provider.email;
+
+
+            const reservationCheckQuery = `
+            SELECT * FROM GroomingReservation 
+            WHERE Slot_ID = $1 AND Pet_ID = $2 AND Owner_ID = $3`;
+        const reservationCheckResult = await pool.query(reservationCheckQuery, [slot_id, pet_id, ownerId]);
+
+        if (reservationCheckResult.rows.length > 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "You have already booked this grooming slot for your pet."
+            });
+        }
+
+        // Insert the reservation
         const insertQuery = `
             INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Grooming_Type)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`;
 
-        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, final_price, grooming_type]);
+        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, price, grooming_type]);
+
+        // Update the grooming slot status and type
+        const updateQuery = `
+            UPDATE GroomingServiceSlots 
+            SET Type = $1, Grooming_Type = $2 
+            WHERE Slot_ID = $3`;
+        
+        const updateResult = await pool.query(updateQuery, ['Accepted', grooming_type, slot_id]);
+
+        const message = `
+            Dear ${provider.username},
+
+            Exciting news! You have a new reservation for your grooming services. 
+
+            Here are the details of the booking:
+            - Owner Name: ${name}
+            - Grooming Type: ${grooming_type}
+            - Start Time: ${new Date(slot.start_time).toLocaleString()}
+            - End Time: ${new Date(slot.end_time).toLocaleString()}
+            - Final Price: $${price}
+
+            Please open the PetYard application to manage this reservation. We appreciate your continued dedication to providing excellent grooming services.
+
+            Best regards,
+            PetYard Team
+        `;
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'New Grooming Reservation Request',
+            message
+        });
 
         res.status(201).json({
             status: "success",
@@ -300,9 +545,26 @@ const bookGroomingSlot = async (req, res) => {
     }
 };
 
-const getGroomingReservations = async (req, res) => { //Grooming reservations made by a pet owner
+
+const getGroomingReservations = async (req, res) => { 
     const ownerId = req.ID;
     try {
+        if (!ownerId ) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Missing information."
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Owner not found."
+            });
+        }
         const query = 'SELECT * FROM GroomingReservation WHERE Owner_ID = $1 ORDER BY Start_time';
         const result = await pool.query(query, [ownerId]);
 
@@ -320,6 +582,130 @@ const getGroomingReservations = async (req, res) => { //Grooming reservations ma
     }
 };
 
+const updateGroomingReservationtocomplete = async (req, res) => {
+    const ownerId = req.ID; 
+    const { Slot_ID } = req.params;
+    const { Type } = req.body;
+
+    try {
+        
+        if (!ownerId || !Slot_ID || !Type) {
+            return res.status(400).json({ error: 'Missing required parameters' });
+        }
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Owner not found."
+            });
+        }
+
+         // Check if grooming slot exists
+         const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
+         const slotResult = await pool.query(slotQuery, [Slot_ID]);
+ 
+         if (slotResult.rows.length === 0) {
+             return res.status(400).json({
+                 status: "fail",
+                 message: "Grooming slot not found."
+             });
+         }
+
+        // Update the reservation to complete in the database
+        const updateQuery = await pool.query(
+            'UPDATE GroomingServiceSlots SET Type = $1 WHERE Slot_ID = $2 ',
+            [Type, Slot_ID]
+        );
+
+
+        if (updateQuery.rowCount === 0) {
+            return res.status(404).json({ error: 'No matching reservation found' });
+        }
+
+        // Send a success response
+        return res.status(200).json({ message: 'Grooming reservation updated successfully' });
+    } catch (error) {
+        console.error('Error updating grooming reservation:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
+const processedEmails = new Set();
+
+const checkAndUpdateCompleteReservations = async () => {
+    try {
+        const currentTime = new Date().toISOString();
+        
+        // Select grooming slots with End_time less than or equal to the current time and Type as "Accepted"
+        const reservations = await pool.query('SELECT * FROM GroomingServiceSlots WHERE End_time <= $1 AND Type = $2', [currentTime, 'Accepted']);
+        
+        for (const reservation of reservations.rows) {
+            // Retrieve provider name for the expired grooming slot
+            const providerNameQuery = await pool.query(
+                `SELECT sp.UserName AS Provider_Name
+                 FROM GroomingServiceSlots gs
+                 JOIN ServiceProvider sp ON gs.Provider_ID = sp.Provider_Id
+                 WHERE gs.Slot_ID = $1`,
+                [reservation.slot_id]
+            );
+            const providerName = providerNameQuery.rows[0]?.provider_name; // Use optional chaining to handle undefined
+
+            // Retrieve owner_id and pet_id from GroomingReservation
+            const queryResult = await pool.query('SELECT * FROM GroomingReservation WHERE Slot_ID=$1', [reservation.slot_id]);
+            if (queryResult.rows.length === 0) {
+                console.log(`No reservation found for slot_id ${reservation.slot_id}`);
+                continue; // Skip to the next reservation if no matching reservation is found
+            }
+
+            const owner_id = queryResult.rows[0]?.owner_id;
+            const pet_id = queryResult.rows[0]?.pet_id;
+
+            // Retrieve owner email and pet name
+            const ownerEmailQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1', [owner_id]);
+            const ownerEmail = ownerEmailQuery.rows[0]?.email; // Use optional chaining to handle undefined
+
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [pet_id]);
+            const petName = petQuery.rows[0]?.name; // Use optional chaining to handle undefined
+
+            // Check if essential data exists and if the email has already been processed
+            if (ownerEmail && petName && providerName && !processedEmails.has(ownerEmail)) {
+                // Format the start time and end time of the reservation
+                const startTime = new Date(reservation.start_time).toLocaleString();
+                const endTime = new Date(reservation.end_time).toLocaleString();
+
+                // Compose message with emojis, start time, and end time
+                const message = `🐾 Hello ${petName} Owner! 🐾\n\nYour grooming appointment with ${providerName} has ended. 
+                                Please open the app and update the status to "complete". 📲\n
+                                Start Time: ${startTime}\nEnd Time: ${endTime}`;
+
+                // Send email with subject and message
+                await sendemail.sendemail({
+                    email: ownerEmail,
+                    subject: '🐾 Update Grooming Reservation Status 🐾',
+                    message
+                });
+
+                // Add the email to the set of processed emails
+                processedEmails.add(ownerEmail);
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating completed grooming reservations:", error);
+    }
+}
+
+
+// Set interval to run the function periodically (every 60 seconds in this case)
+setInterval(checkAndUpdateCompleteReservations, 60000);
+
+// Initial invocation of the function
+checkAndUpdateCompleteReservations();
+
+
 
 module.exports = {
     createGroomingSlots,
@@ -327,5 +713,9 @@ module.exports = {
     bookGroomingSlot,
     setGroomingTypesForProvider,
     getGroomingTypesForProvider,
-    getGroomingReservations
+    getGroomingReservations,
+    updateGroomingTypesForProvider,
+    DeleteGroomingTypesForProvider,
+    getGroomingSlotsForProvider,
+    updateGroomingReservationtocomplete
 }
