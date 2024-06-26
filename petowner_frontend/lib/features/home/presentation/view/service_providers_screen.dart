@@ -206,7 +206,7 @@ class ProviderListItem extends StatelessWidget {
                       ),
                       heightSizedBox(4),
                       Text(
-                        'Pet Boarder | Pet Walker',
+                        'Pet $serviceName',
                         style: Styles.styles12NormalHalfBlack,
                       ),
                       heightSizedBox(4),

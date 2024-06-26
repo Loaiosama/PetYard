@@ -1,13 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 
 import '../../../../../core/utils/theming/styles.dart';
 
 class ProviderProfileCard extends StatelessWidget {
-  const ProviderProfileCard({super.key, required this.providerName});
+  const ProviderProfileCard(
+      {super.key, required this.providerName, required this.services});
   final String providerName;
+  final List<Service> services;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -37,9 +42,21 @@ class ProviderProfileCard extends StatelessWidget {
               ),
             ),
             heightSizedBox(6),
-            Text(
-              'Pet Sitter | Pet Walker | Pet Groomer',
-              style: Styles.styles12NormalHalfBlack,
+            SizedBox(
+              height: 20.h,
+              width: MediaQuery.of(context).size.width * 0.60,
+              child: ListView.separated(
+                itemCount: min(services.length, 3),
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (context, index) => Text(
+                  '  |  ',
+                  style: Styles.styles12NormalHalfBlack,
+                ),
+                itemBuilder: (context, index) => Text(
+                  'pet ${services[index].type}',
+                  style: Styles.styles12NormalHalfBlack,
+                ),
+              ),
             ),
             heightSizedBox(8),
             const RatingRowWidget(),

@@ -9,23 +9,32 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/widgets/provider_profile_card.dart';
 import 'package:petowner_frontend/features/reserve%20service/presentation/view/widgets/summary_tab.dart';
 
 class ReservationSuccess extends StatelessWidget {
-  const ReservationSuccess({super.key});
-
+  const ReservationSuccess(
+      {super.key, required this.services, required this.providerName});
+  final List<Service> services;
+  final String providerName;
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(child: ReservationSuccessBody()),
+    return Scaffold(
+      body: SafeArea(
+          child: ReservationSuccessBody(
+        services: services,
+        providerName: providerName,
+      )),
     );
   }
 }
 
 class ReservationSuccessBody extends StatelessWidget {
-  const ReservationSuccessBody({super.key});
-
+  const ReservationSuccessBody(
+      {super.key, required this.services, required this.providerName});
+  final List<Service> services;
+  final String providerName;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -134,8 +143,9 @@ class ReservationSuccessBody extends StatelessWidget {
             style: Styles.styles14w600,
           ),
           heightSizedBox(10),
-          const ProviderProfileCard(
-            providerName: 'providerName',
+          ProviderProfileCard(
+            services: services,
+            providerName: providerName,
           ),
           const Spacer(),
           PetYardTextButton(

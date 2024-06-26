@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import '../../../../provider profile/presentation/view/widgets/provider_profile_card.dart';
 import 'package:intl/intl.dart';
 
@@ -14,12 +15,14 @@ class SummaryTab extends StatelessWidget {
       required this.startDate,
       this.endDate,
       required this.fees,
-      required this.selectedPetName});
+      required this.selectedPetName,
+      required this.service});
   final String providerName;
   final DateTime? startDate;
   final DateTime? endDate;
   final int fees;
   final String selectedPetName;
+  final List<Service> service;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -121,6 +124,7 @@ class SummaryTab extends StatelessWidget {
         ),
         heightSizedBox(10),
         ProviderProfileCard(
+          services: service,
           providerName: providerName,
         ),
         heightSizedBox(14),
