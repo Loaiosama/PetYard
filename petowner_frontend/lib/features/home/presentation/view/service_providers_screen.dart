@@ -57,7 +57,9 @@ class ServiceProvidersBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SearchTextField(),
+        SearchTextField(
+          onChanged: (p0) {},
+        ),
         heightSizedBox(20),
         BlocProvider(
           create: (context) => HomeProvidersCubit(HomeRepoImpl(

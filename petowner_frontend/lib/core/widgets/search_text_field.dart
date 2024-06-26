@@ -4,7 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class SearchTextField extends StatelessWidget {
-  const SearchTextField({super.key});
+  final void Function(String) onChanged;
+
+  const SearchTextField({
+    Key? key,
+    required this.onChanged,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +20,8 @@ class SearchTextField extends StatelessWidget {
           Expanded(
             child: SizedBox(
               height: 50.h,
-              // width: MediaQuery.of(context).size.width * 0.80,
               child: TextFormField(
+                onChanged: onChanged,
                 decoration: InputDecoration(
                   hintText: 'Search',
                   fillColor: Colors.grey.withOpacity(0.2),
@@ -24,30 +29,32 @@ class SearchTextField extends StatelessWidget {
                       Styles.styles12NormalHalfBlack.copyWith(fontSize: 14.sp),
                   filled: true,
                   prefixIcon: Icon(
-                    FontAwesomeIcons.magnifyingGlass,
+                    FontAwesomeIcons.search,
                     size: 16.sp,
                     color: Colors.black.withOpacity(0.5),
                   ),
                   disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide:
-                          BorderSide(color: Colors.black.withOpacity(0.5))),
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: BorderSide(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
                   enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide:
-                          BorderSide(color: Colors.black.withOpacity(0.5))),
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: BorderSide(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14.0),
-                      borderSide:
-                          BorderSide(color: Colors.black.withOpacity(0.5))),
+                    borderRadius: BorderRadius.circular(14.0),
+                    borderSide: BorderSide(
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-          // IconButton(
-          //   onPressed: () {},
-          //   icon: const Icon(FontAwesomeIcons.filter),
-          // ),
         ],
       ),
     );

@@ -62,7 +62,9 @@ class MessagesScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SearchTextField(),
+        SearchTextField(
+          onChanged: (p0) {},
+        ),
         heightSizedBox(20),
         const Expanded(child: MessageItemListView()),
       ],
