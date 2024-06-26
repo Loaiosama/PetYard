@@ -344,6 +344,50 @@ const getGroomingSlots = async (req, res) => {
     }
 };
 
+const getAllGroomingProviders = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                ServiceProvider.Provider_Id,
+                ServiceProvider.UserName,
+                ServiceProvider.Phone,
+                ServiceProvider.Email,
+                ServiceProvider.Bio,
+                ServiceProvider.Date_of_birth,
+                ServiceProvider.Location,
+                ServiceProvider.Image
+            FROM 
+                ServiceProvider
+            JOIN 
+                Services ON ServiceProvider.Provider_Id = Services.Provider_ID
+            WHERE 
+                Services.Type = $1
+        `;
+        
+        const values = ['Grooming'];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No grooming service providers found."
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Grooming service providers retrieved successfully.",
+            data: result.rows
+        });
+
+    } catch (error) {
+        console.error("Error fetching grooming providers:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
 
 const getGroomingSlotsForProvider = async (req, res) => {
     const ownerId = req.ID;
@@ -717,5 +761,6 @@ module.exports = {
     updateGroomingTypesForProvider,
     DeleteGroomingTypesForProvider,
     getGroomingSlotsForProvider,
-    updateGroomingReservationtocomplete
+    updateGroomingReservationtocomplete,
+    getAllGroomingProviders
 }

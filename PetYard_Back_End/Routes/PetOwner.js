@@ -114,6 +114,8 @@ router.get('/getGroomingSlotsForProvider/:provider_id',authMiddleware,GroomingCo
 router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
 router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
 router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
+router.get('/getAllGroomingProviders', authMiddleware,GroomingController.getAllGroomingProviders);
+
 
 
 
