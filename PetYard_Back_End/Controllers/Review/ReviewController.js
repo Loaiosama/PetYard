@@ -244,11 +244,109 @@ const AddComment = async (req, res) => {
     }
 };
 
+const getAllReviews = async (req, res) => {
+    try {
+        const query = `
+            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, r.comments, sp.username AS provider_username
+            FROM Review r
+            JOIN ServiceProvider sp ON r.Provider_ID = sp.Provider_Id
+        `;
+        const result = await pool.query(query);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No reviews found."
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reviews fetched successfully.",
+            data: result.rows
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+const getAllReviewsForSpecificProvider = async (req, res) => {
+    const { providerid } = req.params;
+
+    try {
+        const query = `
+            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, r.comments, sp.username AS provider_username
+            FROM Review r
+            JOIN ServiceProvider sp ON r.Provider_ID = sp.Provider_Id
+            WHERE r.Provider_ID = $1
+        `;
+        const result = await pool.query(query, [providerid]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No reviews found for the specified provider."
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reviews fetched successfully.",
+            data: result.rows
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+const getAllReviewsForMe = async (req, res) => {
+    const providerid = req.ID; 
+
+    try {
+        const query = `
+            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, r.comments, sp.username AS provider_username
+            FROM Review r
+            JOIN ServiceProvider sp ON r.Provider_ID = sp.Provider_Id
+            WHERE r.Provider_ID = $1
+        `;
+        const result = await pool.query(query, [providerid]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No reviews found for the specified provider."
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reviews fetched successfully.",
+            data: result.rows
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
 
 
 module.exports={
     AddRating,
     FilterByRating,
     AddComment,
-    SortByRating  
+    SortByRating,
+    getAllReviews,
+    getAllReviewsForSpecificProvider,
+    getAllReviewsForMe
 }

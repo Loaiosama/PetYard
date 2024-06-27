@@ -106,6 +106,10 @@ router.post('/AddRating',authMiddleware,ReviewController.AddRating);
 router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
 router.get('/FilterByRating/:minRating',authMiddleware,ReviewController.FilterByRating);
 router.get('/SortByRating',authMiddleware,ReviewController.SortByRating);
+router.get('/getAllReviews',authMiddleware,ReviewController.getAllReviews);
+router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, ReviewController.getAllReviewsForSpecificProvider);
+
+
 
 
 
@@ -118,6 +122,7 @@ router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest
 router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingReservations);
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
+
 
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------

@@ -16,6 +16,8 @@ const Shipping=require('../Controllers/Shipping/ShippingController');
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
 const ClinicController = require('../Controllers/Reservation/ClinicController');
+const ReviewController = require('../Controllers/Review/ReviewController');
+
 
 
 
@@ -89,6 +91,11 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
 router.get('/getAllSittingPendingRequests', authMiddleware, SittingController.getAllPendingRequests);
+
+
+//-----------------------------------------------reviews--------------------------------------------
+router.get('/getAllReviewsForMe',authMiddleware,ReviewController.getAllReviewsForMe);
+
 
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
