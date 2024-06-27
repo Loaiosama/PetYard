@@ -98,7 +98,6 @@ CREATE TABLE SittingReservation (
     Location POINT,
     Start_time TIMESTAMP  WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
     End_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
     Status VARCHAR(20) DEFAULT 'Pending',
     Provider_ID INT,  -- Nullable, will be set when the owner accepts a provider
@@ -112,6 +111,7 @@ CREATE TABLE SittingApplication (
     Application_ID SERIAL PRIMARY KEY,
     Reserve_ID INT,
     Provider_ID INT,
+    expirationTime BIGINT,
     Application_Status Status DEFAULT 'Pending',
     Application_Date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Reserve_ID) REFERENCES SittingReservation(Reserve_ID),
