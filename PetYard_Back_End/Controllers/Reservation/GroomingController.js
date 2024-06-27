@@ -4,10 +4,10 @@ const moment = require('moment-timezone');
 
 const createGroomingSlots = async (req, res) => {
     const providerId = req.ID;
-    let { Start_time, End_time, Price, Slot_length } = req.body;
+    let { Start_time, End_time, Slot_length } = req.body;
 
     try {
-        if (!providerId || !Start_time || !End_time || !Price || !Slot_length) {
+        if (!providerId || !Start_time || !End_time  || !Slot_length) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing information."
@@ -48,19 +48,17 @@ const createGroomingSlots = async (req, res) => {
                 break;
             }
 
-            const slotsQuery = `INSERT INTO GroomingServiceSlots (Provider_ID, Start_time, End_time, Price) VALUES ($1, $2, $3, $4) RETURNING *`;
-            const queryRes = await pool.query(slotsQuery, [providerId, currentStartTime.toISOString(), currentEndTime.toISOString(), Price]);
+            const slotsQuery = `INSERT INTO GroomingServiceSlots (Provider_ID, Start_time, End_time) VALUES ($1, $2, $3) RETURNING *`;
+            const queryRes = await pool.query(slotsQuery, [providerId, currentStartTime.toISOString(), currentEndTime.toISOString()]);
 
             const slotData = queryRes.rows[0];
 
-            // Adjusting the times for display
+          
             const adjustedSlot = {
                 slot_id: slotData.slot_id,
                 provider_id: slotData.provider_id,
-                start_time: new Date(slotData.start_time).toISOString(), // Assuming slotData.start_time is in UTC
-                end_time: new Date(slotData.end_time).toISOString(),     // Assuming slotData.end_time is in UTC
-                price: slotData.price,
-                grooming_type: null
+                start_time: new Date(slotData.start_time).toISOString(), 
+                end_time: new Date(slotData.end_time).toISOString(),     
             };
 
             // Add +3 hours adjustment
@@ -94,7 +92,7 @@ const createGroomingSlots = async (req, res) => {
 
 const setGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingType } = req.body;
+    const { groomingType,price } = req.body;
 
     try {
         if (!providerId || !groomingType) {
@@ -124,7 +122,7 @@ const setGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type) VALUES ($1, $2)', [providerId, groomingType]);
+        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type,Price) VALUES ($1, $2,$3)', [providerId, groomingType,price]);
 
         res.status(201).json({
             status: "Success",
@@ -141,6 +139,8 @@ const setGroomingTypesForProvider = async (req, res) => {
         }
     
 };
+
+
 const getGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
  
@@ -405,12 +405,6 @@ const getAllGroomingProviders = async (req, res) => {
     }
 };
 
-
-
-
-
-
-
 const getGroomingSlotsForProvider = async (req, res) => {
     const ownerId = req.ID;
     const provider_id = req.params.provider_id;
@@ -480,10 +474,10 @@ const getGroomingSlotsForProvider = async (req, res) => {
 
 const bookGroomingSlot = async (req, res) => {
     const ownerId = req.ID;
-    const { slot_id, pet_id, grooming_type } = req.body;
+    const { slot_id, pet_id, grooming_types } = req.body; // grooming_types should be an array
 
     try {
-        if (!ownerId || !slot_id || !pet_id || !grooming_type) {
+        if (!ownerId || !slot_id || !pet_id || !Array.isArray(grooming_types) || grooming_types.length === 0) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
@@ -501,7 +495,7 @@ const bookGroomingSlot = async (req, res) => {
             });
         }
 
-        const name = ownerResult.rows[0].first_name;
+        const owner = ownerResult.rows[0];
 
         // Check if pet exists
         const petQuery = 'SELECT * FROM Pet WHERE Pet_ID = $1';
@@ -526,7 +520,6 @@ const bookGroomingSlot = async (req, res) => {
         }
 
         const slot = slotResult.rows[0];
-        const price = slot.price;
         const providerId = slot.provider_id;
 
         // Check if provider exists
@@ -541,10 +534,9 @@ const bookGroomingSlot = async (req, res) => {
         }
 
         const provider = providerResult.rows[0];
-        const email = provider.email;
 
-
-            const reservationCheckQuery = `
+        // Check for duplicate reservations
+        const reservationCheckQuery = `
             SELECT * FROM GroomingReservation 
             WHERE Slot_ID = $1 AND Pet_ID = $2 AND Owner_ID = $3`;
         const reservationCheckResult = await pool.query(reservationCheckQuery, [slot_id, pet_id, ownerId]);
@@ -556,21 +548,37 @@ const bookGroomingSlot = async (req, res) => {
             });
         }
 
+        // Calculate the final price
+        let finalPrice = 0;
+        for (const groomingType of grooming_types) {
+            const priceQuery = `
+                SELECT Price FROM ProviderGroomingTypes 
+                WHERE Provider_ID = $1 AND Grooming_Type = $2`;
+            const priceResult = await pool.query(priceQuery, [providerId, groomingType]);
+
+            if (priceResult.rows.length === 0) {
+                return res.status(400).json({
+                    status: "fail",
+                    message: `Grooming type '${groomingType}' not available for the selected provider.`
+                });
+            }
+
+            finalPrice += priceResult.rows[0].price;
+        }
+
         // Insert the reservation
         const insertQuery = `
-            INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Grooming_Type)
+            INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Grooming_Types)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`;
+        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, finalPrice, grooming_types]);
 
-        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, price, grooming_type]);
-
-        // Update the grooming slot status and type
+        // Update the grooming slot status
         const updateQuery = `
             UPDATE GroomingServiceSlots 
-            SET Type = $1, Grooming_Type = $2 
-            WHERE Slot_ID = $3`;
-        
-        const updateResult = await pool.query(updateQuery, ['Accepted', grooming_type, slot_id]);
+            SET Type = $1 
+            WHERE Slot_ID = $2`;
+        await pool.query(updateQuery, ['Accepted', slot_id]);
 
         const message = `
             Dear ${provider.username},
@@ -578,11 +586,11 @@ const bookGroomingSlot = async (req, res) => {
             Exciting news! You have a new reservation for your grooming services. 
 
             Here are the details of the booking:
-            - Owner Name: ${name}
-            - Grooming Type: ${grooming_type}
+            - Owner Name: ${owner.first_name}
+            - Grooming Types: ${grooming_types.join(', ')}
             - Start Time: ${new Date(slot.start_time).toLocaleString()}
             - End Time: ${new Date(slot.end_time).toLocaleString()}
-            - Final Price: $${price}
+            - Final Price: $${finalPrice}
 
             Please open the PetYard application to manage this reservation. We appreciate your continued dedication to providing excellent grooming services.
 
@@ -591,7 +599,7 @@ const bookGroomingSlot = async (req, res) => {
         `;
 
         await sendemail.sendemail({
-            email: email,
+            email: provider.email,
             subject: 'New Grooming Reservation Request',
             message
         });
@@ -610,6 +618,7 @@ const bookGroomingSlot = async (req, res) => {
         });
     }
 };
+
 
 
 const getGroomingReservations = async (req, res) => { 
@@ -700,6 +709,13 @@ const updateGroomingReservationtocomplete = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
 const processedEmails = new Set();
 
 const checkAndUpdateCompleteReservations = async () => {
@@ -763,8 +779,6 @@ const checkAndUpdateCompleteReservations = async () => {
         console.error("Error checking and updating completed grooming reservations:", error);
     }
 }
-
-
 // Set interval to run the function periodically (every 60 seconds in this case)
 setInterval(checkAndUpdateCompleteReservations, 60000);
 

@@ -119,20 +119,16 @@ CREATE TABLE SittingApplication (
 );
 
 
-
-CREATE TYPE GroomingType AS ENUM ('Bathing', 'Nail trimming', 'Fur trimming','Full package');
+CREATE TYPE GroomingType AS ENUM ('Bathing', 'Nail trimming', 'Fur trimming', 'Full package');
 
 CREATE TABLE GroomingServiceSlots (
     Slot_ID SERIAL PRIMARY KEY,
     Provider_ID INT,
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
-    Price DOUBLE PRECISION,
-    Grooming_Type GroomingType,
     Type Status DEFAULT 'Pending',
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
-
 
 CREATE TABLE GroomingReservation (
     Reserve_ID SERIAL PRIMARY KEY,
@@ -142,17 +138,17 @@ CREATE TABLE GroomingReservation (
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
     Final_Price DOUBLE PRECISION,
-    Grooming_Type GroomingType,
+    Grooming_Types GroomingType[],
     FOREIGN KEY (Slot_ID) REFERENCES GroomingServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
 
-
 CREATE TABLE ProviderGroomingTypes (
     ID SERIAL PRIMARY KEY,
     Provider_ID INT,
     Grooming_Type GroomingType,
+    Price DOUBLE PRECISION,
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
 
