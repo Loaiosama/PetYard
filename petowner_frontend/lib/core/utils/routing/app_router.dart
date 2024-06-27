@@ -4,6 +4,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
 import 'package:petowner_frontend/core/widgets/reservation_success.dart';
+import 'package:petowner_frontend/features/Requests/representation/view/choose_request.dart';
 import 'package:petowner_frontend/features/chat/presentation/view/chat_screen.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
@@ -24,6 +25,9 @@ import 'package:petowner_frontend/features/registration/signin/presentation/view
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/signup.dart';
 import 'package:petowner_frontend/features/reserve%20service/presentation/view/reserve_appointment_screen.dart';
+import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/pet_sitting.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/request_success.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
 
 abstract class AppRouter {
@@ -269,13 +273,40 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
-        name: Routes.kChatScreen,
-        path: Routes.kChatScreen,
+        name: Routes.KChooseReq,
+        path: Routes.KChooseReq,
         pageBuilder: (context, state) {
           return transitionGoRoute(
             context: context,
             state: state,
-            child: const ChatScreen(),
+            child: const ChooseRequest(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.KPetSitting,
+        path: Routes.KPetSitting,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const PetSitting(),
+          );
+        },
+      ),
+
+      GoRoute(
+        name: Routes.KSuccessReq,
+        path: Routes.KSuccessReq,
+        pageBuilder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final SittingRequest req = args['request'] as SittingRequest;
+          final String petName = args['selectedName'] as String;
+
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: Requestscuccess(req: req, PetName: petName),
           );
         },
       ),

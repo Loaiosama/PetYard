@@ -19,5 +19,8 @@ class Routes {
   static const String kServiceProviders = '/ServiceProviders';
   static const String kReservationSuccess = '/reserveSuccess';
   static const String kReservationFailure = '/reserveFailure';
+  static const String KChooseReq = '/ChooseRequest';
+  static const String KPetSitting = '/PetSitting';
   static const String kChatScreen = '/chatScreen';
+  static const String KSuccessReq = '/requestSuccess';
 }
