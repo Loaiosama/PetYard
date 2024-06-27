@@ -31,6 +31,8 @@ router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Kills
 router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
 router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
 
+router.get('/GetProviderInfo',authMiddleware,ProviderController.Providerinfo);
+
 
 router.post('/CreateSlot/:Service_ID',authMiddleware,ScheduleController.CreateSlot);
 router.get('/GetAllSlots',authMiddleware,ScheduleController.GetAllSlots);
