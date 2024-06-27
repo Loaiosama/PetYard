@@ -17,6 +17,8 @@ const payment = require('../Controllers/Payment/payment');
 const Shipping = require('../Controllers/Shipping/ShippingController')
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
+const ClinicController = require('../Controllers/Reservation/ClinicController');
+
 
 
 
@@ -115,6 +117,20 @@ router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGrooming
 router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
 router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
 router.get('/getAllGroomingProviders', authMiddleware,GroomingController.getAllGroomingProviders);
+
+
+//------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
+
+router.get('/getAllClinicProviders', authMiddleware, ClinicController.getAllClinicProviders);
+router.get('/getClinicSlotsForProvider/:provider_id', authMiddleware, ClinicController.getClinicSlotsForProvider);
+router.post('/bookClinicSlot', authMiddleware, ClinicController.bookClinicSlot);
+router.get('/getClinicReservations', authMiddleware, ClinicController.getClinicReservations);
+
+router.put('/updateClinicReservationToComplete/:Slot_ID',authMiddleware,ClinicController.updateClinicReservationtocomplete)
+
+
+
+
 
 
 
