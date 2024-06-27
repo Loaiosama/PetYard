@@ -21,9 +21,9 @@ class ProfileRepoImpl extends ProfileRepo {
   Future<Either<Failure, List<AllPetsModel>>> getAllPets() async {
     try {
       await apiService.setAuthorizationHeader();
-
+      print('object');
       var response = await apiService.get(endpoint: 'PetOwner/getAllPet');
-
+      print(response);
       for (var item in response['data']) {
         var datum = Datum.fromJson(item);
         var allPetsModel = AllPetsModel(
@@ -33,6 +33,7 @@ class ProfileRepoImpl extends ProfileRepo {
         );
         allPets.add(allPetsModel);
       }
+      print(allPets);
       return right(allPets);
     } catch (e) {
       if (e is DioException) {

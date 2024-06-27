@@ -1,5 +1,8 @@
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:petowner_frontend/core/errors/failure.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 
 class SignInRepo {
@@ -8,26 +11,30 @@ class SignInRepo {
 
   SignInRepo({required this.api});
 
-  Future<void> login({required String password, required String email}) async {
+  Future<Either<Failure, String>> login(
+      {required String password, required String email}) async {
     try {
       var response = await api.post(
         endPoints: 'PetOwner/SignIn',
         data: {"password": password, "email": email},
       );
       // Check if response is successful
+      print(response);
       if (response.data['status'] == 'Success') {
         final token = response.data['token'];
         await _storage.write(key: 'token', value: token);
         debugPrint(
             "=============================== ${response.data['status']}");
+        return right(response.data['status'].toString());
       } else {
         // Handle error response
-        throw Exception('Failed to sign in');
+        return left(ServerFailure(response.data['message']));
       }
     } catch (e) {
-      // Handle other errors
-      debugPrint('Login error: $e');
-      rethrow;
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
     }
   }
 }

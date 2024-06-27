@@ -119,7 +119,7 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
         phoneNumber: phoneNumber,
         dateOfBirth: dateOfBirth,
       );
-      print(isSuccess);
+      // print(isSuccess);
       if (isSuccess) {
         emit(UpdateOwnerInformationSuccess(isSuccess: true));
         await getOwnerInfo();
