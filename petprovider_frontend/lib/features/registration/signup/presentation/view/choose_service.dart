@@ -15,7 +15,6 @@ class ChooseService extends StatefulWidget {
 }
 
 class ChooseServiceState extends State<ChooseService> {
-
   // List to manage selected services
   List<bool> selectedServices = [false, false, false, false];
 
@@ -42,9 +41,9 @@ class ChooseServiceState extends State<ChooseService> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const FirstSection(
-                title: 'Almost There!',
+                title: 'Welcome!',
                 subTitle:
-                'Choose one or more services you want to provide. And don\'t worry, you can always add more services later.',
+                    'Choose one or more services you want to provide. And don\'t worry, you can always add more services later.',
               ),
               SizedBox(height: 20.h),
               Expanded(
@@ -64,9 +63,13 @@ class ChooseServiceState extends State<ChooseService> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                          color: selectedServices[index] ? kPrimaryGreen : Colors.grey.shade200,
+                          color: selectedServices[index]
+                              ? kPrimaryGreen
+                              : Colors.grey.shade200,
                           border: Border.all(
-                            color: selectedServices[index] ? kPrimaryGreen : kSecondaryColor,
+                            color: selectedServices[index]
+                                ? kPrimaryGreen
+                                : kSecondaryColor,
                             width: selectedServices[index] ? 2.0.w : 1.0.w,
                           ),
                           borderRadius: BorderRadius.circular(15.0.r),
@@ -74,12 +77,17 @@ class ChooseServiceState extends State<ChooseService> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset('assets/svgs/${services[index]['icon']}',height: 90.h,),
+                            SvgPicture.asset(
+                              'assets/svgs/${services[index]['icon']}',
+                              height: 90.h,
+                            ),
                             SizedBox(height: 10.h),
                             Text(
                               services[index]['name'],
                               style: TextStyle(
-                                color: selectedServices[index] ? kSecondaryColor : kPrimaryGreen,
+                                color: selectedServices[index]
+                                    ? kSecondaryColor
+                                    : kPrimaryGreen,
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -92,10 +100,8 @@ class ChooseServiceState extends State<ChooseService> {
                   },
                 ),
               ),
-
               PetYardTextButton(
-                onPressed: () {
-                },
+                onPressed: () {},
                 text: 'Continue',
                 style: Styles.styles16BoldWhite,
               )

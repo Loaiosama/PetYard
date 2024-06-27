@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           routerConfig: AppRouter.appRouter,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            // fontFamily: 'Inter',
+            fontFamily: 'Inter',
             appBarTheme: const AppBarTheme(
               shadowColor: kPrimaryGreen,
               surfaceTintColor: kPrimaryGreen,

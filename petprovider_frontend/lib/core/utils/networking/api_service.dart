@@ -37,6 +37,7 @@ class ApiService {
       // rethrow;
     }
   }
+
   Future<Response> signup({
     required String endPoints,
     required Map<String, dynamic> data,

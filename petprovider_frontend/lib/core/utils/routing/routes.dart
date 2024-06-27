@@ -7,6 +7,6 @@ class Routes {
   static const String kSigninScreen = '/signIn';
   static const String kForgotPasswordScreen = '/forgetPassword';
   static const String kHomeScreen = '/home';
+  static const String kAvailableSlotsScreen = '/availableSlots';
   static const String kProfileScreen = '/profileScreen';
-
 }

@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/theming/colors.dart';
 import '../utils/theming/styles.dart';
 
-
 InputBorder customEnabledOutlinedBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(10.0.r),
   borderSide: BorderSide(

@@ -6,7 +6,9 @@ import '../../../../../../core/utils/theming/styles.dart';
 
 class FirstSection extends StatelessWidget {
   const FirstSection({
-    super.key, required this.title, required this.subTitle,
+    super.key,
+    required this.title,
+    required this.subTitle,
   });
   final String title;
   final String subTitle;

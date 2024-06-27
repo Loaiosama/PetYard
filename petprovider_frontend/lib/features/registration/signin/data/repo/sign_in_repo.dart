@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../../../core/errors/failure.dart';
@@ -19,16 +18,33 @@ class SignInRepo {
         endPoints: 'Provider/SignIn',
         data: {"password": password, "UserName": userName},
       );
-      // Check if response is successful
-      print(response);
+
       if (response.data['status'] == 'Success') {
         final token = response.data['token'];
         await _storage.write(key: 'token', value: token);
-        debugPrint(
-            "=============================== ${response.data['status']}");
-        return right(response.data['status'].toString());
+
+        await api.setAuthorizationHeader();
+
+        // Fetch provider info after successful login
+        var providerInfoResponse =
+            await api.get(endpoint: 'Provider/GetProviderInfo');
+        // print(providerInfoResponse['status']);
+        // print(providerInfoResponse['data']);
+        if (providerInfoResponse['status'] == 'Done') {
+          List<dynamic> data = providerInfoResponse['data'];
+          // print(data);
+          bool hasSelectedServices =
+              data.isNotEmpty; // Check if services are already selected
+          // print(!hasSelectedServices);
+          if (hasSelectedServices) {
+            return right('Login Successful');
+          } else {
+            return right('Choose Services');
+          }
+        } else {
+          return left(ServerFailure(providerInfoResponse['message']));
+        }
       } else {
-        // Handle error response
         return left(ServerFailure(response.data['message']));
       }
     } catch (e) {

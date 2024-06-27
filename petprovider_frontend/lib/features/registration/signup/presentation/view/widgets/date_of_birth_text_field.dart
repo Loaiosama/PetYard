@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../core/utils/theming/colors.dart';
 import '../../../../../../core/widgets/custom_text_form_field.dart';
 
-
 class DateOfBirthTexTField extends StatefulWidget {
   const DateOfBirthTexTField({super.key, required this.controller});
 
