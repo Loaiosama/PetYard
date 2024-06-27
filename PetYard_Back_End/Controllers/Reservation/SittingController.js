@@ -382,7 +382,31 @@ const acceptSittingApplication = async (req, res) => {
     }
 }
 
+const getAllPendingRequests = async (req, res) => {
+    try {
+        const query = 'SELECT * FROM SittingReservation WHERE Status = $1 ORDER BY start_time';
+        const result = await pool.query(query, ['Pending']);
 
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No pending sitting reservations found"
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Pending sitting reservations retrieved successfully.",
+            data: result.rows
+        });
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
 
 
 
@@ -560,6 +584,7 @@ module.exports = {
     GetSittingReservations,
     getSittingApplications,
     acceptSittingApplication,
-    GetAllRequset
+    GetAllRequset,
+    getAllPendingRequests
 };
 

@@ -8,10 +8,14 @@ const sendemail = require("./../../Utils/email");
 const AddRating = async (req, res) => {
     const ownerid = req.ID;
     const { rate } = req.body;
-    const { providerid } = req.params;
-    
+    const providerid = req.query.providerid; 
+
+    console.log('ownerid:', ownerid);
+    console.log('rate:', rate);
+    console.log('providerid:', providerid);
+
     try {
-        if (!ownerid || !rate || !providerid) {
+        if (!ownerid || rate === undefined || !providerid) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please fill all information."
@@ -42,7 +46,6 @@ const AddRating = async (req, res) => {
         const reviewResult = await pool.query(reviewQuery, [providerid]);
 
         if (reviewResult.rows.length > 0) {
-         
             const review = reviewResult.rows[0];
             const newCount = review.count + 1;
             const newRateValue = (review.rate_value + rate) / newCount;
@@ -64,7 +67,7 @@ const AddRating = async (req, res) => {
             });
         }
 
-            const message = `
+        const message = `
             Dear ${providerResult.rows[0].username},
 
             Great news! You have received a new rating for your services.

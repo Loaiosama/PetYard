@@ -88,6 +88,8 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
+router.get('/getAllSittingPendingRequests', authMiddleware, SittingController.getAllPendingRequests);
+
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);

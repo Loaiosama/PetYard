@@ -119,6 +119,7 @@ router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingRe
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 
+
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.get('/getGroomingSlotsForProvider/:provider_id',authMiddleware,GroomingController.getGroomingSlotsForProvider);
 router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
