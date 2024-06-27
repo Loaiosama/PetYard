@@ -76,7 +76,7 @@ class Requests extends StatelessWidget {
                                   height: 60.h,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: const Color(0xFF9188E3),
+                                    color: Color.fromRGBO(145, 135, 231, 1),
                                   ),
                                   child: Center(
                                     child: Text(
