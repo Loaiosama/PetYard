@@ -57,7 +57,9 @@ class ServiceProvidersBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SearchTextField(),
+        SearchTextField(
+          onChanged: (p0) {},
+        ),
         heightSizedBox(20),
         BlocProvider(
           create: (context) => HomeProvidersCubit(HomeRepoImpl(
@@ -204,7 +206,7 @@ class ProviderListItem extends StatelessWidget {
                       ),
                       heightSizedBox(4),
                       Text(
-                        'Pet Boarder | Pet Walker',
+                        'Pet $serviceName',
                         style: Styles.styles12NormalHalfBlack,
                       ),
                       heightSizedBox(4),

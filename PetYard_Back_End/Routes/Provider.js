@@ -8,7 +8,7 @@ const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
 const StoreController=require('../Controllers/Online_Store/StoreController');
 const ScheduleController=require('../Controllers/Schedule/ScheduleController');
-const ReservationController = require('../Controllers/Reservation/ReservationController');
+const ReservationController = require('../Controllers/Reservation/BoardingController');
 require('../Controllers/Provider/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');
@@ -30,6 +30,8 @@ router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);
 router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
 router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
+
+router.get('/GetProviderInfo',authMiddleware,ProviderController.Providerinfo);
 
 
 router.post('/CreateSlot/:Service_ID',authMiddleware,ScheduleController.CreateSlot);
@@ -88,9 +90,10 @@ router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequse
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
 router.post('/setGroomingTypes', authMiddleware, GroomingController.setGroomingTypesForProvider);
-router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+router.put('/updateGroomingTypes/:oldgroomingTypeid',authMiddleware,GroomingController.updateGroomingTypesForProvider);
+router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingController.DeleteGroomingTypesForProvider);
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
-
+router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 
 
 // Use express-session middleware

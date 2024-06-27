@@ -1,14 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/core/widgets/loading_button.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/widgets/first_section.dart';
+import 'package:petowner_frontend/features/registration/signin/presentation/view_model/cubit/sign_in_cubit.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/alternative_signup_option.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/signup_text_field_column.dart';
 
@@ -82,17 +85,47 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                     ),
                   ),
                 ),
-                // SizedBox(height: 0.h),
-                PetYardTextButton(
-                  onPressed: () async {
-                    // await _signIn();
-                    if (formKey.currentState!.validate()) {
-                      await _signIn();
-                    }
-                    // GoRouter.of(context).push(Routes.kHomeScreen);
-                  },
-                  text: 'Login!',
-                  style: Styles.styles16BoldWhite,
+                BlocProvider(
+                  create: (context) =>
+                      SignInCubit(SignInRepo(api: ApiService(dio: Dio()))),
+                  child: BlocConsumer<SignInCubit, SignInState>(
+                    listener: (context, state) {
+                      if (state is SignInFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.errorMessage)));
+                      } else if (state is SignInSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Login Successful')),
+                        );
+                        // Navigate to the home screen
+                        GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
+                      }
+                    },
+                    builder: (context, state) {
+                      var cubit = BlocProvider.of<SignInCubit>(context);
+                      if (state is SignInLoading) {
+                        return const LoadingButton(
+                          height: 60,
+                          radius: 10,
+                        );
+                      }
+                      return PetYardTextButton(
+                        onPressed: () {
+                          // await _signIn();
+                          if (formKey.currentState!.validate()) {
+                            // await _signIn();
+                            cubit.signIn(
+                              password: passwordController.text,
+                              email: emailController.text,
+                            );
+                          }
+                          // GoRouter.of(context).push(Routes.kHomeScreen);
+                        },
+                        text: 'Login!',
+                        style: Styles.styles16BoldWhite,
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(height: 16.h),
                 const ALternativeSignupOptionColumn(
@@ -104,24 +137,5 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
         ),
       ),
     );
-  }
-
-  Future<void> _signIn() async {
-    try {
-      await signInRepo.login(
-        password: passwordController.text,
-        email: emailController.text,
-      );
-      GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
-      // await apiService.login();
-      // Navigate to the next screen upon successful login
-    } catch (error) {
-      // Handle sign-in error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Sign-in failed(Incorrect email or password). Please try again. ===$error')),
-      );
-    }
   }
 }

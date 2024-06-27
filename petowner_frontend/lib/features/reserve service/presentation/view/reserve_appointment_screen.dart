@@ -7,7 +7,9 @@ import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/core/widgets/loading_button.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/reserve%20service/data/repo/reserve_service_repo_impl.dart';
 import 'package:petowner_frontend/features/reserve%20service/presentation/view%20model/cubit/boarding_slots_cubit.dart';
 import 'widgets/date_time_tab.dart';
@@ -20,11 +22,12 @@ class BookAppointment extends StatefulWidget {
     required this.serviceName,
     required this.providerId,
     required this.providerName,
+    required this.services,
   });
   final String providerName;
   final String serviceName;
   final int providerId;
-
+  final List<Service> services;
   @override
   State<BookAppointment> createState() => _BookAppointmentState();
 }
@@ -79,6 +82,7 @@ class _BookAppointmentState extends State<BookAppointment> {
             style: Styles.styles10w400,
           ),
           content: SummaryTab(
+            service: widget.services,
             selectedPetName: selectedPet ?? 'No Name',
             fees: finalCost ?? 0,
             startDate: startDate ?? DateTime.now(),
@@ -95,12 +99,6 @@ class _BookAppointmentState extends State<BookAppointment> {
         endDate == null ||
         selectedPet == null ||
         selectedPet!.isEmpty) {
-      // Show an error message if any of the fields are not selected
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Please select start date, end date, and pet.'),
-      //   ),
-      // );
       isValid = false;
     } else if (endDate!.isBefore(startDate!)) {
       isValid = false;
@@ -195,7 +193,10 @@ class _BookAppointmentState extends State<BookAppointment> {
                         listener: (context, state) {
                           if (state is ReserveSlotSuccess) {
                             GoRouter.of(context)
-                                .push(Routes.kReservationSuccess);
+                                .push(Routes.kReservationSuccess, extra: {
+                              'services': widget.services,
+                              'providerName': widget.providerName,
+                            });
                           } else if (state is ReserveSlotFailure) {
                             GoRouter.of(context)
                                 .push(Routes.kReservationFailure);
@@ -203,26 +204,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                         },
                         builder: (context, state) {
                           if (state is ReserveSlotLoading) {
-                            return TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                backgroundColor: kPrimaryGreen,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                minimumSize: Size(double.infinity, 50.h),
-                              ),
-                              child: Center(
-                                child: SizedBox(
-                                  height: 20.sp,
-                                  width: 20.sp,
-                                  child: const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
+                            return const LoadingButton();
                           }
                           return PetYardTextButton(
                             onPressed: () async {

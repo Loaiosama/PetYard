@@ -17,9 +17,6 @@ import 'pet_profile_circle.dart';
 class ActivePetProfileSection extends StatelessWidget {
   const ActivePetProfileSection({super.key});
 
-  static ProfileRepoImpl activePetRepo =
-      ProfileRepoImpl(apiService: ApiService(dio: Dio()));
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -32,7 +29,6 @@ class ActivePetProfileSection extends StatelessWidget {
               final petsLength = state.allPets.length;
               return Column(
                 children: [
-                  // const Divider(),
                   heightSizedBox(16),
                   RichText(
                     text: TextSpan(
@@ -62,9 +58,6 @@ class ActivePetProfileSection extends StatelessWidget {
                             petsLength,
                             (index) => InkWell(
                               onTap: () {
-                                // activePetRepo.getAllPets();
-                                // GoRouter.of(context)
-                                //     .push(Routes.kPetInformation);
                                 context.pushNamed(Routes.kPetInformation,
                                     extra: state.allPets[index].data![0].petId);
                               },

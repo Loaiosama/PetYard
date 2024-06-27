@@ -13,27 +13,36 @@ const makeRequest = async (req, res) => {
             });
         }
 
-       
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
 
         if (ownerRes.rows.length === 0) {
             return res.status(400).json({
-                status: "Fail",
-                message: "Owner is not in Database"
+                status: "fail",
+                message: "Owner is not in the database."
             });
         }
 
-
-   
         const locationString = `(${Location.x}, ${Location.y})`;
+
+        // Perform the duplicate check using the location as text
+        const duplicateCheckQuery = `
+            SELECT * FROM SittingReservation 
+            WHERE Pet_ID = $1 AND Start_time = $2 AND End_time = $3  AND Owner_ID = $4`;
+        const duplicateCheckRes = await pool.query(duplicateCheckQuery, [Pet_ID, Start_time, End_time, ownerId]);
+
+        if (duplicateCheckRes.rows.length > 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Duplicate request. A similar request already exists for this owner."
+            });
+        }
 
         const insertQuery = `
             INSERT INTO SittingReservation 
             (Pet_ID, Start_time, End_time, Final_Price, Owner_ID, Location) 
-            VALUES ($1, $2, $3, $4, $5,$6) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
             RETURNING *`;
-
         const insertRes = await pool.query(insertQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId, locationString]);
 
         res.status(201).json({
@@ -45,11 +54,12 @@ const makeRequest = async (req, res) => {
     } catch (e) {
         console.error("Error:", e);
         return res.status(500).json({
-            status: "Fail",
+            status: "fail",
             message: "Internal server error."
         });
     }
 };
+
 
 
 const applySittingRequest = async (req, res) => {
@@ -99,9 +109,12 @@ const applySittingRequest = async (req, res) => {
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
         const name = ownerRes.rows[0].first_name;
         const email = ownerRes.rows[0].email;
+        const currentTime = Date.now();
+        expirationTime = currentTime+ (6 * 60 * 60 * 1000);
 
-        const applyQuery = "INSERT INTO SittingApplication (Reserve_ID, Provider_ID) VALUES ($1, $2) RETURNING *";
-        const applyRes = await pool.query(applyQuery, [Reserve_ID, providerId]);
+
+        const applyQuery = "INSERT INTO SittingApplication (Reserve_ID, Provider_ID,expirationTime) VALUES ($1, $2,$3) RETURNING *";
+        const applyRes = await pool.query(applyQuery, [Reserve_ID, providerId,expirationTime]);
 
         const message = `
         🐾 Pet Sitting Application Received! 🐾
@@ -368,6 +381,64 @@ const acceptSittingApplication = async (req, res) => {
         });
     }
 }
+
+
+
+
+
+
+
+//  After a certain amount of hours Reject automatically  
+
+const checkAndUpdateExpiredReservations = async () => {
+    try {
+        const currentTime = Date.now();
+        const expiredReservations = await pool.query('SELECT * FROM SittingApplication WHERE expirationTime < $1 AND Application_Status = $2', [currentTime, 'Pending']);
+
+        for (const reservation of expiredReservations.rows) {
+            // Update status to "Rejected"
+            await pool.query('UPDATE SittingApplication SET Application_Status = $1 WHERE Application_ID = $2', ['Rejected', reservation.application_id]);
+
+            // Retrieve provider details for the expired reservation slot
+            const providerQuery = await pool.query('SELECT email, UserName FROM ServiceProvider WHERE Provider_Id = $1', [reservation.provider_id]);
+            const provider = providerQuery.rows[0];
+
+            // Retrieve reservation details
+            const reservationQuery = await pool.query('SELECT * FROM SittingReservation WHERE Reserve_ID = $1', [reservation.reserve_id]);
+            const reservationDetails = reservationQuery.rows[0];
+         
+            // Retrieve owner details
+            const ownerQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [reservationDetails.owner_id]);
+            const name = ownerQuery.rows[0].first_name;
+
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [reservationDetails.pet_id]);
+            const petName = petQuery.rows[0].name;
+
+            // Format the start time and end time of the reservation
+            const startTime = new Date(reservationDetails.start_time).toLocaleString();
+            const endTime = new Date(reservationDetails.end_time).toLocaleString();
+
+            // Construct the message
+            const message = `Dear ${provider.username},\n\nWe regret to inform you that the sitting reservation has been automatically rejected due to inactivity.\n\nReservation Details:\nOwner Name: ${name}\nPet Name: ${petName}\nStart Time: ${startTime}\nEnd Time: ${endTime}\n\nThank you for using our services. Please contact the owner if you have any questions.\n\nBest Regards,\nPetYard Team`;
+
+            // Send email notification
+            await sendemail.sendemail({
+                email: provider.email,
+                subject: 'Your Sitting Reservation Status',
+                message
+            });
+        }
+    } catch (error) {
+        console.error("Error checking and updating expired reservations:", error);
+    }
+}
+
+// Schedule periodic execution of the function
+setInterval(checkAndUpdateExpiredReservations, 5000);
+
+// Call the function immediately to handle potentially expired reservations
+checkAndUpdateExpiredReservations();
+
 
 
 

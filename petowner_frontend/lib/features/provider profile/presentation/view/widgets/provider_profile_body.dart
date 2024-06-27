@@ -40,6 +40,7 @@ class ProviderProfileBody extends StatelessWidget {
       child: Column(
         children: [
           ProviderProfileCard(
+            services: services,
             providerName: userName,
           ),
           heightSizedBox(20),
@@ -90,6 +91,7 @@ class ProviderProfileBody extends StatelessWidget {
           ),
           MakeAppointmentButtonsRow(
             serviceName: serviceName,
+            services: services,
             id: id,
             providerName: userName,
           ),
@@ -104,10 +106,12 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
       {super.key,
       required this.serviceName,
       required this.id,
-      required this.providerName});
+      required this.providerName,
+      required this.services});
   final String serviceName;
   final int id;
   final String providerName;
+  final List<Service> services;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -126,6 +130,7 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
                       'serviceName': serviceName,
                       'providerId': id,
                       'providerName': providerName,
+                      'services': services,
                     },
                   );
                 },
@@ -149,10 +154,7 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0.r),
               ),
               child: IconButton(
-                onPressed: () {
-                  print(id);
-                  print(serviceName);
-                },
+                onPressed: () {},
                 icon: Tooltip(
                   message: 'Send a message to $providerName.',
                   child: Icon(

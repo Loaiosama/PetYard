@@ -51,7 +51,7 @@ class SignUpTextFieldColumn extends StatelessWidget {
         CustomRegistrationTextField(
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter something';
+              return 'This Field can\'t be empty!';
             }
             return null;
           },

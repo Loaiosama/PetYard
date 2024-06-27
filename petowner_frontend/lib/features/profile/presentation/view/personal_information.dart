@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/profile/presentation/view_model/personal_information_cubit/personal_information_cubit.dart';
@@ -16,10 +18,14 @@ class PersonalInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PersonalInformationCubit(),
+      create: (context) => PersonalInformationCubit()..getOwnerInfo(),
       child: BlocBuilder<PersonalInformationCubit, PersonalInformationState>(
         builder: (context, state) {
           PersonalInformationCubit cubit = BlocProvider.of(context);
+
+          if (state is PersonalInformationInitial) {
+            return const Center(child: CircularProgressIndicator());
+          }
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
@@ -77,8 +83,16 @@ class PersonalInformationScreen extends StatelessWidget {
                       label: 'LastName',
                     ),
                     heightSizedBox(20),
+                    PersonalInformationTextField(
+                      controller: cubit.phoneNumberController,
+                      isEdit: cubit.isEdit,
+                      label: 'Phone Number',
+                      keyboardType: TextInputType.phone,
+                    ),
+                    heightSizedBox(20),
                     GestureDetector(
-                      onTap: () => cubit.selectDate(context),
+                      onTap: () =>
+                          cubit.isEdit ? cubit.selectDate(context) : null,
                       child: AbsorbPointer(
                         absorbing: true,
                         child: PersonalInformationTextField(
@@ -88,49 +102,6 @@ class PersonalInformationScreen extends StatelessWidget {
                           isDate: true,
                         ),
                       ),
-                    ),
-                    heightSizedBox(20),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Gender (optional)',
-                          style: Styles.styles14NormalBlack
-                              .copyWith(fontWeight: FontWeight.w500),
-                        )),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Radio(
-                          value: 'Male',
-                          groupValue: cubit.selectedGender,
-                          onChanged: cubit.isEdit
-                              ? ((value) {
-                                  cubit.changeGender(value: 'Male');
-                                })
-                              : null,
-                          activeColor: kPrimaryGreen,
-                          hoverColor: kPrimaryGreen,
-                        ),
-                        Text(
-                          'Male',
-                          style: Styles.styles14NormalBlack,
-                        ),
-                        Radio(
-                          value: 'Female',
-                          groupValue: cubit.selectedGender,
-                          onChanged: cubit.isEdit
-                              ? ((value) {
-                                  cubit.changeGender(value: 'Female');
-                                })
-                              : null,
-                          activeColor: kPrimaryGreen,
-                          hoverColor: kPrimaryGreen,
-                        ),
-                        Text(
-                          'Female',
-                          style: Styles.styles14NormalBlack,
-                        ),
-                      ],
                     ),
                     heightSizedBox(20),
                     !cubit.isEdit
@@ -152,13 +123,115 @@ class PersonalInformationScreen extends StatelessWidget {
                                   color: kPrimaryGreen, fontSize: 16.sp),
                             ),
                           )
-                        : PetYardTextButton(
-                            onPressed: () {
-                              cubit.save();
+                        : BlocConsumer<PersonalInformationCubit,
+                            PersonalInformationState>(
+                            listener: (context, state) {
+                              if (state is UpdateOwnerInformationFailure) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Something went wrong!',
+                                          style: Styles.styles14NormalBlack
+                                              .copyWith(color: Colors.red),
+                                        ),
+                                        content: Text(
+                                          'Failed to update account info.',
+                                          style: Styles
+                                              .styles12RegularOpacityBlack,
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              GoRouter.of(context).push(
+                                                  Routes.kHomeScreen,
+                                                  extra: 4);
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              } else if (state
+                                  is UpdateOwnerInformationSuccess) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Done!',
+                                          style: Styles.styles14NormalBlack
+                                              .copyWith(color: Colors.green),
+                                        ),
+                                        content: Text(
+                                          'Info Updated Successfully.',
+                                          style: Styles
+                                              .styles12RegularOpacityBlack,
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              GoRouter.of(context).push(
+                                                  Routes.kHomeScreen,
+                                                  extra: 4);
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              }
                             },
-                            text: 'Save',
-                            style: Styles.styles18MediumWhite
-                                .copyWith(fontSize: 16.sp),
+                            builder: (context, state) {
+                              if (state is UpdateOwnerInformationLoading) {
+                                return TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    backgroundColor: kPrimaryGreen,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                    minimumSize: Size(double.infinity, 60.h),
+                                  ),
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 20.sp,
+                                      width: 20.sp,
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return PetYardTextButton(
+                                onPressed: () {
+                                  // cubit.save();
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd').format(
+                                    DateFormat('dd-MM-yyyy')
+                                        .parse(cubit.dateController.text),
+                                  );
+
+                                  cubit.updateOwnerInformation(
+                                    firstName: cubit.fNameController.text,
+                                    lastName: cubit.lNameController.text,
+                                    pass:
+                                        '123', // Assuming pass is a required field
+                                    email: cubit.emailController.text,
+                                    phoneNumber:
+                                        cubit.phoneNumberController.text,
+                                    dateOfBirth: DateTime.parse(formattedDate),
+                                  );
+                                },
+                                text: 'Save',
+                                style: Styles.styles18MediumWhite
+                                    .copyWith(fontSize: 16.sp),
+                              );
+                            },
                           ),
                   ],
                 ),

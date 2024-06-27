@@ -1,14 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/core/widgets/loading_button.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/registration/signup/data/repo/signup_repo.dart';
+import 'package:petowner_frontend/features/registration/signup/presentation/view%20model/cubit/sign_up_cubit.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/alternative_signup_option.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/signup_text_field_column.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/signup_username_widget.dart';
@@ -97,15 +100,48 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                   controller: dateOfBirthController,
                 ),
                 SizedBox(height: 24.h),
-                // const ThirdSection(),
-                PetYardTextButton(
-                  onPressed: () {
-                    // print('hello');
-                    if (formKey.currentState!.validate()) {
-                      signup();
-                    }
-                  },
-                  style: Styles.styles16BoldWhite,
+                BlocProvider(
+                  create: (context) =>
+                      SignUpCubit(SignUpRepo(api: ApiService(dio: Dio()))),
+                  child: BlocConsumer<SignUpCubit, SignUpState>(
+                    builder: (context, state) {
+                      var cubit = BlocProvider.of<SignUpCubit>(context);
+                      if (state is SignUpLoading) {
+                        return const LoadingButton(
+                          height: 60,
+                          radius: 10,
+                        );
+                      }
+                      return PetYardTextButton(
+                        onPressed: () {
+                          // print('hello');
+                          if (formKey.currentState!.validate()) {
+                            cubit.signUp(
+                              firstName: fNameController.text,
+                              lastName: lNameController.text,
+                              email: emailAddressController.text,
+                              pass: passwordController.text,
+                              phoneNumber: phoneNumberController.text,
+                              dateOfBirth: dateOfBirthController.text,
+                            );
+                          }
+                        },
+                        style: Styles.styles16BoldWhite,
+                      );
+                    },
+                    listener: (context, state) {
+                      if (state is SignUpFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.errorMessage)));
+                      } else if (state is SignUpSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('SignUp Successful')),
+                        );
+                        // Navigate to the home screen
+                        GoRouter.of(context).push(Routes.kSigninScreen);
+                      }
+                    },
+                  ),
                 ),
                 SizedBox(height: 6.h),
                 const ALternativeSignupOptionColumn(),
@@ -115,26 +151,5 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
         ),
       ),
     );
-  }
-
-  Future<void> signup() async {
-    try {
-      await signUpRepo.signUp(
-        firstName: fNameController.text,
-        lastName: lNameController.text,
-        email: emailAddressController.text,
-        pass: passwordController.text,
-        phoneNumber: phoneNumberController.text,
-        dateOfBirth: dateOfBirthController.text,
-      );
-      GoRouter.of(context).push(Routes.kSigninScreen);
-      // await apiService.login();
-      // Navigate to the next screen upon successful login
-    } catch (error) {
-      // Handle sign-in error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign-up failed. Please try again.')),
-      );
-    }
   }
 }

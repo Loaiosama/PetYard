@@ -2,49 +2,58 @@ const pool = require('../../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
-const multer =require('multer');
+const multer = require('multer');
 const sharp = require('sharp');
 const saltRounds = 10;
 const crypto = require('crypto');//reset pass - forget pass
 const Model = require('./../../Models/UserModel');
 const sendemail = require("./../../Utils/email");
 
-const multerStorage=multer.memoryStorage();
-const multerFilter=(req,file,cb)=>{
-    if(file.mimetype.startsWith('image')){
-        cb(null,true);
-    }
-    else{
-        cb("Not an image! please upload only images.",false)
+const multerStorage = multer.memoryStorage();
+// const multerFilter = (req, file, cb) => {
+//     if (file.mimetype.startsWith('image')) {
+//         cb(null, true);
+//     }
+//     else {
+//         cb("Not an image! please upload only images.", false)
+//     }
+// }
+const multerFilter = (req, file, cb) => {
+    // Check if the file is an image by mimetype or file extension
+    if (file.mimetype.startsWith('image') || ['jpg', 'jpeg', 'png', 'gif'].includes(file.originalname.split('.').pop().toLowerCase())) {
+        cb(null, true); // Accept the file
+    } else {
+        cb("File format not supported! Please upload only images.", false); // Reject the file
     }
 }
-const upload=multer({
 
-    storage:multerStorage,
-    fileFilter:multerFilter
+
+const upload = multer({
+
+    storage: multerStorage,
+    fileFilter: multerFilter
 });
-const uploadphoto=upload.single('Image');
-const resizePhoto=(req,res,next)=>{
+const uploadphoto = upload.single('Image');
+const resizePhoto = (req, res, next) => {
 
-    if(!req.file) return next();
+    if (!req.file) return next();
 
-    req.file.filename=`Provider-${req.ID}-${Date.now()}.jpeg`;
+    req.file.filename = `Provider-${req.ID}-${Date.now()}.jpeg`;
 
-    sharp(req.file.buffer).resize(500,500).toFormat('jpeg').jpeg({quality:90}).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
+    sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
     next();
 }
 
 
 
 const signUp = async (req, res) => {
-    const { UserName, pass, email, phoneNumber, dateOfBirth, Bio} = req.body;
+    const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
     // const Image=req.file.filename;
     let Image = req.file ? req.file.filename : 'default.png';
-    
+    console.log("image = " + Image);
     try {
 
-        if(!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image)
-        {
+        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
@@ -60,7 +69,7 @@ const signUp = async (req, res) => {
         const resultEmail = await client.query(emailExists, [email]);
         const resultPhone = await client.query(phoneExists, [phoneNumber]);
 
-        if (resultUserNameExists.rows.length === 1 ) {
+        if (resultUserNameExists.rows.length === 1) {
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another  User_Name." })
         }
@@ -68,25 +77,21 @@ const signUp = async (req, res) => {
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another Email and Phone number." })
         }
-        else if(resultPhone.rows.length === 1)
-        {  
+        else if (resultPhone.rows.length === 1) {
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another Phone number." })
 
         }
-        else if(resultEmail.rows.length === 1)
-        {  
+        else if (resultEmail.rows.length === 1) {
             console.log("User already exists");
             res.status(400).json({ message: "User already exists, try another Email." })
 
         }
-        else
-        {
-
+        else {
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
             const insertQuery = 'Insert INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
-            const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth,Bio,Image]);  
-            const {validationCode} = Model.CreateValidationCode();
+            const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image]);
+            const { validationCode } = Model.CreateValidationCode();
 
             const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
 
@@ -95,16 +100,15 @@ const signUp = async (req, res) => {
                 subject: 'Your Validation code  (valid for 10 min) ',
                 message
             });
-         res.status(201).json({ message: "Sign up successful" })
+            res.status(201).json({ message: "Sign up successful" })
         }
 
         client.release();
-        
+
     }
-    catch(e)
-    {
+    catch (e) {
         console.error("Error during signUp", e);
-        res.status(500).json({ error: "internal server error"});
+        res.status(500).json({ error: "internal server error" });
     }
 
 }
@@ -123,7 +127,7 @@ const signIn = async (req, res) => {
 
         // Query the database for the user with the provided email and password
         const result = await pool.query('SELECT * FROM ServiceProvider WHERE UserName = $1', [UserName]);
-       
+
         // If user not found
         if (result.rows.length === 0) {
             return res.status(401).json({
@@ -134,9 +138,9 @@ const signIn = async (req, res) => {
 
         // Check if the password matches
         const user = result.rows[0];
-        
-        const isPasswordMatch = await bcrypt.compare(password, user.password); 
-       
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+
 
         if (!isPasswordMatch) {
             return res.status(401).json({
@@ -170,7 +174,7 @@ const deleteAccount = async (req, res) => {
     const provider_id = req.ID;
 
     try {
-        
+
 
         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const result = await pool.query(Query, [provider_id]);
@@ -200,14 +204,13 @@ const deleteAccount = async (req, res) => {
 const updateInfo = async (req, res) => {
 
     const provider_id = req.ID;
-    const {UserName, pass, email, phoneNumber,dateOfBirth } = req.body;
-    const Image=req.file.filename;
+    const { UserName, pass, email, phoneNumber, dateOfBirth } = req.body;
+    const Image = req.file.filename;
 
     try {
 
 
-        if(!UserName|| !pass || !email || !phoneNumber || !dateOfBirth )
-        {
+        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
@@ -228,7 +231,7 @@ const updateInfo = async (req, res) => {
 
 
         const updateQuery = 'UPDATE ServiceProvider SET UserName =$1,  Password = $2, Email = $3, Phone = $4, Date_of_birth = $5 , Image=$6 WHERE Provider_Id = $7';
-        await pool.query(updateQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth,Image,provider_id]);
+        await pool.query(updateQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Image, provider_id]);
 
         res.status(200).json({
             status: "Success",
@@ -267,9 +270,9 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        const { resetToken,PasswordResetToken} = Model.CreatePasswordResetToken();
+        const { resetToken, PasswordResetToken } = Model.CreatePasswordResetToken();
 
-       await pool.query('UPDATE ServiceProvider SET ResetToken = $1 WHERE Email = $2', [PasswordResetToken, email]);
+        await pool.query('UPDATE ServiceProvider SET ResetToken = $1 WHERE Email = $2', [PasswordResetToken, email]);
 
         const resetURL = `${req.protocol}://${req.get('host')}/Provider/Resetpassword/${resetToken}`;
 
@@ -297,49 +300,48 @@ const forgotPassword = async (req, res) => {
     }
 }
 
-const resetPassword = async (req,res)=>{
+const resetPassword = async (req, res) => {
 
     const { token } = req.params;
-    const { pass, email } = req.body;   
-    const hashedToken1 = crypto.createHash('sha256').update(token).digest('hex'); 
-    const {PasswordResetExpires} = Model.CreatePasswordResetToken();
-   try {
-   
-    if(!pass || !email)
-    {
-        return res.status(400).json({
-            status: "Fail",
-            message: "Please Fill All Information"
-        });
+    const { pass, email } = req.body;
+    const hashedToken1 = crypto.createHash('sha256').update(token).digest('hex');
+    const { PasswordResetExpires } = Model.CreatePasswordResetToken();
+    try {
 
-    }
+        if (!pass || !email) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please Fill All Information"
+            });
+
+        }
         const result = await pool.query('SELECT * FROM ServiceProvider WHERE Email = $1', [email]);
         const hashedToken2 = result.rows[0].resettoken;
         ;
-      
-        
+
+
         if (!hashedToken2) {
             return res.status(400).json({
                 status: "Fail",
                 message: "No password reset token found for this email"
             });
         }
-                
-    if ( !hashedToken2 || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
-        return res.status(400).json({
-            status: "Fail",
-            message: "Token is invalid or has expired"
-        });
-    }
-    const hashedPassword = await bcrypt.hash(pass, saltRounds);
-    const newpass = 'UPDATE ServiceProvider SET Password = $1 , ResetToken = NULL WHERE Email = $2';
-    await pool.query(newpass, [hashedPassword, email]);  
-    res.status(200).json({ message: "Password Changed correctly" });
-    
-   } catch (error) {
 
-    res.status(500).json({ error: "Internal server error" });
-   }
+        if (!hashedToken2 || hashedToken2 !== hashedToken1 || PasswordResetExpires < Date.now()) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Token is invalid or has expired"
+            });
+        }
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+        const newpass = 'UPDATE ServiceProvider SET Password = $1 , ResetToken = NULL WHERE Email = $2';
+        await pool.query(newpass, [hashedPassword, email]);
+        res.status(200).json({ message: "Password Changed correctly" });
+
+    } catch (error) {
+
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 
@@ -403,7 +405,7 @@ const SelectServices = async (req, res) => {
         const addedService = await client.query(addServiceQuery, [Type, provider_id]);
         client.release();
 
-        res.status(201).json({ 
+        res.status(201).json({
             status: "Success",
             message: "Service added successfully",
             service: addedService.rows[0]
@@ -418,43 +420,44 @@ const SelectServices = async (req, res) => {
     }
 };
 
-const Killservice = async(req,res)=>{
-    const provider_id=req.ID;
-    const {Service_ID}=req.params;
+
+
+const Killservice = async (req, res) => {
+    const provider_id = req.ID;
+    const { Service_ID } = req.params;
 
     try {
-        if(!Service_ID)
-        {
+        if (!Service_ID) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
         }
-        else{
+        else {
 
 
 
             const client = await pool.connect();
             const Exists = 'Select * FROM Services WHERE provider_id = $1';
             const result = await client.query(Exists, [provider_id]);
-                
+
             if (result.rows.length === 0) {
                 return res.status(401).json({
                     status: "Fail",
                     message: "Provider doesn't exist"
                 });
             }
-            
-        const deleteQuery = 'DELETE FROM Services WHERE Service_ID = $1 AND provider_id = $2 ';
-        await pool.query(deleteQuery, [Service_ID,provider_id]);
 
-        res.status(200).json({
-            status: "Success",
-            message: "Service deleted successfully"
-        });
+            const deleteQuery = 'DELETE FROM Services WHERE Service_ID = $1 AND provider_id = $2 ';
+            await pool.query(deleteQuery, [Service_ID, provider_id]);
 
-    }
- }catch (error) {
+            res.status(200).json({
+                status: "Success",
+                message: "Service deleted successfully"
+            });
+
+        }
+    } catch (error) {
         console.error("Error deleting account:", error);
         res.status(500).json({
             status: "Fail",
@@ -462,14 +465,13 @@ const Killservice = async(req,res)=>{
         });
 
 
-        
-    } 
+
+    }
 }
-const getallservices = async(req,res)=>{
+const getallservices = async (req, res) => {
     const provider_id = req.ID;
     try {
-        if(!provider_id)
-        {
+        if (!provider_id) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Some Error Haben"
@@ -484,29 +486,28 @@ const getallservices = async(req,res)=>{
                 message: "User doesn't exist."
             });
         }
-        const getAllservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1',[provider_id]);
+        const getAllservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1', [provider_id]);
         res.status(200).json({
-            status :"Done",
-            message : "One Data Is Here",
-            data :getAllservices.rows
+            status: "Done",
+            message: "One Data Is Here",
+            data: getAllservices.rows
         });
-            
+
     } catch (error) {
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
     }
-    
+
 }
-const getService=async(req,res)=>{
+const getService = async (req, res) => {
 
-    const {Service_ID}=req.params;
+    const { Service_ID } = req.params;
     const provider_id = req.ID;
-    try {   
+    try {
 
-        if(!provider_id || !Service_ID)
-        {
+        if (!provider_id || !Service_ID) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Some Error Haben"
@@ -522,13 +523,13 @@ const getService=async(req,res)=>{
                 message: "User doesn't exist."
             });
         }
-        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 AND Service_ID=$2',[provider_id,Service_ID]);
+        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 AND Service_ID=$2', [provider_id, Service_ID]);
         res.status(200).json({
-            status :"Done",
-            message : "One Data Is Here",
-            data :getservices.rows
+            status: "Done",
+            message: "One Data Is Here",
+            data: getservices.rows
         });
-            
+
     } catch (error) {
         res.status(500).json({
             status: "Fail",
@@ -536,23 +537,19 @@ const getService=async(req,res)=>{
         });
     }
 }
+const Providerinfo=async(req,res)=>{
+      const providerid=req.ID;
+      try {
 
-
-
-
-
-
-
-
-
-
-const startChat =  async (req, res) => {
-    const provider_id = req.ID;
-   try {
-
-    const client = await pool.connect();
-    const Exists = 'Select * FROM ServiceProvider WHERE provider_id = $1';
-    const result = await client.query(Exists, [provider_id]);
+     if(!providerid)
+        {
+             return res.status(400).json({
+                    status: "Fail",
+                    message: "Missing information"
+            });
+        }
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [providerid]);
 
         if (result.rows.length === 0) {
             return res.status(401).json({
@@ -560,27 +557,62 @@ const startChat =  async (req, res) => {
                 message: "User doesn't exist."
             });
         }
+        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
+        res.status(200).json({
+            status: "Done",
+            message: "One Data Is Here",
+            providerinfo:result.rows,
+            data: getservices.rows
+        });
 
- 
-       const username = result.rows[0].first_name;
-       const Email = result.rows[0].email;
+      } catch (error) {
 
-     const r =await axios.put(
-       "https://api.chatengine.io/users/",
-       {username : username+provider_id ,secret :username, first_name:username ,
-           email: Email},
-       {"headers":{"private-key":"9b5d6df8-7257-4993-9642-45017512c89d"}}
-     );
-     return res.status(r.status).json(r.data);
-   } catch (error) {
-     if (error.response && error.response.status) {
-         return res.status(error.response.status).json(error.response.data);
-     } else {
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
         
-         return res.status(500).json({ message: 'Internal Server Error' });
-     }
- }
- 
+      }
+
+}
+
+const startChat = async (req, res) => {
+    const provider_id = req.ID;
+    try {
+
+        const client = await pool.connect();
+        const Exists = 'Select * FROM ServiceProvider WHERE provider_id = $1';
+        const result = await client.query(Exists, [provider_id]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+
+        const username = result.rows[0].first_name;
+        const Email = result.rows[0].email;
+
+        const r = await axios.put(
+            "https://api.chatengine.io/users/",
+            {
+                username: username + provider_id, secret: username, first_name: username,
+                email: Email
+            },
+            { "headers": { "private-key": "9b5d6df8-7257-4993-9642-45017512c89d" } }
+        );
+        return res.status(r.status).json(r.data);
+    } catch (error) {
+        if (error.response && error.response.status) {
+            return res.status(error.response.status).json(error.response.data);
+        } else {
+
+            return res.status(500).json({ message: 'Internal Server Error' });
+        }
+    }
+
 }
 
 
@@ -598,8 +630,9 @@ module.exports = {
     getallservices,
     getService,
     forgotPassword,
-    resetPassword
-    
-  
-    
+    resetPassword,
+    Providerinfo
+
+
+
 };

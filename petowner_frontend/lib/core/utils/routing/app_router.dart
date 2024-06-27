@@ -18,6 +18,7 @@ import 'package:petowner_frontend/features/profile/presentation/view/location_sc
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
@@ -184,10 +185,12 @@ abstract class AppRouter {
           final int providerId = extras['providerId'] as int;
           final String serviceName = extras['serviceName'] as String;
           final String providerName = extras['providerName'] as String;
+          final List<Service> services = extras['services'] as List<Service>;
           return transitionGoRoute(
             context: context,
             state: state,
             child: BookAppointment(
+              services: services,
               serviceName: serviceName,
               providerId: providerId,
               providerName: providerName,
@@ -240,10 +243,17 @@ abstract class AppRouter {
         name: Routes.kReservationSuccess,
         path: Routes.kReservationSuccess,
         pageBuilder: (context, state) {
+          final Map<String, dynamic> extras =
+              state.extra as Map<String, dynamic>;
+          final List<Service> services = extras['services'] as List<Service>;
+          final String providerName = extras['providerName'] as String;
           return transitionGoRoute(
             context: context,
             state: state,
-            child: const ReservationSuccess(),
+            child: ReservationSuccess(
+              providerName: providerName,
+              services: services,
+            ),
           );
         },
       ),

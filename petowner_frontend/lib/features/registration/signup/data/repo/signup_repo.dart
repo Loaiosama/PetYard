@@ -1,4 +1,7 @@
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:petowner_frontend/core/errors/failure.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 
 class SignUpRepo {
@@ -6,7 +9,7 @@ class SignUpRepo {
 
   SignUpRepo({required this.api});
 
-  Future<void> signUp({
+  Future<Either<Failure, String>> signUp({
     required String firstName,
     required String lastName,
     required String pass,
@@ -31,14 +34,16 @@ class SignUpRepo {
       if (response.statusCode == 201) {
         debugPrint(
             "=============================== ${response.data['message']}");
+        return right('Sign up successful');
       } else {
-        // Handle error response
-        throw Exception('Failed to sign up');
+        // If there's an error, return a failure wrapped in ServerFailure
+        return left(ServerFailure('Failed to sign up'));
       }
     } catch (e) {
-      // Handle other errors
-      debugPrint('sign up error: $e');
-      rethrow;
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
     }
   }
 }

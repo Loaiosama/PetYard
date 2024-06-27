@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 class AddPetPhoto extends StatefulWidget {
@@ -15,7 +15,52 @@ class AddPetPhoto extends StatefulWidget {
 }
 
 class _AddPetPhotoState extends State<AddPetPhoto> {
-  File? image;
+  XFile? image;
+  final ImagePicker _picker = ImagePicker();
+
+  void pickImage(ImageSource source) async {
+    var img = await _picker.pickImage(source: source);
+    setState(() {
+      image = img;
+    });
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: ListTile(
+                  leading: const Icon(Iconsax.camera),
+                  title: const Text('Camera'),
+                  onTap: () {
+                    pickImage(ImageSource.camera);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: ListTile(
+                  leading: const Icon(Iconsax.gallery),
+                  title: const Text('Gallery'),
+                  onTap: () {
+                    pickImage(ImageSource.gallery);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -28,9 +73,8 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
               end: Alignment.centerLeft,
               begin: Alignment.centerRight,
               colors: [
-                // Colors.blue,
                 Colors.green,
-                kPrimaryGreen
+                kPrimaryGreen,
               ],
             ),
           ),
@@ -46,9 +90,8 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
                 child: CircleAvatar(
                   radius: 60.r,
                   backgroundColor: Colors.white,
-                  // backgroundImage:
-                  //     const AssetImage('assets/images/default.png'),
-                  foregroundImage: image != null ? FileImage(image!) : null,
+                  backgroundImage:
+                      image != null ? FileImage(File(image!.path)) : null,
                 ),
               ),
             ),
@@ -59,7 +102,7 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
           bottom: 0,
           right: 0,
           child: InkWell(
-            onTap: () {},
+            onTap: () => _showPicker(context),
             child: Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.symmetric(horizontal: 180.0),
@@ -73,14 +116,13 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
                   end: Alignment.centerLeft,
                   begin: Alignment.centerRight,
                   colors: [
-                    // Colors.blue,
                     Colors.green,
-                    kPrimaryGreen
+                    kPrimaryGreen,
                   ],
                 ),
               ),
               child: Icon(
-                FontAwesomeIcons.camera,
+                Iconsax.camera,
                 color: Colors.white,
                 size: 18.sp,
               ),
