@@ -14,6 +14,7 @@ const passport = require('passport');
 const session = require('express-session');
 const Shipping=require('../Controllers/Shipping/ShippingController');
 const SittingController = require('../Controllers/Reservation/SittingController');
+const GroomingController = require('../Controllers/Reservation/GroomingController');
 
 
 
@@ -84,7 +85,13 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
 
-
+//------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
+router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
+router.post('/setGroomingTypes', authMiddleware, GroomingController.setGroomingTypesForProvider);
+router.put('/updateGroomingTypes/:oldgroomingTypeid',authMiddleware,GroomingController.updateGroomingTypesForProvider);
+router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingController.DeleteGroomingTypesForProvider);
+router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
+router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 
 
 // Use express-session middleware

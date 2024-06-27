@@ -8,6 +8,8 @@ CREATE DATABASE PetYard;
     7ot el tables
 */
 
+
+
 CREATE TABLE Petowner (
     Owner_Id SERIAL PRIMARY KEY,
     First_name VARCHAR(225),
@@ -121,12 +123,11 @@ CREATE TYPE GroomingType AS ENUM ('Bathing', 'Nail trimming', 'Fur trimming','Fu
 CREATE TABLE GroomingServiceSlots (
     Slot_ID SERIAL PRIMARY KEY,
     Provider_ID INT,
-    Service_ID INT,
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
     Price DOUBLE PRECISION,
     Grooming_Type GroomingType,
-    FOREIGN KEY (Service_ID) REFERENCES Services(Service_ID),
+    Type Status DEFAULT 'Pending',
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
@@ -138,14 +139,22 @@ CREATE TABLE GroomingReservation (
     Owner_ID INT,
     Start_time TIMESTAMP,
     End_time TIMESTAMP,
-    expirationTime BIGINT,
     Final_Price DOUBLE PRECISION,
-    Type GroomingType,
-    Type Status DEFAULT 'Pending',
-    FOREIGN KEY (Slot_ID) REFERENCES ServiceSlots(Slot_ID),
+    Grooming_Type GroomingType,
+    FOREIGN KEY (Slot_ID) REFERENCES GroomingServiceSlots(Slot_ID),
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
 );
+
+
+CREATE TABLE ProviderGroomingTypes (
+    ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Grooming_Type GroomingType,
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
+);
+
+
 
 CREATE TABLE Review (
     Rating_ID SERIAL PRIMARY KEY,

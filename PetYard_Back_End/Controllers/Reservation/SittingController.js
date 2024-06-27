@@ -1,7 +1,7 @@
 const pool = require('../../db');
 const sendemail = require("../../Utils/email");
 
-const makeRequest = async (req, res) => {
+/*const makeRequest = async (req, res) => {
     const ownerId = req.ID;
     let { Pet_ID, Location, Start_time, End_time, Final_Price } = req.body;
 
@@ -49,7 +49,66 @@ const makeRequest = async (req, res) => {
             message: "Internal server error."
         });
     }
+};*/
+const makeRequest = async (req, res) => {
+    const ownerId = req.ID;
+    let { Pet_ID, Location, Start_time, End_time, Final_Price } = req.body;
+
+    try {
+        if (!ownerId || !Pet_ID || !Location || !Location.x || !Location.y || !Start_time || !End_time || !Final_Price) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Missing information."
+            });
+        }
+
+        const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+        const ownerRes = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerRes.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Owner is not in the database."
+            });
+        }
+
+        const locationString = `(${Location.x}, ${Location.y})`;
+
+        // Check if a similar request already exists for the same owner
+        const duplicateCheckQuery = `
+            SELECT * FROM SittingReservation 
+            WHERE Pet_ID = $1 AND Start_time = $2 AND End_time = $3 AND Final_Price = $4 AND Owner_ID = $5 AND Location = $6`;
+        const duplicateCheckRes = await pool.query(duplicateCheckQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId, locationString]);
+
+        if (duplicateCheckRes.rows.length > 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Duplicate request. A similar request already exists for this owner."
+            });
+        }
+
+        const insertQuery = `
+            INSERT INTO SittingReservation 
+            (Pet_ID, Start_time, End_time, Final_Price, Owner_ID, Location) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
+            RETURNING *`;
+        const insertRes = await pool.query(insertQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId, locationString]);
+
+        res.status(201).json({
+            status: "success",
+            message: "Request added successfully.",
+            data: insertRes.rows
+        });
+
+    } catch (e) {
+        console.error("Error:", e);
+        return res.status(500).json({
+            status: "fail",
+            message: "Internal server error."
+        });
+    }
 };
+
 
 
 const applySittingRequest = async (req, res) => {
