@@ -189,18 +189,14 @@ CREATE TABLE ProviderClinicTypes (
 
 
 CREATE TABLE Review (
-    Rating_ID SERIAL PRIMARY KEY,
-    Reservation_ID INT,
-    Rate_value DOUBLE PRECISION,
-    FOREIGN KEY (Reservation_ID) REFERENCES Reservation(Reserve_ID)
+    Review_ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Rate_value DOUBLE PRECISION CHECK (Rate_value >= 0 AND Rate_value <= 5),
+    count INT DEFAULT 0,
+    comments TEXT[],
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
 
-CREATE TABLE Comment (
-    Rating_ID INT,
-    Comment_ID SERIAL PRIMARY KEY,
-    Comment VARCHAR(255),
-    FOREIGN KEY (Rating_ID) REFERENCES Review(Rating_ID)
-);
 
 
 

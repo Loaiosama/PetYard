@@ -18,6 +18,7 @@ const Shipping = require('../Controllers/Shipping/ShippingController')
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
 const ClinicController = require('../Controllers/Reservation/ClinicController');
+const ReviewController = require('../Controllers/Review/ReviewController');
 
 
 
@@ -99,6 +100,10 @@ router.get('/GetTimelinePost', authMiddleware, SocialMedia.getTimelinePosts);
 
 
 router.get('/checkout', payment.checkout);
+
+
+router.post('/AddRating',authMiddleware,ReviewController.AddRating);
+router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
 
 
 
