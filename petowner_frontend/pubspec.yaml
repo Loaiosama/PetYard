@@ -56,6 +56,8 @@ dependencies:
   shimmer: ^3.0.0
   stroke_text: ^0.0.2
   syncfusion_flutter_datepicker: ^25.1.40
+  numberpicker: ^2.1.2
+ 
 
 dev_dependencies:
   flutter_lints: ^3.0.0

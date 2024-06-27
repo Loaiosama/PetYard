@@ -12,7 +12,8 @@ class SignInCubit extends Cubit<SignInState> {
 
   final SignInRepo signInRepo;
 
-  Future<void> signIn({required String password, required String userName}) async {
+  Future<void> signIn(
+      {required String password, required String userName}) async {
     emit(SignInLoading());
     await Future.delayed(const Duration(seconds: 1));
     var result = await signInRepo.login(password: password, userName: userName);

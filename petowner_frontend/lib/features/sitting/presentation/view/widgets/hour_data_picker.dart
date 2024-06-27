@@ -82,7 +82,7 @@ class _DateHourPickerState extends State<DateHourPicker> {
       builder: (context, child) => Theme(
         data: ThemeData().copyWith(
           colorScheme: const ColorScheme.light(
-            primary: KGreen,
+            primary: kPrimaryGreen,
             onPrimary: Colors.white,
             surface: Colors.white,
           ),
@@ -98,7 +98,7 @@ class _DateHourPickerState extends State<DateHourPicker> {
         builder: (context, child) => Theme(
           data: ThemeData().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: KGreen,
+              primary: kPrimaryGreen,
               onPrimary: Colors.white,
               surface: Colors.white,
             ),

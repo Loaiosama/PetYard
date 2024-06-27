@@ -102,7 +102,14 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Login Successful')),
                         );
-                        print('success');
+                        print(state.status);
+                        if (state.status == 'Login Successful') {
+                          GoRouter.of(context)
+                              .push(Routes.kHomeScreen, extra: 0);
+                        } else if (state.status == 'Choose Services') {
+                          GoRouter.of(context).push(Routes.kChooseService);
+                        }
+                        // print('success');
                         // Navigate to the home screen
                         // GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
                       }

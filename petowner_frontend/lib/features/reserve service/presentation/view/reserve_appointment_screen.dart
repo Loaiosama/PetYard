@@ -158,6 +158,11 @@ class _BookAppointmentState extends State<BookAppointment> {
                       _currentStep = index;
                     });
                   },
+                  onStepContinue: () {
+                    setState(() {
+                      _currentStep += 1;
+                    });
+                  },
                   steps: steps(),
                 ),
               ),

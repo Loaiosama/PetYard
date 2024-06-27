@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../../../core/utils/theming/styles.dart';
 import '../../../../../../core/widgets/custom_text_form_field.dart';
 
 class SignUpTextFieldColumn extends StatelessWidget {

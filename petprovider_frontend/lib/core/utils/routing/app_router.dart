@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/routing/routing_animation.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/choose_service.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/fill_information.dart';
 
@@ -72,20 +73,33 @@ abstract class AppRouter {
         ),
       ),
       // Navigate to home screen
-      // GoRoute(
-      //     name: Routes.kHomeScreen,
-      //     path: Routes.kHomeScreen,
-      //     pageBuilder: (context, state) {
-      //       final int index = state.extra as int;
-      //
-      //       return transitionGoRoute(
-      //         context: context,
-      //         state: state,
-      //         child: HomeScreen(
-      //           initialIndex: index,
-      //         ),
-      //       );
-      //     }),
+      GoRoute(
+          name: Routes.kHomeScreen,
+          path: Routes.kHomeScreen,
+          pageBuilder: (context, state) {
+            final int index = state.extra as int;
+
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: HomeScreen(
+                initialIndex: index,
+              ),
+            );
+          }),
+      GoRoute(
+          name: Routes.kAvailableSlotsScreen,
+          path: Routes.kAvailableSlotsScreen,
+          pageBuilder: (context, state) {
+            final String serviceName = state.extra as String;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: AvaialableSlotsScreen(
+                serviceName: serviceName,
+              ),
+            );
+          }),
       // // Navigate to forget password screen
       // GoRoute(
       //   path: Routes.kForgotPasswordScreen,

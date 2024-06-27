@@ -7,7 +7,6 @@ import '../../../../../../core/utils/helpers/spacing.dart';
 import '../../../../../../core/utils/routing/routes.dart';
 import '../../../../../../core/utils/theming/styles.dart';
 
-
 class ALternativeSignupOptionColumn extends StatelessWidget {
   const ALternativeSignupOptionColumn({
     super.key,

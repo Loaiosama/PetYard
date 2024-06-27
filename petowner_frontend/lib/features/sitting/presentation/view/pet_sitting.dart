@@ -1,10 +1,42 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/date_picker.dart';
-import 'package:petowner_frontend/features/pet%20sitting/presentation/view/widgets/hour_data_picker.dart';
+import 'package:petowner_frontend/features/reserve%20service/presentation/view/widgets/payment_tab.dart';
+import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
+import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo.dart';
+import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo_imp.dart';
+
+import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_cubit.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_states.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/date_tab.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/payment_tab.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/summary_tab.dart';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/reserve%20service/presentation/view/widgets/payment_tab.dart';
+import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
+import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo.dart';
+import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo_imp.dart';
+
+import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_cubit.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_states.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/date_tab.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/payment_tab.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/summary_tab.dart';
 
 class PetSitting extends StatefulWidget {
   const PetSitting({Key? key}) : super(key: key);
@@ -14,176 +46,304 @@ class PetSitting extends StatefulWidget {
 }
 
 class _PetSittingState extends State<PetSitting> {
-  int offerPrice = 0;
-  final TextEditingController priceController = TextEditingController();
+  int _currentStep = 0;
+  DateTime? _selectedDate;
+  TimeOfDay? _startHour;
+  TimeOfDay? _endHour;
+  String? selectedName;
+  int? selectedId;
+  DateTime? startDate;
+  DateTime? endDate;
+  double? price;
 
-  void incrementPrice() {
-    setState(() {
-      offerPrice++;
-      priceController.text = offerPrice.toString();
-    });
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Invalid Time Selection'),
+          content: Text(
+              'End time must be after start time. Please adjust the time.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void decrementPrice() {
-    if (offerPrice > 0) {
-      setState(() {
-        offerPrice--;
-        priceController.text = offerPrice.toString();
-      });
+  void _validateAndProceed() {
+    if (_selectedDate != null && _startHour != null && _endHour != null) {
+      if (endDateTime!.isAfter(startDateTime!)) {
+        setState(() {
+          if (_currentStep < steps().length - 1) {
+            _currentStep += 1;
+          }
+        });
+      } else {
+        _showErrorDialog();
+      }
+    } else {
+      _showErrorDialog();
     }
   }
 
-  void dispose() {
-    priceController.dispose();
-    super.dispose();
+  List<Step> steps() => [
+        Step(
+          title: const Text(''),
+          label: Text(
+            "Date",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: DateTab(
+            selectedDate: _selectedDate,
+            startHour: _startHour,
+            endHour: _endHour,
+            onDateSelected: (date) {
+              setState(() {
+                _selectedDate = date;
+              });
+            },
+            onStartHourSelected: (time) {
+              setState(() {
+                _startHour = time;
+              });
+            },
+            onEndHourSelected: (time) {
+              setState(() {
+                _endHour = time;
+              });
+            },
+            onSelectedName: (petName) {
+              setState(() {
+                selectedName = petName;
+              });
+            },
+            onselectedId: (PetId) {
+              setState(() {
+                selectedId = PetId;
+              });
+            },
+            onStartDate: (start) {
+              setState(() {
+                startDate = start;
+              });
+            },
+            onEndDate: (end) {
+              setState(() {
+                endDate = end;
+              });
+            },
+          ),
+          isActive: _currentStep >= 0,
+        ),
+        Step(
+          title: const Text(''),
+          label: Text(
+            "Payment",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: PaymentTabSitting(
+            onPriceSelected: (p) {
+              price = p;
+            },
+          ),
+          isActive: _currentStep >= 1,
+        ),
+        Step(
+          title: const Text(''),
+          label: Text(
+            "Summary",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Summary(
+              endTime: endDate,
+              startTime: startDate,
+              pricee: price,
+              PteName: selectedName,
+              petId: selectedId),
+          isActive: _currentStep >= 2,
+        ),
+      ];
+
+  DateTime? get startDateTime {
+    if (_selectedDate == null || _startHour == null) return null;
+    return DateTime(_selectedDate!.year, _selectedDate!.month,
+        _selectedDate!.day, _startHour!.hour, _startHour!.minute);
   }
+
+  DateTime? get endDateTime {
+    if (_selectedDate == null || _endHour == null) return null;
+    return DateTime(_selectedDate!.year, _selectedDate!.month,
+        _selectedDate!.day, _endHour!.hour, _endHour!.minute);
+  }
+
+  SittingRequest? request;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 35.h),
-            Center(
-              child: Container(
-                width: 300.w,
-                height: 164.h,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    color: Color.fromRGBO(252, 189, 89, 1),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        spreadRadius: 5,
-                        blurRadius: 5,
-                        offset: const Offset(0, 5),
-                      )
-                    ]),
-                child: Stack(
+    return BlocProvider(
+      create: (context) => SittingReqCubit(
+        sittingRepo: SittingRepoImp(apiService: ApiService(dio: Dio())),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+              size: 18.0.sp,
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            "Make Sitting Request",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: const ColorScheme.light(
+                      primary: kPrimaryGreen,
+                    ),
+                  ),
+                  child: Stepper(
+                    controlsBuilder: (context, details) {
+                      return const SizedBox();
+                    },
+                    type: StepperType.horizontal,
+                    steps: steps(),
+                    currentStep: _currentStep,
+                    onStepTapped: (value) {
+                      setState(() {
+                        _currentStep = value;
+                      });
+                    },
+                    onStepCancel: () {
+                      setState(() {
+                        if (_currentStep > 0) {
+                          _currentStep -= 1;
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    onStepContinue: () {
+                      if (_currentStep < 2) {
+                        _currentStep += 1;
+                      }
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
                   children: [
-                    Positioned(
-                      top: 32,
-                      left: 200,
-                      child: Image.asset(
-                        "assets/images/golden_cat_2.png",
-                        width: 140.w,
-                        height: 140.h,
+                    _currentStep == 0
+                        ? Container()
+                        : Expanded(
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _currentStep--;
+                                });
+                              },
+                              child: Text('Back'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: kPrimaryGreen,
+                                minimumSize: Size(double.infinity, 50.h),
+                              ),
+                            ),
+                          ),
+                    _currentStep == 0
+                        ? Container()
+                        : const SizedBox(width: 16.0),
+                    Expanded(
+                      child: BlocConsumer<SittingReqCubit, SittingReqState>(
+                        listener: (context, state) {
+                          if (state is SittingReqSuccess) {
+                            context.pushNamed(
+                              Routes.KSuccessReq,
+                              extra: {
+                                'request': request,
+                                'selectedName': selectedName,
+                              },
+                            );
+                          } else if (state is SittingReqFailure) {
+                            GoRouter.of(context)
+                                .push(Routes.kReservationFailure);
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is SittingReqLoading) {
+                            return TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: kPrimaryGreen,
+                                minimumSize: Size(double.infinity, 50.h),
+                              ),
+                              child: Center(
+                                child: SizedBox(
+                                  height: 20.sp,
+                                  width: 20.sp,
+                                  child: const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return TextButton(
+                            onPressed: () {
+                              if (_currentStep < steps().length - 1) {
+                                _validateAndProceed();
+                              } else {
+                                var cubit =
+                                    BlocProvider.of<SittingReqCubit>(context);
+                                request = SittingRequest(
+                                  startTime: startDate,
+                                  endTime: endDate,
+                                  petID: selectedId,
+                                  finalPrice: price,
+                                  location: Location(x: 31.2089, y: 30.0131),
+                                );
+                                cubit.sendReq(request!);
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: kPrimaryGreen,
+                              minimumSize: Size(double.infinity, 50.h),
+                            ),
+                            child: Text(
+                              _currentStep < steps().length - 1
+                                  ? 'Continue'
+                                  : 'Make Request',
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    Positioned(
-                        left: 170.w,
-                        child: Transform.rotate(
-                          angle: -0.8,
-                          child: FaIcon(
-                            FontAwesomeIcons.heart,
-                            size: 80.sp,
-                            color: Colors.black.withOpacity(0.1),
-                          ),
-                        )),
-                    Positioned(
-                        top: -18.h,
-                        left: -26.w,
-                        child: Transform.rotate(
-                          angle: 2.3,
-                          child: FaIcon(
-                            FontAwesomeIcons.paw,
-                            size: 120.sp,
-                            color: Colors.black.withOpacity(0.1),
-                          ),
-                        )),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 25),
-                      child: SizedBox(
-                        width: 180,
-                        child: Text(
-                          "Find a pet sitter that will sit with your pet for a couple of hours",
-                          style: Styles.styles16BoldWhite.copyWith(
-                              fontSize: 20,
-                              color: Color.fromRGBO(49, 57, 68, 1)),
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: 30.h),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: DateHourPicker(
-                labelText: "Start time",
-                onDateSelected: (date) {},
-              ),
-            ),
-            SizedBox(height: 30.h),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: DateHourPicker(
-                labelText: "End time",
-                onDateSelected: (date) {},
-              ),
-            ),
-            SizedBox(height: 40.h),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Offer Your Price",
-                    style: Styles.styles16BoldBlack.copyWith(fontSize: 22),
-                  ),
-                  SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: decrementPrice,
-                        child: Image.asset(
-                          "assets/images/minus_G.png",
-                          width: 40.w,
-                          height: 40.h,
-                        ),
-                      ),
-                      SizedBox(width: 20.w),
-                      Container(
-                        width: 100.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.black, width: 2),
-                        ),
-                        child: TextFormField(
-                          controller: priceController,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            setState(() {
-                              offerPrice = int.tryParse(value) ?? 0;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20.w),
-                      GestureDetector(
-                        onTap: incrementPrice,
-                        child: Image.asset(
-                          "assets/images/plus_G.png",
-                          width: 40.w,
-                          height: 40.h,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

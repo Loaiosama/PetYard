@@ -245,29 +245,31 @@ class _FillInformationSignUpState extends State<FillInformationSignUp> {
                             // File imageFile = File(image!.path);
                             // print(image?.path);
 
-                            GoRouter.of(context).push(Routes.kChooseService);
+                            // GoRouter.of(context).push(Routes.kChooseService);
 
-                            // if(image?.path == null){
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //       const SnackBar(content: Text('please upload your image.')));
-                            // }
-                            // if (formKey.currentState!.validate()) {
-                            //   // print('2 n ${image?.path}');
-                            //   // print(FileImage(File(image!.path)));
-                            //   // print('==== ${File(image!.path)}');
-                            //   // // File imageFile = File(image!.path);
-                            //   // print(image?.path);
-                            //   cubit.signUp(
-                            //     userName: widget.userName,
-                            //     bio: bioController.text,
-                            //     image: File(image!.path),
-                            //     // Pass the File type
-                            //     email: widget.email,
-                            //     pass: widget.password,
-                            //     phoneNumber: phoneNumberController.text,
-                            //     dateOfBirth: dateOfBirthController.text,
-                            //   );
-                            // }
+                            if (image?.path == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('please upload your image.')));
+                            }
+                            if (formKey.currentState!.validate()) {
+                              // print('2 n ${image?.path}');
+                              // print(FileImage(File(image!.path)));
+                              // print('==== ${File(image!.path)}');
+                              // // File imageFile = File(image!.path);
+                              // print(image?.path);
+                              cubit.signUp(
+                                userName: widget.userName,
+                                bio: bioController.text,
+                                image: File(image!.path),
+                                // Pass the File type
+                                email: widget.email,
+                                pass: widget.password,
+                                phoneNumber: phoneNumberController.text,
+                                dateOfBirth: dateOfBirthController.text,
+                              );
+                            }
                           },
                           style: Styles.styles16BoldWhite,
                         );
@@ -281,8 +283,8 @@ class _FillInformationSignUpState extends State<FillInformationSignUp> {
                             const SnackBar(content: Text('SignUp Successful')),
                           );
                           // Navigate to the home screen
-                          // GoRouter.of(context).push(Routes.kSigninScreen);
-                          GoRouter.of(context).push(Routes.kChooseService);
+                          GoRouter.of(context).push(Routes.kSigninScreen);
+                          // GoRouter.of(context).push(Routes.kChooseService);
                         }
                       },
                     ),

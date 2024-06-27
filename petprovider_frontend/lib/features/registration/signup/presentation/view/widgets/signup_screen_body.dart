@@ -1,21 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/widgets/signup_text_field_column.dart';
-import 'package:petprovider_frontend/features/registration/signup/presentation/view/widgets/signup_username_widget.dart';
 import '../../../../../../core/utils/networking/api_service.dart';
 import '../../../../../../core/utils/routing/routes.dart';
 import '../../../../../../core/utils/theming/colors.dart';
 import '../../../../../../core/utils/theming/styles.dart';
-import '../../../../../../core/widgets/loading_button.dart';
 import '../../../../../../core/widgets/petyard_text_button.dart';
 import '../../../data/repo/signup_repo.dart';
-import '../../view model/cubit/sign_up_cubit.dart';
 import 'alternative_signup_option.dart';
-import 'date_of_birth_column.dart';
 import 'first_section.dart';
 // import 'third_section.dart';
 
