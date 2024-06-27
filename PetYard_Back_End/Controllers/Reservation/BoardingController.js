@@ -403,85 +403,85 @@ const UpdateReservation = async (req, res) => {
     const reserve_id = req.params.reserve_id;
     const provider_id = req.ID;
     let { slot_id, pet_id, owner_id, start_time, end_time, Type } = req.body;
+    
     try {
-
-
         if (!provider_id || !reserve_id) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Info not complete."
             });
         }
+        
         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const providerResult = await pool.query(providerQuery, [provider_id]);
-        const name = providerResult.rows[0].username;
-
         if (providerResult.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
                 message: "User doesn't exist."
             });
         }
-
-        const Query = 'SELECT * FROM Reservation WHERE Slot_ID = $1 AND Pet_ID=$2 AND Owner_ID=$3';
-        const Result = await pool.query(Query, [slot_id, pet_id, owner_id]);
-
-        let time = Result.rows[0].expirationTime;
-
-        if (time <= Date.now()) {
+        
+        const name = providerResult.rows[0].username;
+        
+        // Check if the slot is already reserved by another reservation with status other than 'Rejected' or 'Pending'
+        const existingReservationQuery = 'SELECT * FROM Reservation WHERE Slot_ID = $1 AND Type NOT IN ($2, $3)';
+        const existingReservationResult = await pool.query(existingReservationQuery, [slot_id, 'Rejected', 'Pending']);
+        
+        if (existingReservationResult.rows.length > 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Cannot accept because the slot is already reserved."
+            });
+        }
+        
+        const reservationQuery = 'SELECT * FROM Reservation WHERE Reserve_ID = $1';
+        const reservationResult = await pool.query(reservationQuery, [reserve_id]);
+        
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Reservation not found."
+            });
+        }
+        
+        let expirationTime = reservationResult.rows[0].expirationTime;
+        if (expirationTime <= Date.now()) {
             Type = "Rejected"; // Set type to Rejected if expired
-
         }
-
-
-        const updateQuery = 'UPDATE Reservation SET Slot_ID =$1,  Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5 , Type=$6 WHERE Reserve_ID = $7';
+        
+        const updateQuery = 'UPDATE Reservation SET Slot_ID = $1, Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5, Type = $6 WHERE Reserve_ID = $7';
         await pool.query(updateQuery, [slot_id, pet_id, owner_id, start_time, end_time, Type, reserve_id]);
-
-
-
-        const q = await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1', [owner_id]);
-        const email = q.rows[0].email;
-
-        const q1 = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [pet_id]);
-        const name_pet = q1.rows[0].name;
-
-
+        
+        const ownerQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [owner_id]);
+        const email = ownerQuery.rows[0].email;
+        
+        const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id = $1', [pet_id]);
+        const petName = petQuery.rows[0].name;
+        
+        let message;
         if (Type === "Accepted") {
-            const message = `Your reservation got accepted ✅\nProvider_Name:${name}\nYour_Pet:${name_pet}\nStart_Time:${start_time}\nEnd_Time:${end_time}`;
-
-            await sendemail.sendemail({
-                email: email,
-                subject: 'Your recent reservation status 😄',
-                message
-            });
-
+            message = `Your reservation got accepted ✅\nProvider Name: ${name}\nYour Pet: ${petName}\nStart Time: ${start_time}\nEnd Time: ${end_time}`;
+        } else if (Type === "Rejected") {
+            message = `Your reservation got Rejected 😞\nProvider Name: ${name}\nYour Pet: ${petName}\nStart Time: ${start_time}\nEnd Time: ${end_time}`;
         }
-        else if (Type === "Rejected") {
-            const message = `Your reservation got Rejected 😞\nProvider_Name:${name}\nYour_Pet:${name_pet}\nStart_Time:${start_time}\nEnd_Time:${end_time}`;
-
-            await sendemail.sendemail({
-                email: email,
-                subject: 'Your recent reservation status 😄',
-                message
-            });
-
-        }
-
+        
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your recent reservation status 😄',
+            message
+        });
+        
         res.status(200).json({
             status: "Success",
             message: "Reservation updated successfully"
         });
-
     } catch (error) {
-
-        console.error("Error ", error);
+        console.error("Error:", error);
         res.status(500).json({
+            status: "Fail",
             message: "Internal server error."
         });
-
     }
-
-
 }
 
 
