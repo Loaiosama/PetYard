@@ -104,6 +104,9 @@ router.get('/checkout', payment.checkout);
 
 router.post('/AddRating',authMiddleware,ReviewController.AddRating);
 router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
+router.get('/FilterByRating/:minRating',authMiddleware,ReviewController.FilterByRating);
+router.get('/SortByRating',authMiddleware,ReviewController.SortByRating);
+
 
 
 
