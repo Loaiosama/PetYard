@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ReservationController = require('../Controllers/Reservation/ReservationController');
+const ReservationController = require('../Controllers/Reservation/BoardingController');
 const publisher = require('../Controllers/Messages/publisher');
 const subscriber = require('../Controllers/Messages/subscriber');
 const SocialMedia = require('../Controllers/Community/SocialMedia');

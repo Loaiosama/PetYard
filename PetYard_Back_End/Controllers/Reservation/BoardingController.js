@@ -1,5 +1,5 @@
 const pool = require('../../db');
-const sendemail = require("./../../Utils/email");
+const sendemail = require("../../Utils/email");
 
 
 const getProvidersByType = async (req, res) => {
@@ -91,11 +91,6 @@ const getProvidersByType = async (req, res) => {
         });
     }
 };
-
-
-
-
-
 
 
 const getProviderInfo = async (req, res) => {
@@ -873,6 +868,67 @@ setInterval(checkAndUpdateExpiredReservations, 5000);
 // Call the function immediately to handle potentially expired reservations
 checkAndUpdateExpiredReservations();
 
+
+
+
+
+
+const checkAndUpdateReservationstoRejected = async () => {
+    try {
+        // Fetch all pending reservations
+        const pendingReservations = await pool.query('SELECT * FROM Reservation WHERE Type = $1', ['Pending']);
+        
+        // Fetch all accepted reservations
+        const acceptedReservations = await pool.query('SELECT * FROM Reservation WHERE Type = $1', ['Accepted']);
+
+        for (const pending of pendingReservations.rows) {
+            // Check if there's an accepted reservation with the same slot ID, start time, and end time
+            const isAccepted = acceptedReservations.rows.some(accepted => 
+                accepted.slot_id === pending.slot_id && 
+                accepted.start_time === pending.start_time && 
+                accepted.end_time === pending.end_time
+            );
+
+            if (isAccepted) {
+                // Update status to "Rejected"
+                await pool.query('UPDATE Reservation SET Type = $1 WHERE Reserve_ID = $2', ['Rejected', pending.reserve_id]);
+
+                // Retrieve provider name for the reservation slot
+                const providerNameQuery = await pool.query(
+                    `SELECT sp.UserName AS Provider_Name
+                     FROM ServiceSlots ss
+                     JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+                     WHERE ss.Slot_ID = $1`,
+                    [pending.slot_id]
+                );
+                const providerName = providerNameQuery.rows[0].provider_name;
+
+                // Notify user about the rejection
+                const ownerEmailQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [pending.owner_id]);
+                const ownerEmail = ownerEmailQuery.rows[0].email;
+
+                const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id = $1', [pending.pet_id]);
+                const petName = petQuery.rows[0].name;
+
+                const message = `Your reservation got Rejected 😞\nProvider Name: ${providerName}\nYour Pet: ${petName}\nStart Time: ${pending.start_time}\nEnd Time: ${pending.end_time}`;
+
+                await sendemail.sendemail({
+                    email: ownerEmail,
+                    subject: 'Your recent reservation status 😄',
+                    message
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating reservations:", error);
+    }
+}
+
+// Schedule periodic execution of the function
+setInterval(checkAndUpdateReservationstoRejected, 5000);
+
+// Call the function immediately to handle potentially expired reservations
+checkAndUpdateReservationstoRejected();
 
 
 

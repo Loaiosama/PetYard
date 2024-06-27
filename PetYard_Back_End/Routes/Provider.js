@@ -8,7 +8,7 @@ const ProviderController = require('../Controllers/Provider/ProviderAuth');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
 const StoreController=require('../Controllers/Online_Store/StoreController');
 const ScheduleController=require('../Controllers/Schedule/ScheduleController');
-const ReservationController = require('../Controllers/Reservation/ReservationController');
+const ReservationController = require('../Controllers/Reservation/BoardingController');
 require('../Controllers/Provider/GoogleAuth');
 const passport = require('passport');
 const session = require('express-session');

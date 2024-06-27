@@ -118,6 +118,8 @@ CREATE TABLE SittingApplication (
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
+
+
 CREATE TYPE GroomingType AS ENUM ('Bathing', 'Nail trimming', 'Fur trimming','Full package');
 
 CREATE TABLE GroomingServiceSlots (
