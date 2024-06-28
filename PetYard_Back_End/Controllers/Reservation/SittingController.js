@@ -383,11 +383,36 @@ const acceptSittingApplication = async (req, res) => {
 }
 
 const getAllPendingRequests = async (req, res) => {
-    try {
-        const query = 'SELECT * FROM SittingReservation WHERE Status = $1 ORDER BY start_time';
-        const result = await pool.query(query, ['Pending']);
+    const providerId = req.ID;
 
-        if (result.rows.length === 0) {
+    try {
+        if (!providerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider ID not provided."
+            });
+        }
+
+        const queryProvider = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const resultProvider = await pool.query(queryProvider, [providerId]);
+
+        if (resultProvider.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const reservationQuery = `
+            SELECT * FROM SittingReservation 
+            WHERE Status = $1 
+            AND Reserve_ID NOT IN (
+                SELECT Reserve_ID FROM SittingApplication WHERE Provider_ID = $2
+            )
+            ORDER BY start_time`;
+        const reservationResult = await pool.query(reservationQuery, ['Pending', providerId]);
+
+        if (reservationResult.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
                 message: "No pending sitting reservations found"
@@ -397,8 +422,9 @@ const getAllPendingRequests = async (req, res) => {
         res.status(200).json({
             status: "Success",
             message: "Pending sitting reservations retrieved successfully.",
-            data: result.rows
+            data: reservationResult.rows
         });
+
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
@@ -409,10 +435,6 @@ const getAllPendingRequests = async (req, res) => {
 };
 
 
-
-
-
-//  After a certain amount of hours Reject automatically  
 
 const checkAndUpdateExpiredReservations = async () => {
     try {
