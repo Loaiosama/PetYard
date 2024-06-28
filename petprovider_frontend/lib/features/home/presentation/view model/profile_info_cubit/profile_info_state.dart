@@ -22,3 +22,29 @@ final class ProfileInfoFailure extends ProfileInfoState {
 
   const ProfileInfoFailure({required this.errorMessage});
 }
+
+final class ProviderSlotLoading extends ProfileInfoState {}
+
+final class ProviderSlotSuccess extends ProfileInfoState {
+  final List<ProviderSlotData> slots;
+
+  const ProviderSlotSuccess({required this.slots});
+}
+
+final class ProviderSlotFailure extends ProfileInfoState {
+  final String errorMessage;
+
+  const ProviderSlotFailure({required this.errorMessage});
+}
+
+final class DeleteSlotSuccess extends ProfileInfoState {
+  final bool isSuccess;
+
+  const DeleteSlotSuccess({required this.isSuccess});
+}
+
+final class DeleteSlotFailure extends ProfileInfoState {
+  final String isSuccess;
+
+  const DeleteSlotFailure({required this.isSuccess});
+}
