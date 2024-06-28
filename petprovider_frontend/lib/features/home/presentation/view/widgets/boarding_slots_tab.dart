@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:petprovider_frontend/core/utils/helpers/spacing.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
@@ -61,8 +62,59 @@ class BoardingSlotsTab extends StatelessWidget {
                             ),
                             key: ValueKey<int>(info[index].slotId ?? -1),
                             onDismissed: (direction) {
-                              cubit.deleteProviderSlotById(
-                                  id: info[index].slotId ?? -1);
+                              showDialog(
+                                context: context,
+                                builder: (alertcontext) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white,
+                                    title: Text(
+                                      'Delete Slot?',
+                                      style: Styles.styles16BoldBlack.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.red),
+                                    ),
+                                    content: Text(
+                                      'Are you sure you want to delete this Slot?',
+                                      style: Styles.styles12NormalHalfBlack,
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          GoRouter.of(alertcontext).pop();
+                                          // cubit.fetchProviderSlots();
+                                        },
+                                        child: const Text(
+                                          'No, back.',
+                                          style: TextStyle(
+                                            color: kPrimaryGreen,
+                                          ),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          cubit.deleteProviderSlotById(
+                                              id: info[index].slotId ?? -1);
+                                          cubit.fetchProviderSlots();
+                                          GoRouter.of(alertcontext).pop();
+                                          // cubit.fetchProviderSlots();
+                                        },
+                                        child: const Text(
+                                          'Yes, Delete!',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    shape: ContinuousRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(12.0.r),
+                                    ),
+                                  );
+                                },
+                              );
+                              // cubit.deleteProviderSlotById(
+                              //     id: info[index].slotId ?? -1);
                               cubit.fetchProviderSlots();
                               // print(ValueKey<int>(info[index].slotId ?? -1));
                             },
@@ -130,10 +182,13 @@ class BoardingSlotsTab extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.30),
-                  child: const Center(
-                      child: CircularProgressIndicator(
-                    color: kPrimaryGreen,
-                  )),
+                  child: Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          cubit.fetchProviderSlots();
+                        },
+                        child: const Text('Refresh')),
+                  ),
                 );
               },
             ),
