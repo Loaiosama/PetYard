@@ -179,6 +179,8 @@ const getGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
+
+
 const updateGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
     const { groomingType } = req.body;
@@ -240,6 +242,8 @@ const updateGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
+
+
 const DeleteGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
     const { groomingTypeId } = req.params;
@@ -405,7 +409,7 @@ const getAllGroomingProviders = async (req, res) => {
     }
 };
 
-const getGroomingSlotsForProvider = async (req, res) => {
+const getPendingGroomingSlotsForProvider = async (req, res) => {
     const ownerId = req.ID;
     const provider_id = req.params.provider_id;
     try {
@@ -789,7 +793,7 @@ module.exports = {
     getGroomingReservations,
     updateGroomingTypesForProvider,
     DeleteGroomingTypesForProvider,
-    getGroomingSlotsForProvider,
+    getPendingGroomingSlotsForProvider,
     updateGroomingReservationtocomplete,
-    getAllGroomingProviders
+    getAllGroomingProviders,
 }
