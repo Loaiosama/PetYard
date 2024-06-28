@@ -7,7 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePictureCircle extends StatefulWidget {
-  const ProfilePictureCircle({Key? key, required this.onImageSelected});
+  const ProfilePictureCircle({super.key, required this.onImageSelected});
 
   final void Function(XFile?) onImageSelected;
 
@@ -65,7 +65,7 @@ class _ProfilePictureCircleState extends State<ProfilePictureCircle> {
 
   ImageProvider<Object>? _getImageProvider() {
     if (image == null) {
-      return AssetImage('assets/images/1.png'); // Placeholder image
+      return const AssetImage('assets/images/1.png'); // Placeholder image
     } else {
       return FileImage(File(image!.path));
     }

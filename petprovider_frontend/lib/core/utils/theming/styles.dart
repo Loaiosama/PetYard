@@ -53,4 +53,9 @@ class Styles {
     fontWeight: FontsHelper.semiBold,
     color: Colors.black,
   );
+  static TextStyle styles20SemiBoldBlack = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontsHelper.semiBold,
+    color: Colors.black,
+  );
 }

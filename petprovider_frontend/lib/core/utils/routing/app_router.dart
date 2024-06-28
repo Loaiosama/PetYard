@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
-import 'package:petprovider_frontend/features/registration/signup/presentation/view/choose_service.dart';
+import 'package:petprovider_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
+import 'package:petprovider_frontend/features/registration/signin/presentation/view/widgets/choose_service.dart';
+import 'package:petprovider_frontend/features/registration/signin/presentation/view_model/signin_cubit/sign_in_cubit.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/fill_information.dart';
 
 import '../../../features/registration/signin/presentation/view/signin.dart';
@@ -69,7 +74,11 @@ abstract class AppRouter {
         pageBuilder: (context, state) => transitionGoRoute(
           context: context,
           state: state,
-          child: const ChooseService(),
+          child: BlocProvider(
+            create: (context) =>
+                SignInCubit(SignInRepo(api: ApiService(dio: Dio()))),
+            child: const ChooseService(),
+          ),
         ),
       ),
       // Navigate to home screen
@@ -78,7 +87,6 @@ abstract class AppRouter {
           path: Routes.kHomeScreen,
           pageBuilder: (context, state) {
             final int index = state.extra as int;
-
             return transitionGoRoute(
               context: context,
               state: state,
