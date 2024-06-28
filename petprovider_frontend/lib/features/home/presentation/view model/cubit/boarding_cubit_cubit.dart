@@ -14,6 +14,7 @@ class BoardingCubitCubit extends Cubit<BoardingCubitState> {
   DateTime? startDate;
   DateTime? endDate;
   TextEditingController priceController = TextEditingController();
+
   void setPrice(double newPrice) {
     price = newPrice;
   }
@@ -52,7 +53,7 @@ class BoardingCubitCubit extends Cubit<BoardingCubitState> {
     }
     if (endDate!.isBefore(startDate!) || endDate == startDate) {
       emit(const BoardingSlotFailure(
-          "End date cant be before start date or in the same day."));
+          "End date can't be before start date or the same day."));
       return;
     }
 
@@ -69,7 +70,15 @@ class BoardingCubitCubit extends Cubit<BoardingCubitState> {
     );
     result.fold(
       (failure) => emit(BoardingSlotFailure(failure.errorMessage)),
-      (_) => emit(BoardingSlotSuccess()),
+      (_) {
+        emit(BoardingSlotSuccess());
+      },
     );
+  }
+
+  @override
+  Future<void> close() {
+    priceController.dispose();
+    return super.close();
   }
 }

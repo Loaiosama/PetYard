@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/home_screen_body.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Container(),
     Container(),
     Container(),
-    Container(),
+    const ProfileScreen(),
   ];
 
   @override

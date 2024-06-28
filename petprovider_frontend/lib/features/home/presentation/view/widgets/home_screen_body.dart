@@ -45,7 +45,7 @@ class HomeScreenBody extends StatelessWidget {
                           SetAvailableSlotsColumn(
                             services: state.profileInfo.data ?? [],
                           ),
-                          heightSizedBox(16),
+                          // heightSizedBox(16),
                           const UpComingEventsColumn(),
                         ],
                       ),
@@ -124,15 +124,19 @@ class SetAvailableListView extends StatelessWidget {
                       services[index].type ?? 'no service name',
                       style: Styles.styles14NormalBlack,
                     ),
-                    IconButton(
-                      onPressed: () {
-                        GoRouter.of(context).push(Routes.kAvailableSlotsScreen,
-                            extra: services[index].type ?? 'no service name');
-                      },
-                      icon: const Tooltip(
-                          message: 'Set new slot',
-                          child: Icon(Icons.arrow_forward_ios)),
-                    ),
+                    services[index].type == 'Sitting'
+                        ? const SizedBox()
+                        : IconButton(
+                            onPressed: () {
+                              GoRouter.of(context).push(
+                                  Routes.kAvailableSlotsScreen,
+                                  extra: services[index].type ??
+                                      'no service name');
+                            },
+                            icon: const Tooltip(
+                                message: 'Set new slot',
+                                child: Icon(Icons.arrow_forward_ios)),
+                          ),
                   ],
                 ),
               ),
@@ -152,9 +156,20 @@ class UpComingEventsColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Upcoming events',
-          style: Styles.styles18SemiBoldBlack,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Upcoming events',
+              style: Styles.styles18SemiBoldBlack,
+            ),
+            TextButton(
+                onPressed: () {},
+                child: const Text(
+                  'See All',
+                  style: TextStyle(color: kPrimaryGreen),
+                )),
+          ],
         ),
         heightSizedBox(12),
         Material(

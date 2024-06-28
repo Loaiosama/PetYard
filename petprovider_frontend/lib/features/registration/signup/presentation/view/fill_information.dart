@@ -24,7 +24,7 @@ import 'widgets/signup_text_field_column.dart';
 
 class FillInformationSignUp extends StatefulWidget {
   const FillInformationSignUp({
-    Key? key,
+    super.key,
     required this.userName,
     required this.email,
     required this.password,

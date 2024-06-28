@@ -68,7 +68,7 @@ class CustomRegistrationTextField extends StatelessWidget {
       style: Styles.styles14NormalBlack
           .copyWith(color: const Color.fromRGBO(0, 85, 45, 1)),
       keyboardType: keyboardType,
-      scrollPadding: EdgeInsets.all(10),
+      scrollPadding: const EdgeInsets.all(10),
       decoration: InputDecoration(
         isDense: true,
         hintText: hintText,

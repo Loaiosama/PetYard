@@ -17,6 +17,7 @@ const SittingController = require('../Controllers/Reservation/SittingController'
 const GroomingController = require('../Controllers/Reservation/GroomingController');
 const ClinicController = require('../Controllers/Reservation/ClinicController');
 const ReviewController = require('../Controllers/Review/ReviewController');
+const PetProfileController=require('../Controllers/Pet_Profile/PetProfileController');
 
 
 
@@ -85,6 +86,9 @@ router.get('/GetTimelinePost',authMiddleware,SocialMedia.getTimelinePosts);
 router.delete('/RemoveShipping/:Shipping_id',authMiddleware,Shipping.RemoveShipping);
 router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 
+
+
+router.get('/GetPetForProvider/:Pet_Id',authMiddleware,PetProfileController.GetPetForProvider);
 
 
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------

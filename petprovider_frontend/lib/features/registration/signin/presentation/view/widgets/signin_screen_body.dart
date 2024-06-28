@@ -14,7 +14,7 @@ import '../../../../signup/presentation/view/widgets/alternative_signup_option.d
 import '../../../../signup/presentation/view/widgets/first_section.dart';
 import '../../../../signup/presentation/view/widgets/signup_text_field_column.dart';
 import '../../../data/repo/sign_in_repo.dart';
-import '../../view_model/cubit/sign_in_cubit.dart';
+import '../../view_model/signin_cubit/sign_in_cubit.dart';
 
 class SignInScreenBody extends StatefulWidget {
   const SignInScreenBody({super.key});
@@ -102,7 +102,7 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Login Successful')),
                         );
-                        print(state.status);
+                        // print(state.status);
                         if (state.status == 'Login Successful') {
                           GoRouter.of(context)
                               .push(Routes.kHomeScreen, extra: 0);

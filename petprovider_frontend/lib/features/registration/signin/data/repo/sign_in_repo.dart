@@ -54,4 +54,24 @@ class SignInRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  Future<Either<Failure, String>> selectService({required String type}) async {
+    try {
+      await api.setAuthorizationHeader();
+      var response = await api.post(
+        endPoints: 'Provider/SelectService',
+        data: {"Type": type},
+      );
+      if (response.data['status'] == 'Success') {
+        return right('Service added successfully');
+      } else {
+        return left(ServerFailure(response.data['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

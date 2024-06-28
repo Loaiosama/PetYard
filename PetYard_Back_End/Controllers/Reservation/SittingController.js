@@ -292,12 +292,11 @@ const acceptSittingApplication = async (req, res) => {
     const { Reserve_ID, Provider_ID } = req.body;
 
     try {
-
-        if(!Reserve_ID || !ownerId || !Provider_ID){
+        if (!Reserve_ID || !ownerId || !Provider_ID) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Please provide reservation ID or ownerId or Provider_ID."
-            })
+                message: "Please provide reservation ID, owner ID, and provider ID."
+            });
         }
 
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
@@ -306,42 +305,69 @@ const acceptSittingApplication = async (req, res) => {
         if (ownerRes.rows.length === 0) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Owner is not in Database"
+                message: "Owner is not in the database."
             });
         }
 
-        const query = 'SELECT * FROM SittingReservation WHERE Reserve_ID = $1 AND Owner_ID = $2';
-        const result = await pool.query(query, [Reserve_ID, ownerId]);
+        const reservationQuery = 'SELECT * FROM SittingReservation WHERE Reserve_ID = $1 AND Owner_ID = $2';
+        const reservationResult = await pool.query(reservationQuery, [Reserve_ID, ownerId]);
 
-        if (result.rows.length === 0) {
+        if (reservationResult.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "Sitting reservation not found or not authorized"
+                message: "Sitting reservation not found or not authorized."
             });
         }
 
-        const Query = 'SELECT * FROM SittingApplication WHERE Reserve_ID = $1';
-        const Result = await pool.query(Query, [Reserve_ID]);
-        if (Result.rows.length === 0) {
+        const applicationQuery = 'SELECT * FROM SittingApplication WHERE Reserve_ID = $1 AND Provider_ID = $2';
+        const applicationResult = await pool.query(applicationQuery, [Reserve_ID, Provider_ID]);
+
+        if (applicationResult.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "Sitting Application not found or not authorized"
+                message: "Sitting application not found or not authorized."
             });
         }
 
-        const queryProvider = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const resultProvider = await pool.query(queryProvider, [Provider_ID]);
-        const name=resultProvider.rows[0].username;
-        const providerEmail = resultProvider.rows[0].email; 
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [Provider_ID]);
 
+        if (providerResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider not found."
+            });
+        }
 
+        const name = providerResult.rows[0].username;
+        const providerEmail = providerResult.rows[0].email;
 
-        const updateQuery = 'UPDATE SittingReservation SET Provider_ID = $1, Status = $2 WHERE Reserve_ID = $3 RETURNING *';
-        const updateResult = await pool.query(updateQuery, [Provider_ID, 'Accepted', Reserve_ID]);
+        const startTime = reservationResult.rows[0].start_time;
+        const endTime = reservationResult.rows[0].end_time;
 
-        const applicationQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
-        await pool.query(applicationQuery, ['Accepted', Reserve_ID, Provider_ID]);
+        const overlapQuery = `
+            SELECT * FROM SittingReservation
+            WHERE Provider_ID = $1 AND Status = 'Accepted'
+              AND (
+                  (Start_time < $2 AND End_time > $2) OR
+                  (Start_time < $3 AND End_time > $3) OR
+                  (Start_time >= $2 AND End_time <= $3)
+              )
+        `;
+        const overlapResult = await pool.query(overlapQuery, [Provider_ID, startTime, endTime]);
 
+        if (overlapResult.rows.length > 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider has another reservation at the same time."
+            });
+        }
+
+        const updateReservationQuery = 'UPDATE SittingReservation SET Provider_ID = $1, Status = $2 WHERE Reserve_ID = $3 RETURNING *';
+        const updateReservationResult = await pool.query(updateReservationQuery, [Provider_ID, 'Accepted', Reserve_ID]);
+
+        const updateApplicationQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
+        await pool.query(updateApplicationQuery, ['Accepted', Reserve_ID, Provider_ID]);
 
         const message = `
         🐾 Pet Sitting Application Accepted! 🐾
@@ -351,8 +377,8 @@ const acceptSittingApplication = async (req, res) => {
         We are thrilled to inform you that the pet owner has accepted your application for their pet sitting request! Here are the details:
 
         - **Reservation ID:** ${Reserve_ID}
-        - **Start Time:** ${result.rows[0].start_time}
-        - **End Time:** ${result.rows[0].end_time}
+        - **Start Time:** ${startTime}
+        - **End Time:** ${endTime}
 
         Please prepare for the sitting accordingly. If you have any questions or need further assistance, please feel free to contact us.
 
@@ -371,7 +397,7 @@ const acceptSittingApplication = async (req, res) => {
         res.status(200).json({
             status: "Success",
             message: "Sitting reservation confirmed successfully",
-            reservation: updateResult.rows[0]
+            reservation: updateReservationResult.rows[0]
         });
     } catch (e) {
         console.error("Error: ", e);
@@ -380,7 +406,9 @@ const acceptSittingApplication = async (req, res) => {
             message: "Internal server error"
         });
     }
-}
+};
+
+
 
 const getAllPendingRequests = async (req, res) => {
     const providerId = req.ID;

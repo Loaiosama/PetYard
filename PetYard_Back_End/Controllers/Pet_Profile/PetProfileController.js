@@ -246,6 +246,53 @@ const updatePetProfile = async(req,res)=>{
 }
 
 
+const GetPetForProvider = async(req,res)=>{
+
+    const {Pet_Id} =req.params;  
+    const Providerid = req.ID; 
+
+    try
+    {
+        if(!Pet_Id || !Providerid)
+        {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing information"
+            });
+        }
+
+
+        
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [Providerid]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+
+        const getpet = await pool.query('SELECT * FROM Pet WHERE Pet_Id = $1 ', [Pet_Id]);
+
+        res.status(200).json({
+            status :"Done",
+            message : "One Data Is Here",
+            data :getpet.rows
+        });  
+    } 
+    catch (error)
+    {
+        console.error("Error Add Pet:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+
 module.exports =
  {
     AddPet,GetAllPet,
@@ -254,6 +301,7 @@ module.exports =
     RemovePet,
     updatePetProfile,
     uploadpetphoto,
-    resizePhoto
+    resizePhoto,
+    GetPetForProvider
 
 }
