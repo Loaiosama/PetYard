@@ -2,7 +2,7 @@ const pool = require('../../db');
 const sendemail = require("../../Utils/email");
 const moment = require('moment-timezone');
 
-const createGroomingSlots = async (req, res) => {
+const createClinicSlots = async (req, res) => {
     const providerId = req.ID;
     let { Start_time, End_time, Slot_length } = req.body;
 
@@ -18,7 +18,7 @@ const createGroomingSlots = async (req, res) => {
         const endTime = new Date(End_time);
 
         const checkOverlapQuery = `
-            SELECT * FROM GroomingServiceSlots
+            SELECT * FROM ClinicServiceSlots
             WHERE Provider_ID = $1
             AND (
                 (Start_time < $2::timestamp AND End_time > $2::timestamp)
@@ -48,7 +48,7 @@ const createGroomingSlots = async (req, res) => {
                 break;
             }
 
-            const slotsQuery = `INSERT INTO GroomingServiceSlots (Provider_ID, Start_time, End_time) VALUES ($1, $2, $3) RETURNING *`;
+            const slotsQuery = `INSERT INTO ClinicServiceSlots (Provider_ID, Start_time, End_time) VALUES ($1, $2, $3) RETURNING *`;
             const queryRes = await pool.query(slotsQuery, [providerId, currentStartTime.toISOString(), currentEndTime.toISOString()]);
 
             const slotData = queryRes.rows[0];
@@ -75,7 +75,7 @@ const createGroomingSlots = async (req, res) => {
 
         res.status(201).json({
             status: "Success",
-            message: "Grooming slots created successfully.",
+            message: "Clinic slots created successfully.",
             data: slots
         });
 
@@ -90,12 +90,12 @@ const createGroomingSlots = async (req, res) => {
 };
 
 
-const setGroomingTypesForProvider = async (req, res) => {
+const setClinicTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingType,price } = req.body;
+    const { clinicType,price } = req.body;
 
     try {
-        if (!providerId || !groomingType || !price) {
+        if (!providerId || !clinicType || !price) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or invalid information."
@@ -112,21 +112,21 @@ const setGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const checkQuery = 'SELECT * FROM ProviderGroomingTypes WHERE Provider_ID = $1 AND Grooming_Type = $2';
-        const checkResult = await pool.query(checkQuery, [providerId, groomingType]);
+        const checkQuery = 'SELECT * FROM ProviderClinicTypes WHERE Provider_ID = $1 AND Clinic_Type = $2';
+        const checkResult = await pool.query(checkQuery, [providerId, clinicType]);
 
         if (checkResult.rows.length > 0) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Grooming type already set for this provider."
+                message: "Clinic type already set for this provider."
             });
         }
 
-        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type,Price) VALUES ($1, $2,$3)', [providerId, groomingType,price]);
+        await pool.query('INSERT INTO ProviderClinicTypes (Provider_ID, Clinic_Type,Price) VALUES ($1, $2,$3)', [providerId, clinicType,price]);
 
         res.status(201).json({
             status: "Success",
-            message: "Grooming types set successfully."
+            message: "Clinic types set successfully."
         });
 
     } catch (e) {
@@ -141,7 +141,7 @@ const setGroomingTypesForProvider = async (req, res) => {
 };
 
 
-const getGroomingTypesForProvider = async (req, res) => {
+const getClinicTypesForProvider = async (req, res) => {
     const providerId = req.ID;
  
 
@@ -163,7 +163,7 @@ const getGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const result = await pool.query('SELECT Grooming_Type FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+        const result = await pool.query('SELECT Clinic_Type FROM ProviderClinicTypes WHERE Provider_ID = $1', [providerId]);
 
         res.status(200).json({
             status: "Success",
@@ -179,14 +179,15 @@ const getGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
-const updateGroomingTypesForProvider = async (req, res) => {
+
+const updateClinicTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingType } = req.body;
-    const { oldgroomingTypeid } = req.params;
+    const { clinicType } = req.body;
+    const { oldclinicTypeid } = req.params;
 
     try {
 
-        if (!providerId || !groomingType || !oldgroomingTypeid) {
+        if (!providerId || !clinicType || !oldclinicTypeid) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or invalid information."
@@ -203,33 +204,33 @@ const updateGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const existingGroomingTypeQuery = 'SELECT * FROM ProviderGroomingTypes WHERE ID = $1';
-        const existingGroomingTypeResult = await pool.query(existingGroomingTypeQuery, [oldgroomingTypeid]);
+        const existingClinicTypeQuery = 'SELECT * FROM ProviderClinicTypes WHERE ID = $1';
+        const existingClinicTypeResult = await pool.query(existingClinicTypeQuery, [oldclinicTypeid]);
 
-        if (existingGroomingTypeResult.rows.length === 0) {
+        if (existingClinicTypeResult.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
-                message: "Provider does not have this grooming type."
+                message: "Provider does not have this Clinic type."
             });
         }
 
         // Check if the new grooming type already exists for the same provider
-        const duplicateCheckQuery = 'SELECT * FROM ProviderGroomingTypes WHERE Provider_ID = $1 AND Grooming_Type = $2';
-        const duplicateCheckResult = await pool.query(duplicateCheckQuery, [providerId, groomingType]);
+        const duplicateCheckQuery = 'SELECT * FROM ProviderClinicTypes WHERE Provider_ID = $1 AND Clinic_Type = $2';
+        const duplicateCheckResult = await pool.query(duplicateCheckQuery, [providerId, clinicType]);
 
         if (duplicateCheckResult.rows.length > 0) {
             return res.status(400).json({
                 status: "Fail",
-                message: "This grooming type already exists for the provider."
+                message: "This clinic type already exists for the provider."
             });
         }
 
-        const updateQuery = 'UPDATE ProviderGroomingTypes SET Grooming_Type = $1 WHERE ID = $2';
-        await pool.query(updateQuery, [groomingType, oldgroomingTypeid]);
+        const updateQuery = 'UPDATE ProviderClinicTypes SET Clinic_Type = $1 WHERE ID = $2';
+        await pool.query(updateQuery, [clinicType, oldclinicTypeid]);
 
         res.status(200).json({
             status: "Success",
-            message: "Grooming types updated successfully."
+            message: "clinic types updated successfully."
         });
 
     } catch (e) {
@@ -240,12 +241,12 @@ const updateGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
-const DeleteGroomingTypesForProvider = async (req, res) => {
+const DeleteClinicTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingTypeId } = req.params;
+    const { clinicTypeId } = req.params;
 
     try {
-        if (!providerId || !groomingTypeId) {
+        if (!providerId || !clinicTypeId) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or invalid information."
@@ -262,22 +263,22 @@ const DeleteGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const groomingTypeQuery = 'SELECT * FROM ProviderGroomingTypes WHERE ID = $1 AND Provider_ID = $2';
-        const groomingTypeResult = await pool.query(groomingTypeQuery, [groomingTypeId, providerId]);
+        const clinicTypeQuery = 'SELECT * FROM ProviderClinicTypes WHERE ID = $1 AND Provider_ID = $2';
+        const clinicTypeResult = await pool.query(clinicTypeQuery, [clinicTypeId, providerId]);
 
-        if (groomingTypeResult.rows.length === 0) {
+        if (clinicTypeResult.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "Grooming type not found for this provider."
+                message: "clinic type not found for this provider."
             });
         }
 
-        const deleteQuery = 'DELETE FROM ProviderGroomingTypes WHERE ID = $1 AND Provider_ID = $2';
-        await pool.query(deleteQuery, [groomingTypeId, providerId]);
+        const deleteQuery = 'DELETE FROM ProviderClinicTypes WHERE ID = $1 AND Provider_ID = $2';
+        await pool.query(deleteQuery, [clinicTypeId, providerId]);
 
         res.status(200).json({
             status: "Success",
-            message: "Grooming type deleted successfully."
+            message: "Clinic type deleted successfully."
         });
 
     } catch (e) {
@@ -288,7 +289,7 @@ const DeleteGroomingTypesForProvider = async (req, res) => {
         });
     }
 };
-const getGroomingSlots = async (req, res) => {
+const getClinicSlots = async (req, res) => {
     const providerId = req.ID;
 
     try {
@@ -309,7 +310,7 @@ const getGroomingSlots = async (req, res) => {
             });
         }
 
-        const slotsQuery = "SELECT * FROM GroomingServiceSlots WHERE Provider_ID = $1";
+        const slotsQuery = "SELECT * FROM ClinicServiceSlots WHERE Provider_ID = $1";
         const slotsRes = await pool.query(slotsQuery, [providerId]);
 
         if (slotsRes.rows.length === 0) {
@@ -326,7 +327,7 @@ const getGroomingSlots = async (req, res) => {
             start_time: moment.utc(slot.start_time).add(3, 'hours').toISOString(), // Adding 3 hours to start_time
             end_time: moment.utc(slot.end_time).add(3, 'hours').toISOString(),     // Adding 3 hours to end_time
             price: slot.price,
-            grooming_type: slot.grooming_type
+            clinic_type: slot.clinic_type
         }));
 
         res.status(200).json({
@@ -345,7 +346,7 @@ const getGroomingSlots = async (req, res) => {
 };
 
 
-const getAllGroomingProviders = async (req, res) => {
+const getAllClinicProviders = async (req, res) => {
     const ownerId = req.ID;
     try {
         if (!ownerId) {
@@ -378,7 +379,7 @@ const getAllGroomingProviders = async (req, res) => {
             FROM 
                 ServiceProvider sp
             JOIN 
-                GroomingServiceSlots gss ON sp.Provider_Id = gss.Provider_ID
+                ClinicServiceSlots gss ON sp.Provider_Id = gss.Provider_ID
         `;
         
         const result = await pool.query(query);
@@ -386,18 +387,18 @@ const getAllGroomingProviders = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "No grooming service providers found."
+                message: "No Clinic service providers found."
             });
         }
 
         res.status(200).json({
             status: "Success",
-            message: "Grooming service providers retrieved successfully.",
+            message: "Clinic service providers retrieved successfully.",
             data: result.rows
         });
 
     } catch (error) {
-        console.error("Error fetching grooming providers:", error);
+        console.error("Error fetching Clinic providers:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error."
@@ -405,7 +406,7 @@ const getAllGroomingProviders = async (req, res) => {
     }
 };
 
-const getGroomingSlotsForProvider = async (req, res) => {
+const getClinicSlotsForProvider = async (req, res) => {
     const ownerId = req.ID;
     const provider_id = req.params.provider_id;
     try {
@@ -436,7 +437,7 @@ const getGroomingSlotsForProvider = async (req, res) => {
             });
         }
 
-        const slotsQuery = "SELECT * FROM GroomingServiceSlots WHERE Provider_ID = $1 AND Type = 'Pending'";
+        const slotsQuery = "SELECT * FROM ClinicServiceSlots WHERE Provider_ID = $1 AND Type = 'Pending'";
         const slotsResult = await pool.query(slotsQuery, [provider_id]);
 
         if (slotsResult.rows.length === 0) {
@@ -453,7 +454,7 @@ const getGroomingSlotsForProvider = async (req, res) => {
             start_time: moment.utc(slot.start_time).add(3, 'hours').toISOString(), // Adding 3 hours to start_time
             end_time: moment.utc(slot.end_time).add(3, 'hours').toISOString(),     // Adding 3 hours to end_time
             price: slot.price,
-            grooming_type: slot.grooming_type
+            grooming_type: slot.clinic_type
         }));
 
         res.status(200).json({
@@ -472,12 +473,12 @@ const getGroomingSlotsForProvider = async (req, res) => {
 };
 
 
-const bookGroomingSlot = async (req, res) => {
+const bookClinicSlot = async (req, res) => {
     const ownerId = req.ID;
-    const { slot_id, pet_id, grooming_types } = req.body; // grooming_types should be an array
+    const { slot_id, pet_id, clinic_types } = req.body; // grooming_types should be an array
 
     try {
-        if (!ownerId || !slot_id || !pet_id || !Array.isArray(grooming_types) || grooming_types.length === 0) {
+        if (!ownerId || !slot_id || !pet_id || !Array.isArray(clinic_types) || clinic_types.length === 0) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
@@ -509,13 +510,13 @@ const bookGroomingSlot = async (req, res) => {
         }
 
         // Check if grooming slot exists
-        const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
+        const slotQuery = 'SELECT * FROM ClinicServiceSlots WHERE Slot_ID = $1';
         const slotResult = await pool.query(slotQuery, [slot_id]);
 
         if (slotResult.rows.length === 0) {
             return res.status(400).json({
                 status: "fail",
-                message: "Grooming slot not found."
+                message: "Clinic slot not found."
             });
         }
 
@@ -537,29 +538,29 @@ const bookGroomingSlot = async (req, res) => {
 
         // Check for duplicate reservations
         const reservationCheckQuery = `
-            SELECT * FROM GroomingReservation 
+            SELECT * FROM ClinicReservation 
             WHERE Slot_ID = $1 AND Pet_ID = $2 AND Owner_ID = $3`;
         const reservationCheckResult = await pool.query(reservationCheckQuery, [slot_id, pet_id, ownerId]);
 
         if (reservationCheckResult.rows.length > 0) {
             return res.status(400).json({
                 status: "fail",
-                message: "You have already booked this grooming slot for your pet."
+                message: "You have already booked this Clinic slot for your pet."
             });
         }
 
         // Calculate the final price
         let finalPrice = 0;
-        for (const groomingType of grooming_types) {
+        for (const clinicType of clinic_types) {
             const priceQuery = `
-                SELECT Price FROM ProviderGroomingTypes 
-                WHERE Provider_ID = $1 AND Grooming_Type = $2`;
-            const priceResult = await pool.query(priceQuery, [providerId, groomingType]);
+                SELECT Price FROM ProviderClinicTypes 
+                WHERE Provider_ID = $1 AND Clinic_Type = $2`;
+            const priceResult = await pool.query(priceQuery, [providerId, clinicType]);
 
             if (priceResult.rows.length === 0) {
                 return res.status(400).json({
                     status: "fail",
-                    message: `Grooming type '${groomingType}' not available for the selected provider.`
+                    message: `Clinic type '${clinicType}' not available for the selected provider.`
                 });
             }
 
@@ -568,14 +569,14 @@ const bookGroomingSlot = async (req, res) => {
 
         // Insert the reservation
         const insertQuery = `
-            INSERT INTO GroomingReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Grooming_Types)
+            INSERT INTO ClinicReservation (Slot_ID, Pet_ID, Owner_ID, Start_time, End_time, Final_Price, Clinic_Type)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *`;
-        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, finalPrice, grooming_types]);
+        const insertResult = await pool.query(insertQuery, [slot_id, pet_id, ownerId, slot.start_time, slot.end_time, finalPrice, clinic_types]);
 
         // Update the grooming slot status
         const updateQuery = `
-            UPDATE GroomingServiceSlots 
+            UPDATE ClinicServiceSlots 
             SET Type = $1 
             WHERE Slot_ID = $2`;
         await pool.query(updateQuery, ['Accepted', slot_id]);
@@ -583,16 +584,16 @@ const bookGroomingSlot = async (req, res) => {
         const message = `
             Dear ${provider.username},
 
-            Exciting news! You have a new reservation for your grooming services. 
+            Exciting news! You have a new reservation for your clinic services. 
 
             Here are the details of the booking:
             - Owner Name: ${owner.first_name}
-            - Grooming Types: ${grooming_types.join(', ')}
+            - Clinic Types: ${clinic_types.join(', ')}
             - Start Time: ${new Date(slot.start_time).toLocaleString()}
             - End Time: ${new Date(slot.end_time).toLocaleString()}
             - Final Price: $${finalPrice}
 
-            Please open the PetYard application to manage this reservation. We appreciate your continued dedication to providing excellent grooming services.
+            Please open the PetYard application to manage this reservation. We appreciate your continued dedication to providing excellent Clinic services.
 
             Best regards,
             PetYard Team
@@ -600,13 +601,13 @@ const bookGroomingSlot = async (req, res) => {
 
         await sendemail.sendemail({
             email: provider.email,
-            subject: 'New Grooming Reservation Request',
+            subject: 'New Clinic Reservation Request',
             message
         });
 
         res.status(201).json({
             status: "success",
-            message: "Grooming slot booked successfully.",
+            message: "Clinic slot booked successfully.",
             data: insertResult.rows[0]
         });
 
@@ -621,7 +622,7 @@ const bookGroomingSlot = async (req, res) => {
 
 
 
-const getGroomingReservations = async (req, res) => { 
+const getClinicReservations = async (req, res) => { 
     const ownerId = req.ID;
     try {
         if (!ownerId ) {
@@ -640,16 +641,16 @@ const getGroomingReservations = async (req, res) => {
                 message: "Owner not found."
             });
         }
-        const query = 'SELECT * FROM GroomingReservation WHERE Owner_ID = $1 ORDER BY Start_time';
+        const query = 'SELECT * FROM ClinicReservation WHERE Owner_ID = $1 ORDER BY Start_time';
         const result = await pool.query(query, [ownerId]);
 
         res.status(200).json({
             status: "success",
-            message: "Grooming reservations retrieved successfully.",
+            message: "Clinic reservations retrieved successfully.",
             data: result.rows
         });
     } catch (error) {
-        console.error("Error fetching grooming reservations", error);
+        console.error("Error fetching Clinic reservations", error);
         res.status(500).json({
             status: "fail",
             message: "Internal server error"
@@ -657,7 +658,7 @@ const getGroomingReservations = async (req, res) => {
     }
 };
 
-const updateGroomingReservationtocomplete = async (req, res) => {
+const updateClinicReservationtocomplete = async (req, res) => {
     const ownerId = req.ID; 
     const { Slot_ID } = req.params;
     const { Type } = req.body;
@@ -678,19 +679,19 @@ const updateGroomingReservationtocomplete = async (req, res) => {
         }
 
          // Check if grooming slot exists
-         const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
+         const slotQuery = 'SELECT * FROM ClinicServiceSlots WHERE Slot_ID = $1';
          const slotResult = await pool.query(slotQuery, [Slot_ID]);
  
          if (slotResult.rows.length === 0) {
              return res.status(400).json({
                  status: "fail",
-                 message: "Grooming slot not found."
+                 message: "Clinic slot not found."
              });
          }
 
         // Update the reservation to complete in the database
         const updateQuery = await pool.query(
-            'UPDATE GroomingServiceSlots SET Type = $1 WHERE Slot_ID = $2 ',
+            'UPDATE ClinicServiceSlots SET Type = $1 WHERE Slot_ID = $2 ',
             [Type, Slot_ID]
         );
 
@@ -700,9 +701,9 @@ const updateGroomingReservationtocomplete = async (req, res) => {
         }
 
         // Send a success response
-        return res.status(200).json({ message: 'Grooming reservation updated successfully' });
+        return res.status(200).json({ message: 'Clinic reservation updated successfully' });
     } catch (error) {
-        console.error('Error updating grooming reservation:', error);
+        console.error('Error updating Clinic reservation:', error);
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
@@ -716,13 +717,13 @@ const checkAndUpdateCompleteReservations = async () => {
         const currentTime = new Date().toISOString();
         
         // Select grooming slots with End_time less than or equal to the current time and Type as "Accepted"
-        const reservations = await pool.query('SELECT * FROM GroomingServiceSlots WHERE End_time <= $1 AND Type = $2', [currentTime, 'Accepted']);
+        const reservations = await pool.query('SELECT * FROM ClinicServiceSlots WHERE End_time <= $1 AND Type = $2', [currentTime, 'Accepted']);
         
         for (const reservation of reservations.rows) {
             // Retrieve provider name for the expired grooming slot
             const providerNameQuery = await pool.query(
                 `SELECT sp.UserName AS Provider_Name
-                 FROM GroomingServiceSlots gs
+                 FROM ClinicServiceSlots gs
                  JOIN ServiceProvider sp ON gs.Provider_ID = sp.Provider_Id
                  WHERE gs.Slot_ID = $1`,
                 [reservation.slot_id]
@@ -730,7 +731,7 @@ const checkAndUpdateCompleteReservations = async () => {
             const providerName = providerNameQuery.rows[0]?.provider_name; // Use optional chaining to handle undefined
 
             // Retrieve owner_id and pet_id from GroomingReservation
-            const queryResult = await pool.query('SELECT * FROM GroomingReservation WHERE Slot_ID=$1', [reservation.slot_id]);
+            const queryResult = await pool.query('SELECT * FROM ClinicReservation WHERE Slot_ID=$1', [reservation.slot_id]);
             if (queryResult.rows.length === 0) {
                 console.log(`No reservation found for slot_id ${reservation.slot_id}`);
                 continue; // Skip to the next reservation if no matching reservation is found
@@ -753,14 +754,16 @@ const checkAndUpdateCompleteReservations = async () => {
                 const endTime = new Date(reservation.end_time).toLocaleString();
 
                 // Compose message with emojis, start time, and end time
-                const message = `🐾 Hello ${petName} Owner! 🐾\n\nYour grooming appointment with ${providerName} has ended. 
-                                Please open the app and update the status to "complete". 📲\n
-                                Start Time: ${startTime}\nEnd Time: ${endTime}`;
+                const message = `🐾 Hello ${petName} Owner! 🐾
+                Your Clinic appointment with ${providerName} has ended. 
+                Please open the app and update the status to "complete". 📲
+                Start Time: ${startTime}
+                End Time: ${endTime}`;
 
                 // Send email with subject and message
                 await sendemail.sendemail({
                     email: ownerEmail,
-                    subject: '🐾 Update Grooming Reservation Status 🐾',
+                    subject: '🐾 Update Clinic Reservation Status 🐾',
                     message
                 });
 
@@ -769,7 +772,7 @@ const checkAndUpdateCompleteReservations = async () => {
             }
         }
     } catch (error) {
-        console.error("Error checking and updating completed grooming reservations:", error);
+        console.error("Error checking and updating completed Clinic reservations:", error);
     }
 }
 // Set interval to run the function periodically (every 60 seconds in this case)
@@ -781,15 +784,16 @@ checkAndUpdateCompleteReservations();
 
 
 module.exports = {
-    createGroomingSlots,
-    getGroomingSlots,
-    bookGroomingSlot,
-    setGroomingTypesForProvider,
-    getGroomingTypesForProvider,
-    getGroomingReservations,
-    updateGroomingTypesForProvider,
-    DeleteGroomingTypesForProvider,
-    getGroomingSlotsForProvider,
-    updateGroomingReservationtocomplete,
-    getAllGroomingProviders
+    createClinicSlots,
+    setClinicTypesForProvider,
+    getClinicTypesForProvider,
+    updateClinicTypesForProvider,
+    DeleteClinicTypesForProvider,
+    getClinicSlots,
+    getAllClinicProviders,
+    getClinicSlotsForProvider,
+    bookClinicSlot,
+    getClinicReservations,
+    updateClinicReservationtocomplete
+ 
 }

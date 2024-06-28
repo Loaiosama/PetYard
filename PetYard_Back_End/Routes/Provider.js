@@ -15,6 +15,10 @@ const session = require('express-session');
 const Shipping=require('../Controllers/Shipping/ShippingController');
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
+const ClinicController = require('../Controllers/Reservation/ClinicController');
+const ReviewController = require('../Controllers/Review/ReviewController');
+
+
 
 
 
@@ -86,6 +90,13 @@ router.get('/ReceivedShipping/:Shipping_id',authMiddleware,Shipping.received);
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);
 router.get('/GetAllSittingRequset',authMiddleware,SittingController.GetAllRequset);
+router.get('/getAllSittingPendingRequests', authMiddleware, SittingController.getAllPendingRequests);
+
+
+//-----------------------------------------------reviews--------------------------------------------
+router.get('/getAllReviewsForMe',authMiddleware,ReviewController.getAllReviewsForMe);
+
+
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.post('/createGroomingSlots', authMiddleware, GroomingController.createGroomingSlots);
@@ -94,6 +105,20 @@ router.put('/updateGroomingTypes/:oldgroomingTypeid',authMiddleware,GroomingCont
 router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingController.DeleteGroomingTypesForProvider);
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+
+//------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
+router.post('/createClinicSlots', authMiddleware, ClinicController.createClinicSlots);
+router.post('/setClinicTypes', authMiddleware, ClinicController.setClinicTypesForProvider);
+router.get('/getClinicTypes', authMiddleware, ClinicController.getClinicTypesForProvider);
+router.put('/updateClinicTypes/:oldclinicTypeid',authMiddleware,ClinicController.updateClinicTypesForProvider);
+router.delete('/deleteClinicTypes/:clinicTypeId',authMiddleware,ClinicController.DeleteClinicTypesForProvider);
+router.get('/getClinicSlots', authMiddleware, ClinicController.getClinicSlots);
+
+
+
+
+
+
 
 
 // Use express-session middleware

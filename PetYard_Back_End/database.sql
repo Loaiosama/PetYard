@@ -152,21 +152,51 @@ CREATE TABLE ProviderGroomingTypes (
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
 
+CREATE TYPE ClinicType AS ENUM ('examinations', 'Lab testing', 'Vaccinations', 'Parasite prevention','Behavioral counseling','Training and socialization','Diet and nutrition','Dental health and cleaning');
+
+
+CREATE TABLE ClinicServiceSlots (
+    Slot_ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP,
+    Type Status DEFAULT 'Pending',
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+CREATE TABLE ClinicReservation (
+    Reserve_ID SERIAL PRIMARY KEY,
+    Slot_ID INT,
+    Pet_ID INT,
+    Owner_ID INT,
+    Start_time TIMESTAMP,
+    End_time TIMESTAMP,
+    Final_Price DOUBLE PRECISION,
+    Clinic_Type ClinicType[],
+    FOREIGN KEY (Slot_ID) REFERENCES ClinicServiceSlots(Slot_ID),
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
+    FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID)
+);
+
+CREATE TABLE ProviderClinicTypes (
+    ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Clinic_Type ClinicType,
+    Price DOUBLE PRECISION,
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
+);
+
 
 
 CREATE TABLE Review (
-    Rating_ID SERIAL PRIMARY KEY,
-    Reservation_ID INT,
-    Rate_value DOUBLE PRECISION,
-    FOREIGN KEY (Reservation_ID) REFERENCES Reservation(Reserve_ID)
+    Review_ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Rate_value DOUBLE PRECISION CHECK (Rate_value >= 0 AND Rate_value <= 5),
+    count INT DEFAULT 0,
+    comments TEXT[],
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
 
-CREATE TABLE Comment (
-    Rating_ID INT,
-    Comment_ID SERIAL PRIMARY KEY,
-    Comment VARCHAR(255),
-    FOREIGN KEY (Rating_ID) REFERENCES Review(Rating_ID)
-);
 
 
 

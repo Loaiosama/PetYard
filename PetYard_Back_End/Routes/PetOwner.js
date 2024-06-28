@@ -17,6 +17,9 @@ const payment = require('../Controllers/Payment/payment');
 const Shipping = require('../Controllers/Shipping/ShippingController')
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
+const ClinicController = require('../Controllers/Reservation/ClinicController');
+const ReviewController = require('../Controllers/Review/ReviewController');
+
 
 
 
@@ -99,6 +102,17 @@ router.get('/GetTimelinePost', authMiddleware, SocialMedia.getTimelinePosts);
 router.get('/checkout', payment.checkout);
 
 
+router.post('/AddRating',authMiddleware,ReviewController.AddRating);
+router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
+router.get('/FilterByRating/:minRating',authMiddleware,ReviewController.FilterByRating);
+router.get('/SortByRating',authMiddleware,ReviewController.SortByRating);
+router.get('/getAllReviews',authMiddleware,ReviewController.getAllReviews);
+router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, ReviewController.getAllReviewsForSpecificProvider);
+
+
+
+
+
 
 router.post('/AddShipping/:order_id', authMiddleware, Shipping.AddShipping);
 router.put('/UpdateStatus/:Shipping_id', authMiddleware, Shipping.updateStatus);
@@ -109,12 +123,28 @@ router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingRe
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 
+
+
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
 router.get('/getGroomingSlotsForProvider/:provider_id',authMiddleware,GroomingController.getGroomingSlotsForProvider);
 router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
 router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
 router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
 router.get('/getAllGroomingProviders', authMiddleware,GroomingController.getAllGroomingProviders);
+
+
+//------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
+
+router.get('/getAllClinicProviders', authMiddleware, ClinicController.getAllClinicProviders);
+router.get('/getClinicSlotsForProvider/:provider_id', authMiddleware, ClinicController.getClinicSlotsForProvider);
+router.post('/bookClinicSlot', authMiddleware, ClinicController.bookClinicSlot);
+router.get('/getClinicReservations', authMiddleware, ClinicController.getClinicReservations);
+
+router.put('/updateClinicReservationToComplete/:Slot_ID',authMiddleware,ClinicController.updateClinicReservationtocomplete)
+
+
+
+
 
 
 
