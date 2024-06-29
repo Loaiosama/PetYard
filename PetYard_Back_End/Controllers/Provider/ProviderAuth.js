@@ -630,7 +630,7 @@ const getOwnerInfo = async (req, res) => {
             });
         }
 
-        const ownerQuery = 'SELECT * FROM PetOwner WHERE Owner_Id = $1';
+        const ownerQuery = 'SELECT First_name,Last_name,Phone,Email,Date_of_birth,Location,Image FROM Petowner WHERE Owner_Id=$1';
         const ownerResult = await pool.query(ownerQuery, [owner_id]);
 
         if (ownerResult.rows.length === 0) {
