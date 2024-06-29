@@ -37,7 +37,7 @@ router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
 router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
 
 router.get('/GetProviderInfo',authMiddleware,ProviderController.Providerinfo);
-router.get('/GetOwnerInfo',authMiddleware,ProviderController.getOwnerInfo);
+router.get('/GetOwnerInfo/:ownerId',authMiddleware,ProviderController.getOwnerInfo);
 
 
 router.post('/CreateSlot/:Service_ID',authMiddleware,ScheduleController.CreateSlot);
@@ -110,6 +110,8 @@ router.put('/updateGroomingTypes/:oldgroomingTypeid',authMiddleware,GroomingCont
 router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingController.DeleteGroomingTypesForProvider);
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
+router.put('/updatePriceForService', authMiddleware, GroomingController.updatePriceOfService);
+
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
 router.post('/createClinicSlots', authMiddleware, ClinicController.createClinicSlots);

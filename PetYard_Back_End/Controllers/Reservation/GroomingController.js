@@ -661,6 +661,51 @@ const getGroomingReservations = async (req, res) => {
     }
 };
 
+const updatePriceOfService = async(req, res) =>{
+
+    const providerId = req.ID;
+
+    let{Price, Grooming_Type} = req.body;
+
+    try {
+
+        if(!providerId || !Price){
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing information"
+            })
+        }
+
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_ID = $1';
+        const providerRes = await pool.query(providerQuery, [providerId]);
+
+        if(providerRes.rows.length === 0){
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider doesn't exist in database."
+            })
+        }
+
+        const updateQuery = 'UPDATE ProviderGroomingTypes SET Price = $1 WHERE Provider_ID = $2 AND Grooming_Type = $3';
+        const updateRes = await pool.query(updateQuery, [Price, providerId, Grooming_Type]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Price updated successfully",
+        });
+
+        
+    } catch (e) {
+        console.error("Error:", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        })
+        
+    }
+
+}
+
 const updateGroomingReservationtocomplete = async (req, res) => {
     const ownerId = req.ID; 
     const { Slot_ID } = req.params;
@@ -796,4 +841,5 @@ module.exports = {
     getPendingGroomingSlotsForProvider,
     updateGroomingReservationtocomplete,
     getAllGroomingProviders,
+    updatePriceOfService
 }

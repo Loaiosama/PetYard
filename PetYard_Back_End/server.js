@@ -15,7 +15,7 @@ const io = new Server(server);
 const wss = new WebSocket.Server({ server });
 
 // Import the WebSocket connection handler
-const { handleWebSocketConnection } = require('./controllers/webSocketController');
+const { handleWebSocketConnection } = require('./controllers/Location/websocketController');
 
 // Register WebSocket connection handler
 wss.on('connection', handleWebSocketConnection);

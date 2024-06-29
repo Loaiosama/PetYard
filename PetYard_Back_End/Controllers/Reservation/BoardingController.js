@@ -3,17 +3,11 @@ const sendemail = require("../../Utils/email");
 
 
 const getProvidersByType = async (req, res) => {
-    const ownerId = req.ID;
+    const ownerId = req.ID; // Assuming ownerId is correctly extracted from authentication middleware
     const { type } = req.params;
 
     try {
-        if (!type) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Please Fill All Information"
-            });
-        }
-
+        // Check if the owner exists
         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const ownerResult = await pool.query(ownerQuery, [ownerId]);
 
@@ -24,72 +18,121 @@ const getProvidersByType = async (req, res) => {
             });
         }
 
-        const client = await pool.connect();
-        const providersQuery = `
-            SELECT sp.*, s.service_id, s.type 
-            FROM ServiceProvider sp 
-            JOIN Services s ON sp.Provider_Id = s.Provider_Id 
-            WHERE s.Type = $1
+        // Query to fetch providers based on service type, including image
+        const query = `
+            SELECT p.Provider_ID, p.UserName, p.Email, p.Bio, p.Image
+            FROM ServiceProvider p
+            INNER JOIN Services s ON p.Provider_ID = s.Provider_ID
+            WHERE s.Type = $1;
         `;
-        const providersResult = await client.query(providersQuery, [type]);
+        
+        const queryRes = await pool.query(query, [type]);
 
-        const providersWithSlots = [];
-
-        for (const provider of providersResult.rows) {
-            const slotsQuery = `
-                SELECT * 
-                FROM ServiceSlots 
-                WHERE Provider_ID = $1 
-                AND Service_ID = $2 
-                AND End_time > NOW()
-                ORDER BY Start_time DESC
-            `;
-            const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
-
-            if (slotsResult.rows.length > 0) {
-                // Check if the provider is already in the array
-                const existingProvider = providersWithSlots.find(p => p.provider_id === provider.provider_id);
-
-                if (!existingProvider) {
-                    providersWithSlots.push({
-                        provider_id: provider.provider_id,
-                        username: provider.username,
-                        phone: provider.phone,
-                        email: provider.email,
-                        bio: provider.bio,
-                        date_of_birth: provider.date_of_birth,
-                        location: provider.location,
-                        image: provider.image,
-                        service_id: provider.service_id,
-                        type: provider.type,
-
-                    });
-                }
-            }
-        }
-
-        client.release();
-
-        if (providersWithSlots.length === 0) {
+        if (queryRes.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "No providers with available service slots of the given type."
+                message: "No providers found for the specified service type."
             });
         }
 
         res.status(200).json({
             status: "Success",
-            message: "Providers found",
-            data: providersWithSlots
+            message: "Providers fetched successfully",
+            data: queryRes.rows // Return the rows fetched from the database
         });
-
     } catch (error) {
-        console.error("Error finding providers:", error);
+        console.error("Error:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
     }
+    // const { type } = req.params;
+
+    // try {
+    //     if (!type) {
+    //         return res.status(400).json({
+    //             status: "Fail",
+    //             message: "Please Fill All Information"
+    //         });
+    //     }
+
+        // const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        // const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        // if (ownerResult.rows.length === 0) {
+        //     return res.status(401).json({
+        //         status: "Fail",
+        //         message: "User doesn't exist"
+        //     });
+        // }
+
+    //     const client = await pool.connect();
+    //     const providersQuery = `
+    //         SELECT sp.*, s.service_id, s.type 
+    //         FROM ServiceProvider sp 
+    //         JOIN Services s ON sp.Provider_Id = s.Provider_Id 
+    //         WHERE s.Type = $1
+    //     `;
+    //     const providersResult = await client.query(providersQuery, [type]);
+
+    //     const providersWithSlots = [];
+
+    //     for (const provider of providersResult.rows) {
+    //         const slotsQuery = `
+    //             SELECT * 
+    //             FROM ServiceSlots 
+    //             WHERE Provider_ID = $1 
+    //             AND Service_ID = $2 
+    //             AND End_time > NOW()
+    //             ORDER BY Start_time DESC
+    //         `;
+    //         const slotsResult = await client.query(slotsQuery, [provider.provider_id, provider.service_id]);
+
+    //         if (slotsResult.rows.length > 0) {
+    //             // Check if the provider is already in the array
+    //             const existingProvider = providersWithSlots.find(p => p.provider_id === provider.provider_id);
+
+    //             if (!existingProvider) {
+    //                 providersWithSlots.push({
+    //                     provider_id: provider.provider_id,
+    //                     username: provider.username,
+    //                     phone: provider.phone,
+    //                     email: provider.email,
+    //                     bio: provider.bio,
+    //                     date_of_birth: provider.date_of_birth,
+    //                     location: provider.location,
+    //                     image: provider.image,
+    //                     service_id: provider.service_id,
+    //                     type: provider.type,
+
+    //                 });
+    //             }
+    //         }
+    //     }
+
+    //     client.release();
+
+    //     if (providersWithSlots.length === 0) {
+    //         return res.status(404).json({
+    //             status: "Fail",
+    //             message: "No providers with available service slots of the given type."
+    //         });
+    //     }
+
+    //     res.status(200).json({
+    //         status: "Success",
+    //         message: "Providers found",
+    //         data: providersResult
+    //     });
+
+    // } catch (error) {
+    //     console.error("Error finding providers:", error);
+    //     res.status(500).json({
+    //         status: "Fail",
+    //         message: "Internal server error"
+    //     });
+    // }
 };
 
 
