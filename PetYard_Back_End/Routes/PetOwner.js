@@ -19,6 +19,7 @@ const SittingController = require('../Controllers/Reservation/SittingController'
 const GroomingController = require('../Controllers/Reservation/GroomingController');
 const ClinicController = require('../Controllers/Reservation/ClinicController');
 const ReviewController = require('../Controllers/Review/ReviewController');
+const geoFenceController = require('../Controllers/Location/geofenceController');
 
 
 
@@ -144,7 +145,8 @@ router.put('/updateClinicReservationToComplete/:Slot_ID',authMiddleware,ClinicCo
 
 
 
-
+//------------------------------ ROUTES FOR Location CONTROLLER ---------------------------------
+router.post('/setGeoLocation', authMiddleware, geoFenceController.setGeofence);
 
 
 

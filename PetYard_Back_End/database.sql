@@ -291,6 +291,33 @@ CREATE TABLE Posts (
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE LocationUpdates (
+    Update_ID SERIAL PRIMARY KEY,
+    Service_Provider_ID INT NOT NULL,
+    Latitude DOUBLE PRECISION NOT NULL,
+    Longitude DOUBLE PRECISION NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Service_Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+CREATE TABLE Geofence (
+    Geofence_ID SERIAL PRIMARY KEY,
+    PetOwner_ID INT NOT NULL,
+    Center_Latitude DOUBLE PRECISION NOT NULL,
+    Center_Longitude DOUBLE PRECISION NOT NULL,
+    Radius DOUBLE PRECISION NOT NULL,
+    FOREIGN KEY (PetOwner_ID) REFERENCES PetOwner(Owner_Id)
+);
+
+CREATE TABLE Notifications (
+    Notification_ID SERIAL PRIMARY KEY,
+    User_ID INT NOT NULL,
+    User_Type VARCHAR(50) NOT NULL CHECK (User_Type IN ('PetOwner', 'ServiceProvider')),
+    Message TEXT NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (User_ID) REFERENCES PetOwner(Owner_Id) -- Adjust as needed for different user types
+);
+
 /*
 CREATE TABLE Location (
     id SERIAL PRIMARY KEY,

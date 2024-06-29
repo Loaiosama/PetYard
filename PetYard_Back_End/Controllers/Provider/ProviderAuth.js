@@ -615,6 +615,47 @@ const startChat = async (req, res) => {
 
 }
 
+const getOwnerInfo = async (req, res) => {
+    const provider_id = req.ID; // Assuming req.ID holds the provider's ID extracted from the token
+    const owner_id = req.params.ownerId; // Assuming the owner ID is passed as a parameter in the request URL
+
+    try {
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [provider_id]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Provider doesn't exist."
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM PetOwner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [owner_id]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Owner not found."
+            });
+        }
+
+        // Return the owner information
+        res.status(200).json({
+            status: "Success",
+            data: ownerResult.rows[0] // Assuming there's only one owner with a matching ID
+        });
+
+    } catch (error) {
+        console.error("Error fetching owner information:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
 
 
 module.exports = {
@@ -631,7 +672,8 @@ module.exports = {
     getService,
     forgotPassword,
     resetPassword,
-    Providerinfo
+    Providerinfo,
+    getOwnerInfo
 
 
 

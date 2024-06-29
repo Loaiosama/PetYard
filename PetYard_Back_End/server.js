@@ -4,11 +4,21 @@ const path = require('path');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const WebSocket = require('ws');
 
 
 const app = require('./app');
 const server = http.createServer(app);
 const io = new Server(server);
+
+// WebSocket server setup
+const wss = new WebSocket.Server({ server });
+
+// Import the WebSocket connection handler
+const { handleWebSocketConnection } = require('./controllers/webSocketController');
+
+// Register WebSocket connection handler
+wss.on('connection', handleWebSocketConnection);
 
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' directory
 

@@ -37,6 +37,7 @@ router.get('/GetAllServices',authMiddleware,ProviderController.getallservices);
 router.get('/GetService/:Service_ID',authMiddleware,ProviderController.getService);
 
 router.get('/GetProviderInfo',authMiddleware,ProviderController.Providerinfo);
+router.get('/GetOwnerInfo',authMiddleware,ProviderController.getOwnerInfo);
 
 
 router.post('/CreateSlot/:Service_ID',authMiddleware,ScheduleController.CreateSlot);
