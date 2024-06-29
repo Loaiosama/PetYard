@@ -121,6 +121,20 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                           height: 60,
                           radius: 10,
                         );
+                      } else if (state is SignInFailure) {
+                        return PetYardTextButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              // await _signIn();
+                              cubit.signIn(
+                                password: passwordController.text,
+                                userName: userNameController.text,
+                              );
+                            }
+                          },
+                          text: 'Login!',
+                          style: Styles.styles16BoldWhite,
+                        );
                       }
                       return PetYardTextButton(
                         onPressed: () {

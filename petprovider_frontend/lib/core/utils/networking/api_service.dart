@@ -55,6 +55,9 @@ class ApiService {
         options: Options(
           method: 'POST',
           headers: headers,
+          // sendTimeout: Duration(seconds: 2),
+          // receiveTimeout: Duration(seconds: 2),
+          // upon connection timeout u need to stop circle progressindicator
         ),
       );
       return response;

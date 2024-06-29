@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/routing/routing_animation.dart';
+import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
+import 'package:petprovider_frontend/features/grooming/presentation/view/choose_grooming_types.dart';
+import 'package:petprovider_frontend/features/grooming/presentation/view_model/choose_types_cubit/grooming_cubit.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
 import 'package:petprovider_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
@@ -99,12 +102,33 @@ abstract class AppRouter {
           name: Routes.kAvailableSlotsScreen,
           path: Routes.kAvailableSlotsScreen,
           pageBuilder: (context, state) {
-            final String serviceName = state.extra as String;
+            final Map<String, dynamic> extras =
+                state.extra as Map<String, dynamic>;
+            final String serviceName = extras['serviceName'] as String;
+            final List<dynamic> groomingTypes = extras['groomingTypes'] as List;
             return transitionGoRoute(
               context: context,
               state: state,
               child: AvaialableSlotsScreen(
                 serviceName: serviceName,
+                groomingTypes: groomingTypes,
+              ),
+            );
+          }),
+      GoRoute(
+          name: Routes.kChooseGroomingTypes,
+          path: Routes.kChooseGroomingTypes,
+          pageBuilder: (context, state) {
+            final String serviceName = state.extra as String;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: BlocProvider(
+                create: (context) => GroomingCubit(
+                    GroomingRepoImpl(api: ApiService(dio: Dio()))),
+                child: ChooseGroomingTypeScreen(
+                  serviceName: serviceName,
+                ),
               ),
             );
           }),

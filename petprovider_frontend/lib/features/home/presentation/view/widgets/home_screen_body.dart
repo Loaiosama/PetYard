@@ -1,7 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
+// import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petprovider_frontend/core/utils/helpers/spacing.dart';
@@ -10,6 +15,7 @@ import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/green_container_at_top.dart';
+import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
 import 'package:petprovider_frontend/features/home/data/models/profile_info/datum.dart';
 import 'package:petprovider_frontend/features/home/data/repo/home_repo_impl.dart';
 import 'package:petprovider_frontend/features/home/presentation/view%20model/profile_info_cubit/profile_info_cubit.dart';
@@ -102,6 +108,105 @@ class SetAvailableListView extends StatelessWidget {
       }
     }
 
+    void navigateToChooseGroomingTypes(BuildContext context) async {
+      try {
+        // Show loading indicator
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: kPrimaryGreen,
+            ));
+          },
+        );
+        GroomingRepoImpl groomingRepoImpl =
+            GroomingRepoImpl(api: ApiService(dio: Dio()));
+        var result = await groomingRepoImpl.getGroomingTypeForHome();
+        await Future.delayed(const Duration(seconds: 1));
+
+        Navigator.pop(context); // Remove the loading indicator
+
+        // result.fold(
+        //   (failure) {
+        //     ScaffoldMessenger.of(context).showSnackBar(
+        //         const SnackBar(content: Text('Something went wrong')));
+        //   },
+        //   (message) {
+        //     if (message == 'Set Slot') {
+        //       GoRouter.of(context)
+        //           .push(Routes.kAvailableSlotsScreen, extra: 'Grooming');
+        //     } else {
+        //       GoRouter.of(context)
+        //           .push(Routes.kChooseGroomingTypes, extra: 'Grooming');
+        //     }
+        //   },
+        // );
+        result.fold(
+          (failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Something went wrong')));
+          },
+          (types) {
+            if (types.isNotEmpty) {
+              GoRouter.of(context).push(Routes.kAvailableSlotsScreen, extra: {
+                "serviceName": "Grooming",
+                "groomingTypes": types,
+              });
+            } else {
+              GoRouter.of(context)
+                  .push(Routes.kChooseGroomingTypes, extra: 'Grooming');
+            }
+          },
+        );
+      } catch (e) {
+        Navigator.pop(
+            context); // Remove the loading indicator if an error occurs
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Something went wrong')));
+      }
+    }
+
+    // ##########################################################
+    // the use of cached grooming types
+    // void navigateToChooseGroomingTypes(BuildContext context) async {
+    //   try {
+    //     // Show loading indicator
+    //     // showDialog(
+    //     //   context: context,
+    //     //   barrierDismissible: false,
+    //     //   builder: (BuildContext context) {
+    //     //     return const Center(child: CircularProgressIndicator());
+    //     //   },
+    //     // );
+    //     const FlutterSecureStorage storage = FlutterSecureStorage();
+
+    //     // Ensure loading indicator is visible for at least 1 second
+    //     // await Future.delayed(const Duration(seconds: 1));
+
+    //     // Retrieve cached grooming types
+    //     String? cachedGroomingTypes = await storage.read(key: 'groomingTypes');
+    //     List<dynamic> groomingTypes =
+    //         cachedGroomingTypes != null ? jsonDecode(cachedGroomingTypes) : [];
+
+    //     // Navigator.of(context).pop(); // Remove loading indicator
+
+    //     if (groomingTypes.isNotEmpty) {
+    //       GoRouter.of(context)
+    //           .push(Routes.kAvailableSlotsScreen, extra: 'Grooming');
+    //     } else {
+    //       GoRouter.of(context)
+    //           .push(Routes.kChooseGroomingTypes, extra: 'Grooming');
+    //     }
+    //   } catch (e) {
+    //     Navigator.of(context).pop(); // Remove loading indicator
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(content: Text('Something went wrong')),
+    //     );
+    //   }
+    // }
+
     return SizedBox(
       height: calculateHeight(context, services.length),
       child: ListView.builder(
@@ -128,10 +233,15 @@ class SetAvailableListView extends StatelessWidget {
                         ? const SizedBox()
                         : IconButton(
                             onPressed: () {
-                              GoRouter.of(context).push(
-                                  Routes.kAvailableSlotsScreen,
-                                  extra: services[index].type ??
-                                      'no service name');
+                              if (services[index].type == 'Boarding') {
+                                GoRouter.of(context)
+                                    .push(Routes.kAvailableSlotsScreen, extra: {
+                                  "serviceName": services[index].type,
+                                  "groomingTypes": [],
+                                });
+                              } else if (services[index].type == 'Grooming') {
+                                navigateToChooseGroomingTypes(context);
+                              }
                             },
                             icon: const Tooltip(
                                 message: 'Set new slot',
