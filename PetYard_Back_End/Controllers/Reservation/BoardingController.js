@@ -3,7 +3,7 @@ const sendemail = require("../../Utils/email");
 
 
 const getProvidersByType = async (req, res) => {
-    const ownerId = req.ID; // Assuming ownerId is correctly extracted from authentication middleware
+    const ownerId = req.ID; 
     const { type } = req.params;
 
     try {

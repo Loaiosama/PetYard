@@ -163,7 +163,7 @@ const getGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const result = await pool.query('SELECT Grooming_Type FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+        const result = await pool.query('SELECT Grooming_Type, Price FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
 
         res.status(200).json({
             status: "Success",
