@@ -821,6 +821,74 @@ const checkAndUpdateCompleteReservations = async () => {
         console.error("Error checking and updating completed grooming reservations:", error);
     }
 }
+
+const getFees = async (req, res) => {
+    const ownerId = req.ID;
+    const providerId = req.params.providerId;
+
+    let { grooming_types } = req.body;
+
+    try {
+
+        if (!ownerId || !providerId || !Array.isArray(grooming_types) || grooming_types.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing or incorrect information."
+            });
+        }
+
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Owner not found."
+            });
+        }
+
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider not found."
+            });
+        }
+
+        let finalPrice = 0;
+        for (const groomingType of grooming_types) {
+            const priceQuery = `
+                SELECT Price FROM ProviderGroomingTypes 
+                WHERE Provider_Id = $1 AND Grooming_Type = $2`;
+            const priceResult = await pool.query(priceQuery, [providerId, groomingType]);
+
+            if (priceResult.rows.length === 0) {
+                return res.status(400).json({
+                    status: "Fail",
+                    message: `Grooming type '${groomingType}' not available for the selected provider.`
+                });
+            }
+
+            finalPrice += priceResult.rows[0].price;
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Final price calculated successfully.",
+            data: { finalPrice }
+        });
+        
+    } catch (e) {
+        console.error("Error:", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
 // Set interval to run the function periodically (every 60 seconds in this case)
 setInterval(checkAndUpdateCompleteReservations, 60000);
 
@@ -841,5 +909,6 @@ module.exports = {
     getPendingGroomingSlotsForProvider,
     updateGroomingReservationtocomplete,
     getAllGroomingProviders,
-    updatePriceOfService
+    updatePriceOfService,
+    getFees
 }
