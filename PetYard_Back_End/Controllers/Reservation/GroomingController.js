@@ -824,13 +824,12 @@ const checkAndUpdateCompleteReservations = async () => {
 
 const getFees = async (req, res) => {
     const ownerId = req.ID;
-    const providerId = req.params.providerId;
 
-    let { grooming_types } = req.body;
+    let { provider_id, grooming_types } = req.body;
 
     try {
 
-        if (!ownerId || !providerId || !Array.isArray(grooming_types) || grooming_types.length === 0) {
+        if (!ownerId || !provider_id || !Array.isArray(grooming_types) || grooming_types.length === 0) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or incorrect information."
@@ -848,7 +847,7 @@ const getFees = async (req, res) => {
         }
 
         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const providerResult = await pool.query(providerQuery, [providerId]);
+        const providerResult = await pool.query(providerQuery, [provider_id]);
 
         if (providerResult.rows.length === 0) {
             return res.status(404).json({
@@ -862,7 +861,7 @@ const getFees = async (req, res) => {
             const priceQuery = `
                 SELECT Price FROM ProviderGroomingTypes 
                 WHERE Provider_Id = $1 AND Grooming_Type = $2`;
-            const priceResult = await pool.query(priceQuery, [providerId, groomingType]);
+            const priceResult = await pool.query(priceQuery, [provider_id, groomingType]);
 
             if (priceResult.rows.length === 0) {
                 return res.status(400).json({
