@@ -86,6 +86,37 @@ app.post('/api/save-location', async (req, res) => {
 
 
 
+
+
+
+
+const ws = new WebSocket.Server({ port: 8081 });
+
+ws.on('connection', function connection(ws) {
+    console.log('Client connected');
+
+    // Send random location updates every 2 seconds
+    const interval = setInterval(() => {
+        const lat = 30.0444 + (Math.random() - 0.5) * 0.01;
+        const lng = 31.2357 + (Math.random() - 0.5) * 0.01;
+        const data = JSON.stringify({ lat, lng });
+        ws.send(data);
+    }, 2000);
+
+    ws.on('close', () => {
+        console.log('Client disconnected');
+        clearInterval(interval);
+    });
+});
+
+console.log('WebSocket server running on ws://localhost:8081');
+
+
+
+
+
+
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
