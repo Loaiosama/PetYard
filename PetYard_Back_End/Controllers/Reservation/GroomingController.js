@@ -180,6 +180,57 @@ const getGroomingTypesForProvider = async (req, res) => {
     }
 };
 
+const getGroomingTypesForProvidertoowner = async (req, res) => {
+
+    const owner_id=req.ID;
+    const providerId = req.params.providerId;
+ 
+
+    try {
+
+        if (!providerId || !owner_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing or invalid information."
+            });
+        }
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [owner_id]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Owner not found."
+            });
+        }
+
+
+        const query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(query, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const result = await pool.query('SELECT Grooming_Type, Price FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+
+        res.status(200).json({
+            status: "Success",
+            groomingTypes: result.rows
+        });
+
+        
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Failed",
+            message: "Internal server error."
+        });
+    }
+};
 
 const updateGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
@@ -822,6 +873,7 @@ const checkAndUpdateCompleteReservations = async () => {
     }
 }
 
+
 const getFees = async (req, res) => {
     const ownerId = req.ID;
 
@@ -909,5 +961,6 @@ module.exports = {
     updateGroomingReservationtocomplete,
     getAllGroomingProviders,
     updatePriceOfService,
-    getFees
+    getFees,
+    getGroomingTypesForProvidertoowner
 }

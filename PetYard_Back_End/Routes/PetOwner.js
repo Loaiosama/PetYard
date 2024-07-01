@@ -133,7 +133,7 @@ router.get('/getGroomingReservations', authMiddleware, GroomingController.getGro
 router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
 router.get('/getAllGroomingProviders', authMiddleware,GroomingController.getAllGroomingProviders);
 router.post('/getFees', authMiddleware, GroomingController.getFees);
-
+router.get('/getGroomingTypes/:providerId',authMiddleware,GroomingController.getGroomingTypesForProvidertoowner);
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
 
