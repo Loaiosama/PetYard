@@ -111,6 +111,7 @@ router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingCont
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 router.put('/updatePriceForService', authMiddleware, GroomingController.updatePriceOfService);
+router.get('/getGroomingReservation', authMiddleware, GroomingController.getGroomingReservationsForProvider);
 
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------

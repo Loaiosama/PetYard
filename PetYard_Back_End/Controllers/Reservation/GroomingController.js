@@ -712,6 +712,68 @@ const getGroomingReservations = async (req, res) => {
     }
 };
 
+
+const getGroomingReservationsForProvider = async (req, res) => {
+    const providerId  = req.ID;
+
+    try {
+
+
+        if (!providerId ) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Missing information."
+            });
+        }
+
+        const providerQuery = "SELECT * FROM ServiceProvider WHERE Provider_Id = $1";
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider is not registered in the database."
+            });
+        }
+
+        const client = await pool.connect();
+        const query = `
+            SELECT
+                GSS.Slot_ID,
+                GSS.Provider_ID,
+                GSS.Start_time,
+                GSS.End_time,
+                GR.Reserve_ID,
+                GR.Pet_ID,
+                GR.Owner_ID,
+                GR.Start_time AS Reservation_Start_time,
+                GR.End_time AS Reservation_End_time,
+                GR.Final_Price,
+                GR.Grooming_Types
+            FROM
+                GroomingServiceSlots GSS
+            JOIN
+                GroomingReservation GR ON GSS.Slot_ID = GR.Slot_ID
+            WHERE
+                GSS.Provider_ID = $1;
+        `;
+        const values = [providerId];
+        const result = await client.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'No reservations found for this provider.' });
+        }
+
+        res.status(200).json(result.rows);
+        client.release();
+    } catch (err) {
+        console.error("Error fetching grooming reservations for provider", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+
 const updatePriceOfService = async(req, res) =>{
 
     const providerId = req.ID;
@@ -962,5 +1024,6 @@ module.exports = {
     getAllGroomingProviders,
     updatePriceOfService,
     getFees,
-    getGroomingTypesForProvidertoowner
+    getGroomingTypesForProvidertoowner,
+    getGroomingReservationsForProvider
 }
