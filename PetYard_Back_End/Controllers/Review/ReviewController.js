@@ -10,9 +10,6 @@ const AddRating = async (req, res) => {
     const { rate } = req.body;
     const providerid = req.query.providerid; 
 
-    console.log('ownerid:', ownerid);
-    console.log('rate:', rate);
-    console.log('providerid:', providerid);
 
     try {
         if (!ownerid || rate === undefined || !providerid) {
@@ -48,7 +45,7 @@ const AddRating = async (req, res) => {
         if (reviewResult.rows.length > 0) {
             const review = reviewResult.rows[0];
             const newCount = review.count + 1;
-            const newRateValue = (review.rate_value + rate) / newCount;
+            const newRateValue = (review.rate_value + rate) / 2;
 
             const updateQuery = 'UPDATE Review SET Rate_value = $1, count = $2 WHERE Provider_ID = $3';
             await pool.query(updateQuery, [newRateValue, newCount, providerid]);
@@ -102,7 +99,6 @@ const FilterByRating = async (req, res) => {
     const { minRating } = req.params; 
 
     try {
-
         if (!minRating || !ownerid) {
             return res.status(400).json({
                 status: "Fail",
@@ -120,9 +116,8 @@ const FilterByRating = async (req, res) => {
             });
         }
 
-        
         const filterQuery = `
-            SELECT sp.*, r.rate_value, r.count
+            SELECT sp.Provider_Id, sp.UserName, sp.Phone, sp.Email, sp.Bio, sp.Date_of_birth, sp.Location, sp.Image, r.rate_value, r.count
             FROM ServiceProvider sp
             JOIN Review r ON sp.Provider_Id = r.Provider_ID
             WHERE r.rate_value >= $1
@@ -173,7 +168,7 @@ const SortByRating = async (req, res) => {
         }
 
         const sortQuery = `
-            SELECT sp.*, r.rate_value, r.count
+            SELECT sp.Provider_Id, sp.UserName, sp.Phone, sp.Email, sp.Bio, sp.Date_of_birth, sp.Location, sp.Image, r.rate_value, r.count
             FROM ServiceProvider sp
             JOIN Review r ON sp.Provider_Id = r.Provider_ID
             ORDER BY r.rate_value DESC
@@ -201,6 +196,7 @@ const SortByRating = async (req, res) => {
         });
     }
 };
+
 
 const AddComment = async (req, res) => {
     const { review_id } = req.params;
