@@ -102,17 +102,14 @@ router.get('/GetTimelinePost', authMiddleware, SocialMedia.getTimelinePosts);
 
 router.get('/checkout', payment.checkout);
 
+//------------------------------ ROUTES FOR rating CONTROLLER ---------------------------------
 
 router.post('/AddRating',authMiddleware,ReviewController.AddRating);
 router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
-router.get('/FilterByRating/:minRating',authMiddleware,ReviewController.FilterByRating);
-router.get('/SortByRating',authMiddleware,ReviewController.SortByRating);
+router.get('/recomendedProviders',authMiddleware,ReviewController.recomendedProviders);
 router.get('/getAllReviews',authMiddleware,ReviewController.getAllReviews);
 router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, ReviewController.getAllReviewsForSpecificProvider);
-
-
-
-
+router.get('/filterByRating/:minRating/:serviceType', authMiddleware, ReviewController.filterByRating);
 
 
 router.post('/AddShipping/:order_id', authMiddleware, Shipping.AddShipping);

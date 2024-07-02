@@ -193,10 +193,19 @@ CREATE TABLE Review (
     Provider_ID INT,
     Rate_value DOUBLE PRECISION CHECK (Rate_value >= 0 AND Rate_value <= 5),
     count INT DEFAULT 0,
-    comments TEXT[],
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID)
 );
 
+CREATE TABLE IndividualReviews (
+    Review_ID SERIAL PRIMARY KEY,
+    Provider_ID INT,
+    Owner_ID INT,
+    Rate_value DOUBLE PRECISION CHECK (Rate_value >= 0 AND Rate_value <= 5),
+    Comment TEXT,
+    Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_ID),
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id)
+);
 
 
 
