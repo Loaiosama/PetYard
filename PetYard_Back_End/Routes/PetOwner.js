@@ -20,6 +20,7 @@ const GroomingController = require('../Controllers/Reservation/GroomingControlle
 const ClinicController = require('../Controllers/Reservation/ClinicController');
 const ReviewController = require('../Controllers/Review/ReviewController');
 const geoFenceController = require('../Controllers/Location/geofenceController');
+const WalkingController = require('../Controllers/Reservation/WalkingController')
 
 
 
@@ -140,6 +141,13 @@ router.post('/bookClinicSlot', authMiddleware, ClinicController.bookClinicSlot);
 router.get('/getClinicReservations', authMiddleware, ClinicController.getClinicReservations);
 
 router.put('/updateClinicReservationToComplete/:Slot_ID',authMiddleware,ClinicController.updateClinicReservationtocomplete)
+
+
+//------------------------------ ROUTES FOR Walking CONTROLLER ---------------------------------
+router.post('/makeWalkingRequest', authMiddleware, WalkingController.makeWalkingRequest);
+router.get('/GetPendingWalkingRequests', authMiddleware, WalkingController.GetPendingWalkingRequests);
+router.get('/GetWalkingApplications', authMiddleware, WalkingController.GetWalkingApplications);
+router.put('/rejectApplication', authMiddleware, WalkingController.rejectApplication);
 
 
 

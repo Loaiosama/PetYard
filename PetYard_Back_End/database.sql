@@ -187,6 +187,33 @@ CREATE TABLE ProviderClinicTypes (
 );
 
 
+CREATE TABLE WalkingRequest (
+    Reserve_ID SERIAL PRIMARY KEY,
+    Pet_ID INT,
+    Owner_ID INT,
+    Start_time TIMESTAMP  WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP ,
+    End_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    Final_Price DOUBLE PRECISION,
+    Status VARCHAR(20) DEFAULT 'Pending',
+    Provider_ID INT,  -- Nullable, will be set when the owner accepts a provider
+    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
+    FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+-- Table to handle applications from service providers for a sitting reservation
+CREATE TABLE WalkingApplication (
+    Application_ID SERIAL PRIMARY KEY,
+    Reserve_ID INT,
+    Provider_ID INT,
+    expirationTime BIGINT,
+    Application_Status Status DEFAULT 'Pending',
+    Application_Date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Reserve_ID) REFERENCES SittingReservation(Reserve_ID),
+    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
+);
+
+
 
 CREATE TABLE Review (
     Review_ID SERIAL PRIMARY KEY,
@@ -208,97 +235,6 @@ CREATE TABLE IndividualReviews (
 );
 
 
-
--- Create the Chat table with an array of integers for the Members column
-
-CREATE TABLE Chat (
-    Chat_ID SERIAL PRIMARY KEY,
-    Members INTEGER[], -- Array of integers to store member IDs
-    Owner_ID INTEGER REFERENCES Petowner(Owner_Id),
-    Provider_ID INTEGER REFERENCES ServiceProvider(Provider_Id)
-);
-
-CREATE TABLE Messages (
-    Message_id SERIAL PRIMARY KEY,
-    Sender_id INT NOT NULL,
-    Chat_Id INT,
-    text TEXT, 
-    FOREIGN KEY (Chat_Id) REFERENCES Chat(Chat_ID)
-);
-
-
-CREATE TYPE category AS ENUM ('Accessories','Food');
-
-CREATE TABLE Products (
-    product_id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    Type  category,
-    brand VARCHAR(100),
-    Price DOUBLE PRECISION,
-    stock_quantity INT DEFAULT 0,
-    Image VARCHAR(255) NOT NULL, 
-    Provider_ID INT ,
-    FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
-);
-
-CREATE TABLE Orders (
-    order_id SERIAL PRIMARY KEY,
-    total_amount DOUBLE PRECISION ,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Owner_ID INT,
-    FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id)
-);
-
-CREATE TABLE OrderItems (
-    order_item_id SERIAL PRIMARY KEY,
-    order_id INT,
-    product_id INT,
-    quantity INT NOT NULL,
-    price_per_unit DOUBLE PRECISION NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
-);
-
-CREATE TYPE Pay AS ENUM ('Cash','Online');
-
-CREATE TABLE Shipping (
-    shipping_id SERIAL PRIMARY KEY,
-    type Pay,
-    order_id INT,
-    location POINT,
-    city VARCHAR(100) NOT NULL,
-    state VARCHAR(100) NOT NULL,
-    postal_code VARCHAR(20) NOT NULL,
-    country VARCHAR(100) NOT NULL,
-    phone VARCHAR(225) NOT NULL,
-    address VARCHAR(500) NOT NULL,
-    status BOOLEAN DEFAULT FALSE, -- FALSE indicates the order is not received, TRUE indicates it is received
-    paid BOOLEAN DEFAULT FALSE, -- FALSE indicates the order is not paid, TRUE indicates it is paid
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
-);
-
-
-
-CREATE TABLE Followers (
-    id SERIAL PRIMARY KEY,
-    Follower_ID INTEGER NOT NULL,
-    Follower_Type VARCHAR(50) NOT NULL,
-    Followee_ID INTEGER NOT NULL,
-    Followee_Type VARCHAR(50) NOT NULL,
-    UNIQUE (Follower_ID, Follower_Type, Followee_ID, Followee_Type)
-);
-
-
-CREATE TABLE Posts (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('Petowner', 'ServiceProvider')),
-    image VARCHAR(255) NOT NULL,
-    description TEXT,
-    likes JSONB DEFAULT '{}'::JSONB,
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE LocationUpdates (
     Update_ID SERIAL PRIMARY KEY,

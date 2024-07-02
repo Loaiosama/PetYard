@@ -18,6 +18,7 @@ const GroomingController = require('../Controllers/Reservation/GroomingControlle
 const ClinicController = require('../Controllers/Reservation/ClinicController');
 const ReviewController = require('../Controllers/Review/ReviewController');
 const PetProfileController=require('../Controllers/Pet_Profile/PetProfileController');
+const WalkingController = require('../Controllers/Reservation/WalkingController');
 
 
 
@@ -122,6 +123,10 @@ router.put('/updateClinicTypes/:oldclinicTypeid',authMiddleware,ClinicController
 router.delete('/deleteClinicTypes/:clinicTypeId',authMiddleware,ClinicController.DeleteClinicTypesForProvider);
 router.get('/getClinicSlots', authMiddleware, ClinicController.getClinicSlots);
 
+
+//------------------------------ ROUTES FOR Walking CONTROLLER ---------------------------------
+router.post('/applyForWalkingRequest', authMiddleware, WalkingController.applyForWalkingRequest);
+router.get('/getAllPendingRequests', authMiddleware, WalkingController.getAllPendingRequests);
 
 
 
