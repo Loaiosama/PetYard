@@ -208,14 +208,18 @@ const GetSittingReservations = async (req, res) => {
     const ownerId = req.ID;
 
     try {
-
-        if (!ownerId ) {
+        if (!ownerId) {
             return res.status(400).json({
                 status: "Fail",
-                message: "ownerId ID ."
+                message: "Please provide owner ID."
             });
         }
-        const query = 'SELECT * FROM SittingReservation WHERE Owner_ID = $1 AND Provider_ID IS NULL';
+
+        const query = `
+            SELECT Reserve_ID, Pet_ID, Owner_ID, Location, Start_time, End_time, Final_Price, Status 
+            FROM SittingReservation 
+            WHERE Owner_ID = $1 AND Provider_ID IS NULL AND Status = 'Pending'
+        `;
         const result = await pool.query(query, [ownerId]);
 
         res.status(200).json({
@@ -230,6 +234,8 @@ const GetSittingReservations = async (req, res) => {
         });
     }
 }
+
+
 
 
 const getSittingApplications = async(req, res) => {
