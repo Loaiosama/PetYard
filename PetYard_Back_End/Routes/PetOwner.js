@@ -146,8 +146,8 @@ router.get('/getGroomingTypes/:providerId',authMiddleware,GroomingController.get
 //------------------------------ ROUTES FOR Walking CONTROLLER ---------------------------------
 router.post('/makeWalkingRequest', authMiddleware, WalkingController.makeWalkingRequest);
 router.get('/GetPendingWalkingRequests', authMiddleware, WalkingController.GetPendingWalkingRequests);
-router.get('/GetWalkingApplications', authMiddleware, WalkingController.GetWalkingApplications);
-router.put('/rejectApplication', authMiddleware, WalkingController.rejectApplication);
+router.get('/GetWalkingApplications/:Reserve_ID', authMiddleware, WalkingController.GetWalkingApplications);
+router.put('/rejectWalkingApplication', authMiddleware, WalkingController.rejectApplication);
 
 
 

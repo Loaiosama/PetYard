@@ -209,7 +209,7 @@ CREATE TABLE WalkingApplication (
     expirationTime BIGINT,
     Application_Status Status DEFAULT 'Pending',
     Application_Date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (Reserve_ID) REFERENCES SittingReservation(Reserve_ID),
+    FOREIGN KEY (Reserve_ID) REFERENCES WalkingRequest(Reserve_ID),
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 

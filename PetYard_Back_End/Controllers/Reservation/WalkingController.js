@@ -93,7 +93,7 @@ const applyForWalkingRequest = async (req, res) => {
             SELECT * FROM WalkingRequest 
             WHERE Reserve_ID = $1 
             AND Provider_ID IS NULL 
-            AND Status = 'pending'`;
+            AND Status = 'Pending'`;
         const requestRes = await pool.query(requestQuery, [reservationId]);
 
         if (requestRes.rows.length === 0) {
@@ -103,18 +103,19 @@ const applyForWalkingRequest = async (req, res) => {
             });
         }
 
-        // Update the reservation to assign the service provider
-        const updateQuery = `
-            UPDATE WalkingRequest 
-            SET Provider_ID = $1 
-            WHERE Reserve_ID = $2 
+        // Insert data into the WalkingApplication table
+        const insertApplicationQuery = `
+            INSERT INTO WalkingApplication (Provider_ID, Reserve_ID) 
+            VALUES ($1, $2)
             RETURNING *`;
-        const updateRes = await pool.query(updateQuery, [serviceProviderId, reservationId]);
+        const insertApplicationRes = await pool.query(insertApplicationQuery, [serviceProviderId, reservationId]);
 
         res.status(200).json({
             status: "success",
             message: "Applied to request successfully.",
-            data: updateRes.rows[0]
+            data: {
+                application: insertApplicationRes.rows[0]
+            }
         });
 
     } catch (e) {
@@ -125,6 +126,7 @@ const applyForWalkingRequest = async (req, res) => {
         });
     }
 };
+
 
 // const GetAllRequset = async (req, res) => { // For provider to call and get all requests made by different owners
 //     const providerId = req.ID;
@@ -191,10 +193,11 @@ const GetPendingWalkingRequests = async (req, res) => { // For owner
 
         const query = `
             SELECT wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
-                   gf.Center_Latitude, gf.Center_Longitude
+                   MAX(gf.Center_Latitude) AS Center_Latitude, MAX(gf.Center_Longitude) AS Center_Longitude
             FROM WalkingRequest wr
             LEFT JOIN Geofence gf ON wr.Owner_ID = gf.PetOwner_ID
             WHERE wr.Owner_ID = $1 AND wr.Provider_ID IS NULL AND wr.Status = 'Pending'
+            GROUP BY wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status
         `;
         const result = await pool.query(query, [ownerId]);
 
@@ -210,6 +213,7 @@ const GetPendingWalkingRequests = async (req, res) => { // For owner
         });
     }
 }
+
 
 
 const GetWalkingApplications = async(req, res) => {
@@ -287,7 +291,8 @@ const getAllPendingRequests = async (req, res) => { // For provider
         }
 
         const reservationQuery = `
-            SELECT wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
+            SELECT DISTINCT ON (wr.Reserve_ID) 
+                   wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
                    gf.Center_Latitude, gf.Center_Longitude
             FROM WalkingRequest wr
             LEFT JOIN Geofence gf ON wr.Owner_ID = gf.PetOwner_ID
@@ -295,8 +300,8 @@ const getAllPendingRequests = async (req, res) => { // For provider
             AND wr.Reserve_ID NOT IN (
                 SELECT wa.Reserve_ID FROM WalkingApplication wa WHERE wa.Provider_ID = $2
             )
-            ORDER BY wr.Start_time`;
-        
+            ORDER BY wr.Reserve_ID, wr.Start_time`;
+
         const reservationResult = await pool.query(reservationQuery, ['Pending', providerId]);
 
         if (reservationResult.rows.length === 0) {
@@ -320,6 +325,7 @@ const getAllPendingRequests = async (req, res) => { // For provider
         });
     }
 };
+
 
 
 const rejectApplication = async (req, res) => {
