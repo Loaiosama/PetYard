@@ -217,7 +217,7 @@ const GetSittingReservations = async (req, res) => {
 
         const query = `
             SELECT sr.Reserve_ID, sr.Pet_ID, sr.Owner_ID, sr.Location, sr.Start_time, sr.End_time, sr.Final_Price, sr.Status, 
-                   p.Pet_name, p.Image
+                   p.Name, p.Image
             FROM SittingReservation sr
             JOIN Pet p ON sr.Pet_ID = p.Pet_ID
             WHERE sr.Owner_ID = $1 AND sr.Provider_ID IS NULL AND sr.Status = 'Pending'
@@ -241,20 +241,17 @@ const GetSittingReservations = async (req, res) => {
 
 
 
-const getSittingApplications = async(req, res) => {
-
+const getSittingApplications = async (req, res) => {
     const reserveId = req.params.Reserve_ID;
     const ownerId = req.ID;
 
     try {
-
-        if(!reserveId || !ownerId){
+        if (!reserveId || !ownerId) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please provide reservation ID or ownerId."
-            })
+            });
         }
-
 
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
@@ -276,23 +273,28 @@ const getSittingApplications = async(req, res) => {
             });
         }
 
-        const Query = 'SELECT * FROM SittingApplication WHERE Reserve_ID = $1';
-        const Result = await pool.query(Query, [reserveId]);
-      
+        const query = `
+            SELECT sa.*, sp.UserName AS provider_name, sp.Image AS provider_image
+            FROM SittingApplication sa
+            JOIN ServiceProvider sp ON sa.Provider_ID = sp.Provider_Id
+            WHERE sa.Reserve_ID = $1
+        `;
+        const result = await pool.query(query, [reserveId]);
+
         res.status(200).json({
             status: "Success",
-            message: "Applications retrieved successfuly.",
-            data: Result.rows
-        })
+            message: "Applications retrieved successfully.",
+            data: result.rows
+        });
 
     } catch (e) {
-        console.error("Error: ", e);
+        console.error("Error:", e);
         res.status(500).json({
             status: "Fail",
             message: "Internal Server Error."
-        })
+        });
     }
-}
+};
 
 
 

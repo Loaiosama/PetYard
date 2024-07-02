@@ -81,12 +81,26 @@ const applyForWalkingRequest = async (req, res) => {
     const { reservationId } = req.body;
 
     try {
+
+
         if (!serviceProviderId || !reservationId) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
             });
         }
+
+        const providerQuery = "SELECT * FROM ServiceProvider WHERE Provider_Id = $1";
+        const providerResult = await pool.query(providerQuery, [serviceProviderId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider is not registered in the database."
+            });
+        }
+
+
 
         // Check if the reservation exists, is pending, and is still available
         const requestQuery = `
@@ -103,12 +117,48 @@ const applyForWalkingRequest = async (req, res) => {
             });
         }
 
+
+
+
         // Insert data into the WalkingApplication table
         const insertApplicationQuery = `
             INSERT INTO WalkingApplication (Provider_ID, Reserve_ID) 
             VALUES ($1, $2)
             RETURNING *`;
         const insertApplicationRes = await pool.query(insertApplicationQuery, [serviceProviderId, reservationId]);
+/*
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+        const petQuery = 'SELECT * FROM Pet WHERE Pet_Id = $1';
+        const petResult = await pool.query(petQuery, [Pet_ID]);
+
+        const message = `
+            🐾 Pet Walking Application Received! 🐾
+
+            Dear ${ownerResult.rows[0].First_name},
+
+            We are thrilled to inform you that a service provider has applied for your pet walking request! Here are the details of the application:
+
+            - **Reservation ID:** ${reservationId}
+            - **Service Provider Name:** ${providerResult.rows[0].username}
+            - **Start Time:** ${Start_time}
+            - **End Time:** ${End_time}
+            - **Pet Name:** ${petResult.rows[0].Pet_name}
+
+            Please review the application at your earliest convenience. If you have any questions or need further assistance, feel free to contact us.
+
+            Thank you for choosing PetYard. We are committed to providing the best care for your pet.
+
+            Best regards,
+            The PetYard Team
+        `;
+
+        await sendemail.sendemail({
+            email: ownerResult.rows[0].email,
+            subject: 'New Pet Walking Application 🐾',
+            message
+        });*/
+
 
         res.status(200).json({
             status: "success",
@@ -126,6 +176,8 @@ const applyForWalkingRequest = async (req, res) => {
         });
     }
 };
+
+
 
 
 // const GetAllRequset = async (req, res) => { // For provider to call and get all requests made by different owners

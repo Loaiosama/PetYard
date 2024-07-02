@@ -483,6 +483,8 @@ const filterWalkingByRating = async (req, res) => {
     }
 };
 
+
+
 // const SortByRating = async (req, res) => {
 //     const ownerid = req.ID;
 
