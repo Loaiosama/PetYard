@@ -23,32 +23,37 @@ const makeWalkingRequest = async (req, res) => {
             });
         }
 
-        // Perform the duplicate check using the pet ID and time range
-        const duplicateCheckQuery = `
+        // Perform the overlapping check using the pet ID and time range
+        const overlapCheckQuery = `
             SELECT * FROM WalkingRequest 
-            WHERE Pet_ID = $1 AND Start_time = $2 AND End_time = $3 AND Owner_ID = $4`;
-        const duplicateCheckRes = await pool.query(duplicateCheckQuery, [Pet_ID, Start_time, End_time, ownerId]);
+            WHERE Pet_ID = $1 AND Owner_ID = $2 AND (
+                ($3 < End_time AND $4 > Start_time) -- New request overlaps with existing request
+            )
+        `;
+        const overlapCheckRes = await pool.query(overlapCheckQuery, [Pet_ID, ownerId, Start_time, End_time]);
 
-        if (duplicateCheckRes.rows.length > 0) {
+        if (overlapCheckRes.rows.length > 0) {
             return res.status(400).json({
                 status: "fail",
-                message: "Duplicate request. A similar request already exists for this owner."
+                message: "Overlapping request. A similar request already exists for this owner in the specified time range."
             });
         }
 
-        // Insert into WalkingReservation table
+        // Insert into WalkingRequest table
         const insertQuery = `
             INSERT INTO WalkingRequest 
             (Pet_ID, Start_time, End_time, Final_Price, Owner_ID) 
             VALUES ($1, $2, $3, $4, $5) 
-            RETURNING *`;
+            RETURNING *
+        `;
         const insertRes = await pool.query(insertQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId]);
 
         // Insert geofence data into Geofence table
         const geofenceQuery = `
             INSERT INTO Geofence (PetOwner_ID, Center_Latitude, Center_Longitude, Radius) 
             VALUES ($1, $2, $3, $4) 
-            RETURNING *`;
+            RETURNING *
+        `;
         const geofenceRes = await pool.query(geofenceQuery, [ownerId, Location.x, Location.y, Radius]);
 
         res.status(201).json({
@@ -68,6 +73,8 @@ const makeWalkingRequest = async (req, res) => {
         });
     }
 };
+
+
 
 const applyForWalkingRequest = async (req, res) => {
     const serviceProviderId = req.ID; // Assuming the ID of the service provider is extracted from the token
