@@ -215,7 +215,7 @@ const GetSittingReservations = async (req, res) => {
                 message: "ownerId ID ."
             });
         }
-        const query = 'SELECT * FROM SittingReservation WHERE Owner_ID = $1';
+        const query = 'SELECT * FROM SittingReservation WHERE Owner_ID = $1 AND Provider_ID IS NULL';
         const result = await pool.query(query, [ownerId]);
 
         res.status(200).json({
@@ -368,6 +368,9 @@ const acceptSittingApplication = async (req, res) => {
 
         const updateApplicationQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
         await pool.query(updateApplicationQuery, ['Accepted', Reserve_ID, Provider_ID]);
+
+        const rejectOtherApplicationsQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID != $3';
+        await pool.query(rejectOtherApplicationsQuery, ['Rejected', Reserve_ID, Provider_ID]);
 
         const message = `
         🐾 Pet Sitting Application Accepted! 🐾
@@ -622,6 +625,65 @@ const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
     }
 }
 
+const rejectApplication = async (req, res) => {
+    const ownerId = req.ID;
+    const { Reserve_ID, Provider_ID } = req.body;
+
+    try {
+        if (!Reserve_ID || !ownerId || !Provider_ID) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide reservation ID, owner ID, and provider ID."
+            });
+        }
+
+        const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+        const ownerRes = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerRes.rows.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner is not in the database."
+            });
+        }
+
+        const reservationQuery = 'SELECT * FROM SittingReservation WHERE Reserve_ID = $1 AND Owner_ID = $2';
+        const reservationResult = await pool.query(reservationQuery, [Reserve_ID, ownerId]);
+
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Sitting reservation not found or not authorized."
+            });
+        }
+
+        const applicationQuery = 'SELECT * FROM SittingApplication WHERE Reserve_ID = $1 AND Provider_ID = $2';
+        const applicationResult = await pool.query(applicationQuery, [Reserve_ID, Provider_ID]);
+
+        if (applicationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Sitting application not found or not authorized."
+            });
+        }
+
+        const updateApplicationQuery = 'UPDATE SittingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
+        await pool.query(updateApplicationQuery, ['Rejected', Reserve_ID, Provider_ID]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Sitting application rejected successfully"
+        });
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
 // Set interval to run the function periodically
 setInterval(checkAndUpdateAllPendingRequestToRejectForPetowner, 60000);
 
@@ -635,6 +697,7 @@ module.exports = {
     getSittingApplications,
     acceptSittingApplication,
     GetAllRequset,
-    getAllPendingRequests
+    getAllPendingRequests,
+    rejectApplication
 };
 

@@ -123,7 +123,7 @@ router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest
 router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingReservations);
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
-
+router.put('/rejectApplication', authMiddleware, SittingController.rejectApplication);
 
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
