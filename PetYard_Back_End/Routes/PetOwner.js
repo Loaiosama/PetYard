@@ -102,6 +102,7 @@ router.get('/GetTimelinePost', authMiddleware, SocialMedia.getTimelinePosts);
 
 router.get('/checkout', payment.checkout);
 
+//------------------------------ ROUTES FOR Reviews CONTROLLER ---------------------------------
 
 router.post('/AddRating',authMiddleware,ReviewController.AddRating);
 router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
@@ -109,7 +110,6 @@ router.get('/FilterByRating/:minRating',authMiddleware,ReviewController.FilterBy
 router.get('/SortByRating',authMiddleware,ReviewController.SortByRating);
 router.get('/getAllReviews',authMiddleware,ReviewController.getAllReviews);
 router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, ReviewController.getAllReviewsForSpecificProvider);
-
 
 
 
