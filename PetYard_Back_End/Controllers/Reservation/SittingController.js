@@ -216,15 +216,17 @@ const GetSittingReservations = async (req, res) => {
         }
 
         const query = `
-            SELECT Reserve_ID, Pet_ID, Owner_ID, Location, Start_time, End_time, Final_Price, Status 
-            FROM SittingReservation 
-            WHERE Owner_ID = $1 AND Provider_ID IS NULL AND Status = 'Pending'
+            SELECT sr.Reserve_ID, sr.Pet_ID, sr.Owner_ID, sr.Location, sr.Start_time, sr.End_time, sr.Final_Price, sr.Status, 
+                   p.Pet_name, p.Image
+            FROM SittingReservation sr
+            JOIN Pet p ON sr.Pet_ID = p.Pet_ID
+            WHERE sr.Owner_ID = $1 AND sr.Provider_ID IS NULL AND sr.Status = 'Pending'
         `;
         const result = await pool.query(query, [ownerId]);
 
         res.status(200).json({
             status: "Success",
-            reservations: result.rows
+            reservations: result.rows,
         });
     } catch (error) {
         console.error("Error fetching sitting reservations", error);
@@ -233,7 +235,8 @@ const GetSittingReservations = async (req, res) => {
             message: "Internal server error"
         });
     }
-}
+};
+
 
 
 
