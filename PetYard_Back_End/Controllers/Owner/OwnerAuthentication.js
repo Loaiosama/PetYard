@@ -42,70 +42,82 @@ const resizePhoto=(req,res,next)=>{
 }
 
 const signUp = async (req, res) => {
-    const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
-    try {
 
-        if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
+    try {
+        if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
-        } 
+        }
+
+        // Phone number validation
+        const phoneRegex = /^\d+$/;
+        if (!phoneRegex.test(phoneNumber)) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Phone number must consist of only digits"
+            });
+        }
+
+        // Age validation
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+        if (age < 16 || (age === 16 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "User must be at least 16 years old"
+            });
+        }
 
         const client = await pool.connect();
-        const emailExists = 'Select * FROM Petowner WHERE Email = $1';
-        const phoneExists = 'Select * FROM Petowner WHERE Phone = $1';
+        const emailExists = 'SELECT * FROM Petowner WHERE Email = $1';
+        const phoneExists = 'SELECT * FROM Petowner WHERE Phone = $1';
         const resultEmail = await client.query(emailExists, [email]);
         const resultPhone = await client.query(phoneExists, [phoneNumber]);
 
         if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
             console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email and Phone number." })
-        }
-        else if(resultPhone.rows.length === 1)
-        {  
+            res.status(400).json({ message: "User already exists, try another Email and Phone number." });
+        } else if (resultPhone.rows.length === 1) {
             console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Phone number." })
-
-        }
-        else if(resultEmail.rows.length === 1)
-        {  
+            res.status(400).json({ message: "User already exists, try another Phone number." });
+        } else if (resultEmail.rows.length === 1) {
             console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email." })
-
-        }
-        else {
+            res.status(400).json({ message: "User already exists, try another Email." });
+        } else {
             const hashedPassword = await bcrypt.hash(pass, saltRounds);
 
-            const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image]);
+            const insertQuery = 'INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+            const newUser = await client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Image]);
 
+            const { validationCode } = Model.CreateValidationCode();
 
-            
-        const {validationCode} = Model.CreateValidationCode();
+            const message = `Your Validation code ${validationCode} \n Insert the Validation code to enjoy with Our Services`;
 
-        const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
-
-        await sendemail.sendemail({
-            email: email,
-            subject: 'Your Validation code  (valid for 10 min) ',
-            message
-        });
+            await sendemail.sendemail({
+                email: email,
+                subject: 'Your Validation code (valid for 10 min)',
+                message
+            });
 
             res.status(201).json({
-                 message: "Sign up successful" 
-            })
+                message: "Sign up successful"
+            });
         }
 
         client.release();
- 
-    }
-    catch (e) {
+    } catch (e) {
         console.error("Error during signUp", e);
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
 const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -532,6 +544,60 @@ const getinfo=async(req,res)=>{
 };
   */
 
+const changePassword = async(req, res) =>{
+    const ownerId = req.ID;
+    let{oldPassword, newPassword} = req.body;
+
+    try {
+        if (!ownerId || !oldPassword || !newPassword) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Please provide ownerId, oldPassword, and newPassword.'
+            });
+        }
+
+        const query = 'SELECT Password FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query(query, [ownerId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: 'Fail',
+                message: 'Owner not found.'
+            });
+        }
+
+        const currentPasswordHash = result.rows[0].password;
+
+        // Compare the old password with the current password hash
+        const isMatch = await bcrypt.compare(oldPassword, currentPasswordHash);
+        if (!isMatch) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Old password is incorrect.'
+            });
+        }
+
+        // Hash the new password
+        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+        // Update the password in the database
+        const updateQuery = 'UPDATE Petowner SET Password = $1 WHERE Owner_Id = $2';
+        await pool.query(updateQuery, [newPasswordHash, ownerId]);
+
+        res.status(200).json({
+            status: 'Success',
+            message: 'Password changed successfully.'
+        });
+        
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        })
+        
+    }
+}
 
   
 
@@ -547,7 +613,8 @@ module.exports = {
     updateInfo,
     CreateChat,
     GetChat,
-    getinfo
+    getinfo,
+    changePassword
    
       
 }
