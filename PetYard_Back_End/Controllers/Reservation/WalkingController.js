@@ -262,18 +262,44 @@ const GetPendingWalkingRequests = async (req, res) => {
 
         if (ownerRes.rows.length === 0) {
             return res.status(400).json({
-                status: "fail",
+                status: "Fail",
                 message: "Owner is not in the database."
             });
         }
 
         const query = `
-            SELECT wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
-                   MAX(gf.Center_Latitude) AS Center_Latitude, MAX(gf.Center_Longitude) AS Center_Longitude
-            FROM WalkingRequest wr
-            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
-            WHERE wr.Owner_ID = $1 AND wr.Provider_ID IS NULL AND wr.Status = 'Pending'
-            GROUP BY wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status
+            SELECT 
+                wr.Reserve_ID, 
+                wr.Pet_ID, 
+                p.Name AS Name, 
+                p.Image AS Image,
+                wr.Owner_ID, 
+                wr.Start_time, 
+                wr.End_time, 
+                wr.Final_Price, 
+                wr.Status,
+                MAX(gf.Center_Latitude) AS Center_Latitude, 
+                MAX(gf.Center_Longitude) AS Center_Longitude
+            FROM 
+                WalkingRequest wr
+            LEFT JOIN 
+                Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
+            JOIN 
+                Pet p ON wr.Pet_ID = p.Pet_Id
+            WHERE 
+                wr.Owner_ID = $1 
+                AND wr.Provider_ID IS NULL 
+                AND wr.Status = 'Pending'
+            GROUP BY 
+                wr.Reserve_ID, 
+                wr.Pet_ID, 
+                p.Name, 
+                p.Image, 
+                wr.Owner_ID, 
+                wr.Start_time, 
+                wr.End_time, 
+                wr.Final_Price, 
+                wr.Status
         `;
         const result = await pool.query(query, [ownerId]);
 
@@ -289,6 +315,7 @@ const GetPendingWalkingRequests = async (req, res) => {
         });
     }
 };
+
 
 
 
@@ -673,6 +700,7 @@ const getALLAcceptedRequest = async (req, res) => {
         });
     }
 };
+
 
 
 
