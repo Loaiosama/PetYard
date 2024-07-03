@@ -1,20 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const ReservationController = require('../Controllers/Reservation/BoardingController');
-// const publisher = require('../Controllers/Messages/publisher');
-// const subscriber = require('../Controllers/Messages/subscriber');
-// const SocialMedia = require('../Controllers/Community/SocialMedia');
-// const ChatController = require('../Controllers/Chat/ChatController');
 const PetOwnerController = require('../Controllers/Owner/OwnerAuthentication');
 const authMiddleware = require('../Controllers/Authentication/AuthMiddle');
 const PetProfileController = require('../Controllers/Pet_Profile/PetProfileController');
-// const OrderController = require('../Controllers/Online_Store/OrderController');
 require('../Controllers/Owner/GoogleAuth');
 require('../Controllers/Owner/Facebook');
 const passport = require('passport');
 const session = require('express-session');
-// const payment = require('../Controllers/Payment/payment');
-// const Shipping = require('../Controllers/Shipping/ShippingController')
 const SittingController = require('../Controllers/Reservation/SittingController');
 const GroomingController = require('../Controllers/Reservation/GroomingController');
 // const ClinicController = require('../Controllers/Reservation/ClinicController');
@@ -44,31 +37,6 @@ router.put('/updateInfo', authMiddleware, PetOwnerController.uploadphoto, PetOwn
 
 
 
-// router.post('/CreateChat/:Second_id', authMiddleware, ChatController.CreateChat);
-// router.get('/GetAllChat', authMiddleware, ChatController.FindUserChats);
-// router.get('/GetChat/:First_id/:Second_id', ChatController.FindChat);
-
-
-// router.post('/CreateMessage/:Chat_ID', authMiddleware, publisher.publish);
-// router.post('/GetMessages/:Chat_ID', authMiddleware, subscriber.subscribe);
-
-
-// router.post('/MakeOrder', authMiddleware, OrderController.MakeOrder);
-// router.get('/GetAllOrders', authMiddleware, OrderController.GetAllOrders);
-// router.get('/GetOrder/:order_id', authMiddleware, OrderController.GetOrder);
-// router.delete('/DeleteOrder/:order_id', authMiddleware, OrderController.DeleteOrder);
-
-// router.get('/SearchByname', authMiddleware, OrderController.SearchByname);
-// router.get('/SearchBycategory', authMiddleware, OrderController.SearchBycategory);
-// router.get('/SearchBybrand', authMiddleware, OrderController.SearchBybrand);
-
-
-// router.post('/AddOrderItem/:order_id/:product_id', authMiddleware, OrderController.AddOrderItem);
-// router.delete('/RemoveOrderItem/:order_id/:product_id/:order_item_id', authMiddleware, OrderController.RemoveOrderItem);
-// router.put('/UpdateOrderItem/:order_id/:product_id/:order_item_id', authMiddleware, OrderController.UpdateOrderItem);
-
-
-
 
 
 router.get('/GetProvidersByType/:type', authMiddleware, ReservationController.getProvidersByType);
@@ -89,20 +57,6 @@ router.post('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
 
 
 
-
-// router.post('/FollowUsers/:user_id', authMiddleware, SocialMedia.FollowUser);
-// router.get('/SearchByName/:name', authMiddleware, SocialMedia.SearchUsersByName);
-// router.delete('/UnfollowUsers/:user_id', authMiddleware, SocialMedia.UnfollowUsers);
-// router.post('/Createpost', authMiddleware, SocialMedia.uploadphoto, SocialMedia.resizePhoto, SocialMedia.CreatePosts);
-// router.put('/Updatepost/:post_id', authMiddleware, SocialMedia.uploadphoto, SocialMedia.resizePhoto, SocialMedia.updatePost);
-// router.delete('/DeletePost/:post_id', authMiddleware, SocialMedia.DeletePost);
-// router.put('/LikeOrDislikePost/:post_id', authMiddleware, SocialMedia.LikeOrDislikePost);
-// router.get('/GetPost/:post_id', authMiddleware, SocialMedia.getpost);
-// router.get('/GetTimelinePost', authMiddleware, SocialMedia.getTimelinePosts);
-
-
-// router.get('/checkout', payment.checkout);
-
 //------------------------------ ROUTES FOR rating CONTROLLER ---------------------------------
 
 router.post('/AddRating',authMiddleware,ReviewController.AddRating);
@@ -113,8 +67,6 @@ router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, Revi
 router.get('/filterByRating/:minRating/:serviceType', authMiddleware, ReviewController.filterByRating);
 
 
-// router.post('/AddShipping/:order_id', authMiddleware, Shipping.AddShipping);
-// router.put('/UpdateStatus/:Shipping_id', authMiddleware, Shipping.updateStatus);
 
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/makeSittingRequest', authMiddleware, SittingController.makeRequest);
