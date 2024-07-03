@@ -6,6 +6,7 @@ import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
 import 'package:petowner_frontend/core/widgets/reservation_success.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/choose_request.dart';
 import 'package:petowner_frontend/features/chat/presentation/view/chat_screen.dart';
+import 'package:petowner_frontend/features/grooming/presentation/view/grooming_home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
@@ -203,6 +204,28 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
+        name: Routes.kgroomingHome,
+        path: Routes.kgroomingHome,
+        pageBuilder: (context, state) {
+          final Map<String, dynamic> extras =
+              state.extra as Map<String, dynamic>;
+          final int providerId = extras['providerId'] as int;
+          final String serviceName = extras['serviceName'] as String;
+          final String providerName = extras['providerName'] as String;
+          final List<Service> services = extras['services'] as List<Service>;
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: GroomingHomeScreen(
+              services: services,
+              serviceName: serviceName,
+              providerId: providerId,
+              providerName: providerName,
+            ),
+          );
+        },
+      ),
+      GoRoute(
         name: Routes.kServiceProviders,
         path: Routes.kServiceProviders,
         pageBuilder: (context, state) {
@@ -251,12 +274,20 @@ abstract class AppRouter {
               state.extra as Map<String, dynamic>;
           final List<Service> services = extras['services'] as List<Service>;
           final String providerName = extras['providerName'] as String;
+          final String serviceName = extras['serviceName'] as String;
+          final DateTime startTime = extras['startTime'] as DateTime;
+          final DateTime endTime = extras['endTime'] as DateTime;
+          final DateTime date = extras['date'] as DateTime;
           return transitionGoRoute(
             context: context,
             state: state,
             child: ReservationSuccess(
               providerName: providerName,
               services: services,
+              serviceName: serviceName,
+              date: date,
+              endTime: endTime,
+              startTime: startTime,
             ),
           );
         },
@@ -307,6 +338,17 @@ abstract class AppRouter {
             context: context,
             state: state,
             child: Requestscuccess(req: req, PetName: petName),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kChatScreen,
+        path: Routes.kChatScreen,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ChatScreen(),
           );
         },
       ),

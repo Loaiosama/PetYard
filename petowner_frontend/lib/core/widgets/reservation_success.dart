@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
@@ -15,9 +16,20 @@ import 'package:petowner_frontend/features/reserve%20service/presentation/view/w
 
 class ReservationSuccess extends StatelessWidget {
   const ReservationSuccess(
-      {super.key, required this.services, required this.providerName});
+      {super.key,
+      required this.services,
+      required this.providerName,
+      required this.serviceName,
+      this.startTime,
+      this.date,
+      this.endTime});
   final List<Service> services;
   final String providerName;
+  final String serviceName;
+  final DateTime? startTime;
+  final DateTime? date;
+  final DateTime? endTime;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +37,10 @@ class ReservationSuccess extends StatelessWidget {
           child: ReservationSuccessBody(
         services: services,
         providerName: providerName,
+        serviceName: serviceName,
+        date: date,
+        endTime: endTime,
+        startTime: startTime,
       )),
     );
   }
@@ -32,9 +48,19 @@ class ReservationSuccess extends StatelessWidget {
 
 class ReservationSuccessBody extends StatelessWidget {
   const ReservationSuccessBody(
-      {super.key, required this.services, required this.providerName});
+      {super.key,
+      required this.services,
+      required this.providerName,
+      required this.serviceName,
+      this.startTime,
+      this.date,
+      this.endTime});
   final List<Service> services;
   final String providerName;
+  final String serviceName;
+  final DateTime? startTime;
+  final DateTime? date;
+  final DateTime? endTime;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -85,25 +111,47 @@ class ReservationSuccessBody extends StatelessWidget {
                 icon: FontAwesomeIcons.solidCalendar,
               ),
               widthSizedBox(10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Date & Time',
-                    style: Styles.styles12w600,
-                  ),
-                  heightSizedBox(2),
-                  Text(
-                    // '-From Wednesday, 08 May 2023',
-                    '-From sunday, 20 may 2034',
-                    style: Styles.styles12NormalHalfBlack,
-                  ),
-                  Text(
-                    '-To sunday, 20 may 2034',
-                    style: Styles.styles12NormalHalfBlack,
-                  ),
-                ],
-              ),
+              serviceName == "Boarding"
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Date & Time',
+                          style: Styles.styles12w600,
+                        ),
+                        heightSizedBox(2),
+                        Text(
+                          // '-From Wednesday, 08 May 2023',
+                          '-From ${DateFormat('EEEE, d MMM, yyyy').format(startTime!)}',
+                          style: Styles.styles12NormalHalfBlack,
+                        ),
+                        Text(
+                          '-To ${DateFormat('EEEE, d MMM, yyyy').format(endTime!)}',
+                          style: Styles.styles12NormalHalfBlack,
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Date & Time',
+                          style: Styles.styles12w600,
+                        ),
+                        heightSizedBox(2),
+                        Text(
+                          // '-From Wednesday, 08 May 2023',
+                          DateFormat('EEEE, d MMM, yyyy').format(date!),
+                          style: Styles.styles12NormalHalfBlack,
+                        ),
+                        Text(
+                          // '-From Wednesday, 08 May 2023',
+                          '${DateFormat('HH:mm').format(startTime!)} - '
+                          '${DateFormat('HH:mm').format(endTime!)} ',
+                          style: Styles.styles12NormalHalfBlack,
+                        ),
+                      ],
+                    ),
             ],
           ),
           heightSizedBox(6),
@@ -127,7 +175,7 @@ class ReservationSuccessBody extends StatelessWidget {
                   ),
                   heightSizedBox(2),
                   Text(
-                    'Pet Boarding',
+                    'Pet $serviceName',
                     style: Styles.styles12NormalHalfBlack,
                   ),
                 ],
