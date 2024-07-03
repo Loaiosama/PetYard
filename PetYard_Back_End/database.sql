@@ -248,11 +248,11 @@ CREATE TABLE LocationUpdates (
 
 CREATE TABLE Geofence (
     Geofence_ID SERIAL PRIMARY KEY,
-    PetOwner_ID INT NOT NULL,
+    Reserve_ID INT NOT NULL,
     Center_Latitude DOUBLE PRECISION NOT NULL,
     Center_Longitude DOUBLE PRECISION NOT NULL,
     Radius DOUBLE PRECISION NOT NULL,
-    FOREIGN KEY (PetOwner_ID) REFERENCES PetOwner(Owner_Id)
+    FOREIGN KEY (Reserve_ID) REFERENCES WalkingRequest(Reserve_ID)
 );
 
 CREATE TABLE Notifications (

@@ -48,13 +48,14 @@ const makeWalkingRequest = async (req, res) => {
         `;
         const insertRes = await pool.query(insertQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId]);
 
-        // Insert geofence data into Geofence table
+        // Insert geofence data into Geofence table using the returned Reserve_ID
+        const reserveId = insertRes.rows[0].reserve_id;
         const geofenceQuery = `
-            INSERT INTO Geofence (PetOwner_ID, Center_Latitude, Center_Longitude, Radius) 
+            INSERT INTO Geofence (Reserve_ID, Center_Latitude, Center_Longitude, Radius) 
             VALUES ($1, $2, $3, $4) 
             RETURNING *
         `;
-        const geofenceRes = await pool.query(geofenceQuery, [ownerId, Location.x, Location.y, Radius]);
+        const geofenceRes = await pool.query(geofenceQuery, [reserveId, Location.x, Location.y, Radius]);
 
         res.status(201).json({
             status: "success",
@@ -73,6 +74,7 @@ const makeWalkingRequest = async (req, res) => {
         });
     }
 };
+
 
 const applyForWalkingRequest = async (req, res) => {
     const serviceProviderId = req.ID; // Assuming the ID of the service provider is extracted from the token
@@ -188,8 +190,9 @@ const applyForWalkingRequest = async (req, res) => {
     }
 };
 
-const GetAllRequset = async (req, res) => { 
+const GetAllRequest = async (req, res) => {
     const providerId = req.ID;
+
     try {
         if (!providerId) {
             return res.status(400).json({
@@ -211,7 +214,7 @@ const GetAllRequset = async (req, res) => {
         const requestQuery = `
             SELECT DISTINCT wr.*, gf.center_latitude, gf.center_longitude, p.Name AS pet_name, p.Image AS pet_image
             FROM WalkingRequest wr
-            LEFT JOIN Geofence gf ON wr.Owner_ID = gf.PetOwner_ID
+            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
             LEFT JOIN Pet p ON wr.Pet_ID = p.Pet_Id
             WHERE wr.Status = $1
             ORDER BY wr.start_time
@@ -221,7 +224,7 @@ const GetAllRequset = async (req, res) => {
         if (requestRes.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
-                message: "Pending walking requests not found"
+                message: "Pending walking requests not found."
             });
         }
 
@@ -242,7 +245,8 @@ const GetAllRequset = async (req, res) => {
 
 
 
-const GetPendingWalkingRequests = async (req, res) => { // For owner
+
+const GetPendingWalkingRequests = async (req, res) => {
     const ownerId = req.ID;
 
     try {
@@ -267,7 +271,7 @@ const GetPendingWalkingRequests = async (req, res) => { // For owner
             SELECT wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
                    MAX(gf.Center_Latitude) AS Center_Latitude, MAX(gf.Center_Longitude) AS Center_Longitude
             FROM WalkingRequest wr
-            LEFT JOIN Geofence gf ON wr.Owner_ID = gf.PetOwner_ID
+            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
             WHERE wr.Owner_ID = $1 AND wr.Provider_ID IS NULL AND wr.Status = 'Pending'
             GROUP BY wr.Reserve_ID, wr.Pet_ID, wr.Owner_ID, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status
         `;
@@ -284,7 +288,8 @@ const GetPendingWalkingRequests = async (req, res) => { // For owner
             message: "Internal server error"
         });
     }
-}
+};
+
 
 
 
@@ -343,7 +348,7 @@ const GetWalkingApplications = async(req, res) => {
 
 
 
-const getAllPendingRequests = async (req, res) => { // For provider
+const getAllPendingRequests = async (req, res) => {
     const providerId = req.ID;
 
     try {
@@ -363,10 +368,11 @@ const getAllPendingRequests = async (req, res) => { // For provider
                 message: "User doesn't exist."
             });
         }
+
         const requestQuery = `
         SELECT DISTINCT wr.*, gf.center_latitude, gf.center_longitude, p.Name AS pet_name, p.Image AS pet_image
         FROM WalkingRequest wr
-        LEFT JOIN Geofence gf ON wr.Owner_ID = gf.PetOwner_ID
+        LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
         LEFT JOIN Pet p ON wr.Pet_ID = p.Pet_Id
         WHERE wr.Status = $1
         ORDER BY wr.start_time
@@ -394,6 +400,7 @@ const getAllPendingRequests = async (req, res) => { // For provider
         });
     }
 };
+
 
 
 
