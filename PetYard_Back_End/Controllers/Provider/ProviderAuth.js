@@ -40,7 +40,10 @@ const resizePhoto = (req, res, next) => {
 
     req.file.filename = `Provider-${req.ID}-${Date.now()}.jpeg`;
 
-    sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
+    // sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
+    sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petowner_frontend/assets/images/profile_pictures/${req.file.filename}`);
+    sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petprovider_frontend/assets/images/profile_pictures/${req.file.filename}`);
+    // sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petprovider_frontend/assets/profile_pictures${req.file.filename}`);
     next();
 }
 
@@ -537,15 +540,14 @@ const getService = async (req, res) => {
         });
     }
 }
-const Providerinfo=async(req,res)=>{
-      const providerid=req.ID;
-      try {
+const Providerinfo = async (req, res) => {
+    const providerid = req.ID;
+    try {
 
-     if(!providerid)
-        {
-             return res.status(400).json({
-                    status: "Fail",
-                    message: "Missing information"
+        if (!providerid) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Missing information"
             });
         }
         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
@@ -561,18 +563,18 @@ const Providerinfo=async(req,res)=>{
         res.status(200).json({
             status: "Done",
             message: "One Data Is Here",
-            providerinfo:result.rows,
+            providerinfo: result.rows,
             data: getservices.rows
         });
 
-      } catch (error) {
+    } catch (error) {
 
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
-        
-      }
+
+    }
 
 }
 
