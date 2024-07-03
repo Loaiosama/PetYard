@@ -671,16 +671,17 @@ const getAllReviews = async (req, res) => {
         });
     }
 };
-
 const getAllReviewsForSpecificProvider = async (req, res) => {
     const { providerid } = req.params;
 
     try {
         const query = `
-            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, r.comments, sp.username AS provider_username
-            FROM Review r
-            JOIN ServiceProvider sp ON r.Provider_ID = sp.Provider_Id
-            WHERE r.Provider_ID = $1
+            SELECT ir.Review_ID, ir.Provider_ID, ir.Rate_value, ir.Comment, ir.Created_At,
+                   po.First_name || ' ' || po.Last_name AS owner_name, po.image As owner_image
+            FROM IndividualReviews ir
+            JOIN Petowner po ON ir.Owner_ID = po.Owner_Id
+            WHERE ir.Provider_ID = $1
+            ORDER BY ir.Created_At DESC
         `;
         const result = await pool.query(query, [providerid]);
 
@@ -706,7 +707,7 @@ const getAllReviewsForSpecificProvider = async (req, res) => {
 };
 
 const getAllReviewsForMe = async (req, res) => {
-    const providerid = req.ID; 
+    const providerid = req.ID;
 
     try {
         const query = `
@@ -739,7 +740,7 @@ const getAllReviewsForMe = async (req, res) => {
 };
 
 
-module.exports={
+module.exports = {
     AddRating,
     filterByRating,
     AddComment,
