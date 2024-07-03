@@ -9,5 +9,6 @@ class Routes {
   static const String kHomeScreen = '/home';
   static const String kAvailableSlotsScreen = '/availableSlots';
   static const String kChooseGroomingTypes = '/chooseGroomingTypes';
+  static const String kAddMoreGroomingTypes = '/addMoreGroomingTypes';
   static const String kProfileScreen = '/profileScreen';
 }

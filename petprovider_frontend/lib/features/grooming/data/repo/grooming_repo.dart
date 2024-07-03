@@ -12,4 +12,6 @@ abstract class GroomingRepo {
       required int length});
 
   Future<Either<Failure, List<GroomingDatum>>> getGroomingSlots();
+  Future<Either<Failure, bool>> updatePriceForService(
+      {required double price, required String type});
 }

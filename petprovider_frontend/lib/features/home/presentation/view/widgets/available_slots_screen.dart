@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/green_container_at_top.dart';
+import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view/grooming_edit_types.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view/grooming_set_slot.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view/grooming_slots_tab.dart';
+import 'package:petprovider_frontend/features/grooming/presentation/view_model/edit_types_cubit/edit.types.dart';
 
 import 'boading_set_slot_tab.dart';
 import 'boarding_slots_tab.dart';
@@ -65,8 +70,13 @@ class AvaialableSlotsScreen extends StatelessWidget {
                           const GroomingSetSlotsTab(),
                         if (serviceName == 'Grooming') const GroomingSlotsTab(),
                         if (serviceName == 'Grooming')
-                          EditGroomingTypesTab(
-                            types: groomingTypes,
+                          BlocProvider(
+                            create: (context) => GroomingTypesCubit(
+                                GroomingRepoImpl(api: ApiService(dio: Dio())))
+                              ..initialize(groomingTypes),
+                            child: EditGroomingTypesTab(
+                              initialTypes: groomingTypes,
+                            ),
                           ),
                       ]),
                     ),

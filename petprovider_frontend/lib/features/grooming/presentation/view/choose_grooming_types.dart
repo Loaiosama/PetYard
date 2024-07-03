@@ -12,9 +12,10 @@ import '../../../../../../core/utils/theming/styles.dart';
 import '../view_model/choose_types_cubit/grooming_cubit.dart';
 
 class ChooseGroomingTypeScreen extends StatelessWidget {
-  const ChooseGroomingTypeScreen({super.key, required this.serviceName});
+  const ChooseGroomingTypeScreen(
+      {super.key, required this.serviceName, required this.groomingTypes});
   final String serviceName;
-
+  final List<dynamic> groomingTypes;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<GroomingCubit, GroomingState>(
@@ -25,8 +26,12 @@ class ChooseGroomingTypeScreen extends StatelessWidget {
               content: Text(state.successMessage),
             ),
           );
-          GoRouter.of(context)
-              .push(Routes.kAvailableSlotsScreen, extra: 'Grooming');
+          // GoRouter.of(context).push(Routes.kAvailableSlotsScreen, extra: {
+          //   "serviceName": serviceName,
+          //   "groomingTypes": groomingTypes
+          // });
+
+          GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
         } else if (state is GroomingTypesFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -37,11 +42,15 @@ class ChooseGroomingTypeScreen extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = BlocProvider.of<GroomingCubit>(context);
+        var filteredTypes = cubit.getFilteredGroomingTypes(groomingTypes);
+        // print('Filtereddd $filteredTypes');
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: IconButton(
                 onPressed: () {
+                  // print('groomingTypes $groomingTypes');
+                  // print('object $filteredTypes');
                   GoRouter.of(context).pop();
                 },
                 icon: const Icon(Icons.arrow_back_ios)),
@@ -66,7 +75,8 @@ class ChooseGroomingTypeScreen extends StatelessWidget {
                   SizedBox(height: 20.h),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: cubit.groomingTypes.length,
+                      // itemCount: cubit.groomingTypes.length,
+                      itemCount: filteredTypes.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
@@ -92,7 +102,8 @@ class ChooseGroomingTypeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  cubit.groomingTypes[index]['type'],
+                                  // cubit.groomingTypes[index]['type'],
+                                  filteredTypes[index]['type'],
                                   style: TextStyle(
                                     color: cubit.selectedTypes[index]
                                         ? kSecondaryColor
@@ -163,12 +174,16 @@ class ChooseGroomingTypeScreen extends StatelessWidget {
                                 final price = double.tryParse(priceStr);
                                 if (price != null && price > 0.0) {
                                   selectedTypes.add({
-                                    'type': cubit.groomingTypes[i]['type'],
+                                    'type': filteredTypes[i]['type'],
                                     'price': price,
                                   });
                                 }
                               }
                             }
+                            // print('object');
+                            // print(selectedTypes);
+                            // print(selectedTypes[0]['type']);
+                            // print(selectedTypes[0]['price']);
                             if (selectedTypes.isNotEmpty) {
                               for (int i = 0; i < selectedTypes.length; i++) {
                                 cubit.submitGroomingTypes(

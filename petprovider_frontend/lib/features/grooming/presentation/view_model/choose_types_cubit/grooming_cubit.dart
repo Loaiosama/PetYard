@@ -41,6 +41,7 @@ class GroomingCubit extends Cubit<GroomingState> {
 
   Future<void> submitGroomingTypes(
       {required String groomingType, required double price}) async {
+    // print('groomingType $groomingType');
     emit(GroomingTypesLoading());
     await Future.delayed(const Duration(seconds: 1));
     var result = await groomingRepoImpl.setGroomingType(
@@ -50,6 +51,25 @@ class GroomingCubit extends Cubit<GroomingState> {
       (r) => emit(
           const GroomingTypesSuccess('Grooming types submitted successfully')),
     );
+  }
+
+  // List<Map<String, dynamic>> getFilteredGroomingTypes(
+  //     List<dynamic> existingTypes) {
+  //   print('exist $existingTypes');
+  //   // print(groomingTypes
+  //   //     .where((type) => !existingTypes.contains(type['price'] == 0))
+  //   //     .toList());
+  //   return groomingTypes
+  //       .where((type) => !existingTypes.contains(type['type']))
+  //       .toList();
+  // }
+
+  List<Map<String, dynamic>> getFilteredGroomingTypes(
+      List<dynamic> existingTypes) {
+    return groomingTypes
+        .where((type) => !existingTypes.any(
+            (existingType) => existingType['grooming_type'] == type['type']))
+        .toList();
   }
 
   @override

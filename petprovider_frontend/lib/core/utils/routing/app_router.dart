@@ -119,7 +119,12 @@ abstract class AppRouter {
           name: Routes.kChooseGroomingTypes,
           path: Routes.kChooseGroomingTypes,
           pageBuilder: (context, state) {
-            final String serviceName = state.extra as String;
+            // final String serviceName = state.extra as String;
+            final Map<String, dynamic> extras =
+                state.extra as Map<String, dynamic>;
+            final String serviceName = extras['serviceName'] as String;
+            final List<dynamic> groomingTypes =
+                extras['groomingTypes'] as List<dynamic>;
             return transitionGoRoute(
               context: context,
               state: state,
@@ -128,10 +133,12 @@ abstract class AppRouter {
                     GroomingRepoImpl(api: ApiService(dio: Dio()))),
                 child: ChooseGroomingTypeScreen(
                   serviceName: serviceName,
+                  groomingTypes: groomingTypes,
                 ),
               ),
             );
           }),
+
       // // Navigate to forget password screen
       // GoRoute(
       //   path: Routes.kForgotPasswordScreen,

@@ -63,7 +63,7 @@ class GroomingSetSlotsTab extends StatelessWidget {
                   ),
                   heightSizedBox(20),
                   Text(
-                    'Choose Start Time',
+                    'Choose Working Hours',
                     style: Styles.styles16w600,
                   ),
                   heightSizedBox(16),

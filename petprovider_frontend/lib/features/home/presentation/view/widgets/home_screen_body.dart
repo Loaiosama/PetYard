@@ -155,8 +155,10 @@ class SetAvailableListView extends StatelessWidget {
                 "groomingTypes": types,
               });
             } else {
-              GoRouter.of(context)
-                  .push(Routes.kChooseGroomingTypes, extra: 'Grooming');
+              GoRouter.of(context).push(Routes.kChooseGroomingTypes, extra: {
+                "groomingTypes": [],
+                "serviceName": "Grooming",
+              });
             }
           },
         );

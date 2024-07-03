@@ -115,4 +115,30 @@ class GroomingRepoImpl extends GroomingRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> updatePriceForService(
+      {required double price, required String type}) async {
+    try {
+      // print(startdate);
+      // print(enddate);
+      // print(length);
+      await api.setAuthorizationHeader();
+      var response = await api.put(
+        endPoints: 'Provider/updatePriceForService',
+        data: {"Price": price, "Grooming_Type": type},
+      );
+
+      if (response.statusCode == 200) {
+        return right(true);
+      } else {
+        return left(ServerFailure(response.data['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }
