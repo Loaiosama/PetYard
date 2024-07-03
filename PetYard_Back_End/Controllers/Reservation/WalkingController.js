@@ -669,8 +669,170 @@ const getALLAcceptedRequest = async (req, res) => {
 
 
 
+const checkAndUpdateExpiredReservations = async () => {
+    try {
+        const currentTime = Date.now();
+        const expiredReservations = await pool.query('SELECT * FROM WalkingApplication WHERE expirationTime < $1 AND Application_Status = $2', [currentTime, 'Pending']);
+
+        for (const reservation of expiredReservations.rows) {
+            // Update status to "Rejected"
+            await pool.query('UPDATE WalkingApplication SET Application_Status = $1 WHERE Application_ID = $2', ['Rejected', reservation.application_id]);
+
+            // Retrieve provider details for the expired reservation slot
+            const providerQuery = await pool.query('SELECT email, UserName FROM ServiceProvider WHERE Provider_Id = $1', [reservation.provider_id]);
+            const provider = providerQuery.rows[0];
+
+            // Retrieve reservation details
+            const reservationQuery = await pool.query('SELECT * FROM WalkingRequest WHERE Reserve_ID = $1', [reservation.reserve_id]);
+            const reservationDetails = reservationQuery.rows[0];
+         
+            // Retrieve owner details
+            const ownerQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [reservationDetails.owner_id]);
+            const name = ownerQuery.rows[0].first_name;
+
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [reservationDetails.pet_id]);
+            const petName = petQuery.rows[0].name;
+
+            // Format the start time and end time of the reservation
+            const startTime = new Date(reservationDetails.start_time).toLocaleString();
+            const endTime = new Date(reservationDetails.end_time).toLocaleString();
+
+            // Construct the message
+            const message = `Dear ${provider.username},\n\nWe regret to inform you that the Walking reservation has been automatically rejected due to inactivity.\n\nReservation Details:\nOwner Name: ${name}\nPet Name: ${petName}\nStart Time: ${startTime}\nEnd Time: ${endTime}\n\nThank you for using our services. Please contact the owner if you have any questions.\n\nBest Regards,\nPetYard Team`;
+
+            // Send email notification
+            await sendemail.sendemail({
+                email: provider.email,
+                subject: 'Your Walking Reservation Status',
+                message
+            });
+        }
+    } catch (error) {
+        console.error("Error checking and updating expired reservations:", error);
+    }
+}
+
+// Schedule periodic execution of the function
+setInterval(checkAndUpdateExpiredReservations, 5000);
+
+// Call the function immediately to handle potentially expired reservations
+checkAndUpdateExpiredReservations();
 
 
+
+
+
+const checkAndUpdateAllPendingRequestToRejectForProvider = async () => {
+    try {
+        const selectAllAccepted = await pool.query('SELECT * FROM WalkingRequest WHERE Status = $1', ['Accepted']);
+        for (const reservation of selectAllAccepted.rows) {
+            const pendingApplicationsQuery = await pool.query(
+                'SELECT * FROM WalkingApplication WHERE Reserve_ID = $1 AND Application_Status = $2',
+                [reservation.reserve_id, 'Pending']
+            );
+
+            for (const application of pendingApplicationsQuery.rows) {
+                const providerId = application.provider_id;
+
+                const providerQuery = await pool.query('SELECT * FROM ServiceProvider WHERE Provider_Id = $1', [providerId]);
+                if (providerQuery.rows.length === 0) continue;
+
+                const provider = providerQuery.rows[0];
+                const providerName = provider.username;
+                const providerEmail = provider.email;
+
+                // Update the application status to 'Rejected'
+                await pool.query('UPDATE WalkingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3', ['Rejected', reservation.reserve_id, providerId]);
+
+                const message = `
+                🐾 Pet Walking Application Update 🐾
+
+                Dear ${providerName},
+
+                We regret to inform you that your application for the following pet sitting request has been rejected:
+
+                - **Reservation ID:** ${reservation.reserve_id}
+
+                While this request wasn't successful, we appreciate your interest and encourage you to apply for other pet sitting opportunities available on PetYard.
+
+                Thank you for your understanding and for being a valued member of our community.
+
+                Best regards,
+                The PetYard Team
+                `;
+
+                await sendemail.sendemail({
+                    email: providerEmail,
+                    subject: 'Pet Walking Application Update 🐾',
+                    message
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating pending requests to reject:", error);
+    }
+
+}
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateAllPendingRequestToRejectForProvider, 6000);
+
+
+
+
+
+
+const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
+    try {
+        const selectAll = await pool.query('SELECT * FROM WalkingRequest WHERE Status = $1', ['Pending']);
+        
+        for (const reservation of selectAll.rows) {
+            const currentTime = new Date().toISOString();
+            
+            if (currentTime >= reservation.start_time.toISOString()) {
+                await pool.query('UPDATE WalkingRequest SET Status = $1 WHERE Reserve_ID = $2 AND Owner_ID = $3', ['Rejected', reservation.reserve_id, reservation.owner_id]);
+
+                const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+                const ownerRes = await pool.query(ownerQuery, [reservation.owner_id]);
+                if (ownerRes.rows.length === 0) continue;
+
+                const owner = ownerRes.rows[0];
+                const name = owner.first_name;
+                const email = owner.email;
+               
+
+                const message = `
+                🐾 Pet Walking Request Update 🐾
+
+                Dear ${name},
+
+                We regret to inform you that your pet  Walking request has been automatically rejected because the start time has passed without a sitter being assigned.
+
+                - **Reservation ID:** ${reservation.reserve_id}
+
+                We understand this may be disappointing, and we encourage you to post another request for pet  Walking. Our service providers are always eager to help care for your pet.
+
+                Thank you for your understanding and for being a valued member of our community.
+
+                Best regards,
+                The PetYard Team
+                `;
+
+                await sendemail.sendemail({
+                    email: email,
+                    subject: 'Pet Sitting Request Update 🐾',
+                    message
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating pending requests to reject:", error);
+    }
+}
+
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateAllPendingRequestToRejectForPetowner, 60000);
 
 
 module.exports = {
