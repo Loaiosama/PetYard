@@ -6,7 +6,7 @@ import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/type_tile.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/type_tile.dart';
 
 class ChooseType extends StatelessWidget {
   const ChooseType({
@@ -63,6 +63,7 @@ class ChooseType extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         petModel.type = "Dog";
+                        context.pushNamed(Routes.kPetBreed, extra: petModel);
                       },
                       child: Container(
                         width: 220.w,
@@ -189,3 +190,108 @@ class TopRoundedClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
+
+// import 'package:flutter/material.dart';
+
+// class ChooseType extends StatelessWidget {
+//   const ChooseType({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Choose Pet Type'),
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(20.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           children: [
+//             const Text(
+//               'Select the type of pet you want to add:',
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//             const SizedBox(height: 30),
+//             PetTypeButton(
+//               label: 'Cat',
+//               image: 'assets/cat.png', // Ensure you have this asset
+//               onTap: () {
+//                 Navigator.pop(context, 'Cat');
+//               },
+//             ),
+//             const SizedBox(height: 20),
+//             PetTypeButton(
+//               label: 'Dog',
+//               image: 'assets/dog.png', // Ensure you have this asset
+//               onTap: () {
+//                 Navigator.pop(context, 'Dog');
+//               },
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class PetTypeButton extends StatelessWidget {
+//   final String label;
+//   final String image;
+//   final VoidCallback onTap;
+
+//   const PetTypeButton({
+//     Key? key,
+//     required this.label,
+//     required this.image,
+//     required this.onTap,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: onTap,
+//       child: Container(
+//         height: 150,
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: BorderRadius.circular(20),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.grey.withOpacity(0.3),
+//               spreadRadius: 2,
+//               blurRadius: 5,
+//               offset: const Offset(0, 3),
+//             ),
+//           ],
+//         ),
+//         child: Row(
+//           children: [
+//             Padding(
+//               padding: const EdgeInsets.all(10.0),
+//               child: Image.asset(
+//                 image,
+//                 width: 100,
+//                 height: 100,
+//               ),
+//             ),
+//             Expanded(
+//               child: Center(
+//                 child: Text(
+//                   label,
+//                   style: const TextStyle(
+//                     fontSize: 24,
+//                     fontWeight: FontWeight.bold,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

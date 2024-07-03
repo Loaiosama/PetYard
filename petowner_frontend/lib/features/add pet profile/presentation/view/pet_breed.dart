@@ -9,8 +9,8 @@ import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/core/widgets/search_text_field.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_breed.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/linear_percent_indecator.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_type_bar.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/linear_percent_indecator.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/pet_type_bar.dart';
 
 class PetBreedScreen extends StatefulWidget {
   final PetModel petModel;
@@ -20,16 +20,21 @@ class PetBreedScreen extends StatefulWidget {
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _PetBreedScreenState createState() => _PetBreedScreenState();
+  PetBreedScreenState createState() => PetBreedScreenState();
 }
 
-class _PetBreedScreenState extends State<PetBreedScreen> {
-  List<String> filteredBreeds = catBreed;
+class PetBreedScreenState extends State<PetBreedScreen> {
+  late List<String> filteredBreeds;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredBreeds = widget.petModel.type == 'Cat' ? catBreed : dogBreed;
+  }
 
   void filterBreeds(String query) {
     setState(() {
-      filteredBreeds = catBreed
+      filteredBreeds = (widget.petModel.type == 'Cat' ? catBreed : dogBreed)
           .where((breed) => breed.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });

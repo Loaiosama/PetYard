@@ -12,10 +12,10 @@ import 'package:petowner_frontend/features/home/presentation/view/service_provid
 import 'package:petowner_frontend/features/onboarding/onboarding_screen2.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
 // import 'package:petowner_frontend/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/pet_breed.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/pet_info.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/pet_type.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/recap.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/pet_breed.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/pet_info.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/pet_type.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/recap.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/location_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';

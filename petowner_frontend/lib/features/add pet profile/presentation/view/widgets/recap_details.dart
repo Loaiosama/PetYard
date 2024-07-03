@@ -11,8 +11,8 @@ import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/repos/pet_info_imp.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view_model/cubit/add_pet_info_cubit.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/pet_image.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/reap_item.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/pet_image.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/reap_item.dart';
 
 class RecapDetails extends StatelessWidget {
   final PetModel petModel;
