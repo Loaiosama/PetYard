@@ -195,11 +195,12 @@ CREATE TABLE WalkingRequest (
     End_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     Final_Price DOUBLE PRECISION,
     Status VARCHAR(20) DEFAULT 'Pending',
-    Provider_ID INT,  -- Nullable, will be set when the owner accepts a provider
+    Provider_ID INT,  
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id),
     FOREIGN KEY (Pet_ID) REFERENCES Pet(Pet_ID),
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
+
 
 -- Table to handle applications from service providers for a sitting reservation
 CREATE TABLE WalkingApplication (

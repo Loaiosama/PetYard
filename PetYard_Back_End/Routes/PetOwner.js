@@ -148,8 +148,7 @@ router.post('/makeWalkingRequest', authMiddleware, WalkingController.makeWalking
 router.get('/GetPendingWalkingRequests', authMiddleware, WalkingController.GetPendingWalkingRequests);
 router.get('/GetWalkingApplications/:Reserve_ID', authMiddleware, WalkingController.GetWalkingApplications);
 router.put('/rejectWalkingApplication', authMiddleware, WalkingController.rejectApplication);
-
-
+router.put('/acceptWalkingApplication', authMiddleware, WalkingController.acceptApplication);
 
 //------------------------------ ROUTES FOR Location CONTROLLER ---------------------------------
 router.post('/setGeoLocation', authMiddleware, geoFenceController.setGeofence);
