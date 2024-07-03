@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
-import 'package:petowner_frontend/core/utils/routing/routes.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class PetCarerCardWidget extends StatelessWidget {
@@ -13,46 +10,58 @@ class PetCarerCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: InkWell(
-        onTap: () {
-          GoRouter.of(context).push(Routes.kProviderProfile);
-        },
-        splashColor: kPrimaryGreen.withOpacity(0.3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              height: 120,
-              width: 120,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                  image: AssetImage(
-                    'assets/images/1.png',
-                  ),
-                  fit: BoxFit.cover,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 120,
+            width: 120,
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage(
+                  'assets/images/1.png',
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+          widthSizedBox(18),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Olivia Wattson',
+                style: Styles.styles18BoldBlack,
+              ),
+              heightSizedBox(6),
+              Text(
+                'Pet Sitter | Pet Walker',
+                style: Styles.styles12RegularOpacityBlack,
+              ),
+              heightSizedBox(6),
+              const RatingRowWidget(),
+            ],
+          ),
+          const Spacer(),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(30.0.r),
+            ),
+            child: IconButton(
+              onPressed: () {},
+              icon: Tooltip(
+                message: 'Book Service',
+                child: Icon(
+                  Icons.more_vert_outlined,
+                  color: Colors.black.withOpacity(0.5),
+                  size: 22.0.sp,
+                ),
               ),
             ),
-            widthSizedBox(18),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Olivia Wattson',
-                  style: Styles.styles18BoldBlack,
-                ),
-                heightSizedBox(6),
-                Text(
-                  'Pet Sitter | Pet Walker',
-                  style: Styles.styles12RegularOpacityBlack,
-                ),
-                heightSizedBox(6),
-                const RatingRowWidget(),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -61,8 +70,11 @@ class PetCarerCardWidget extends StatelessWidget {
 class RatingRowWidget extends StatelessWidget {
   const RatingRowWidget({
     super.key,
+    this.rating,
+    this.count,
   });
-
+  final double? rating;
+  final String? count;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -74,8 +86,10 @@ class RatingRowWidget extends StatelessWidget {
           size: 16.sp,
         ),
         widthSizedBox(5),
-        Text('4.8 (4,279 reviews)', style: Styles.styles12RegularOpacityBlack),
+        Text('${rating?.toStringAsFixed(2) ?? '4.8'} (${count ?? '4,279'})',
+            style: Styles.styles12RegularOpacityBlack),
       ],
     );
   }
 }
+// 4.8 (4,279 reviews)

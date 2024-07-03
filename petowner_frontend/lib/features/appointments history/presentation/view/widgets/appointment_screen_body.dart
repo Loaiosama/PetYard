@@ -106,6 +106,9 @@ class PendingTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
+                      slotPrice:
+                          state.pendingReservations[0].data![0].slotPrice ??
+                              0.0,
                       boardingStartDate:
                           state.pendingReservations[index].data?[0].startTime,
                       boardingEndDate:
@@ -121,6 +124,7 @@ class PendingTabColumn extends StatelessWidget {
                           'no service',
                       appointmentStatus: 'Appointment Pending.',
                       statusColor: Colors.yellow.shade700,
+                      status: 'pending',
                     );
                   },
                 )
@@ -160,6 +164,9 @@ class CancelledTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
+                      slotPrice:
+                          state.rejectedReservations[0].data![0].slotPrice ??
+                              0.0,
                       boardingStartDate:
                           state.rejectedReservations[index].data?[0].startTime,
                       boardingEndDate:
@@ -175,6 +182,7 @@ class CancelledTabColumn extends StatelessWidget {
                           'no service',
                       appointmentStatus: 'Appointment Cancelled.',
                       statusColor: Colors.red,
+                      status: 'canceled',
                     );
                   },
                 )
@@ -214,6 +222,9 @@ class CompletedTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
+                      providerId: state.completedReservations[index].data?[0]
+                              .providerId ??
+                          -1,
                       boardingStartDate:
                           state.completedReservations[index].data?[0].startTime,
                       boardingEndDate:
@@ -229,6 +240,10 @@ class CompletedTabColumn extends StatelessWidget {
                           'no service',
                       appointmentStatus: 'Appointment Done.',
                       statusColor: kPrimaryGreen,
+                      slotPrice:
+                          state.completedReservations[0].data![0].slotPrice ??
+                              0.0,
+                      status: 'completed',
                     );
                   },
                 )

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
@@ -76,7 +77,7 @@ class Requests extends StatelessWidget {
                                   height: 60.h,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: Color.fromRGBO(145, 135, 231, 1),
+                                    color: kPrimaryGreen,
                                   ),
                                   child: Center(
                                     child: Text(

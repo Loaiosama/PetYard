@@ -130,4 +130,33 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> addRatingAndReview(
+      {required int providerId,
+      required double rate,
+      required String review}) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.post(
+        endPoints: 'Petowner/AddRating?providerid=$providerId',
+        data: {
+          "rate": rate,
+          "comment": review,
+        },
+      );
+
+      bool result = false;
+      if (response.statusCode == 201) {
+        result = true;
+      }
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

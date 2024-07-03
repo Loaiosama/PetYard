@@ -10,4 +10,6 @@ abstract class AppointmentHistoryRepo {
   Future<Either<Failure, List<Acceptedmodel>>> fetchAcceptedReservations();
   Future<Either<Failure, List<Rejectedmodel>>> fetchRejectedReservations();
   Future<Either<Failure, List<Pendingmodel>>> fetchPendingReservations();
+  Future<Either<Failure, bool>> addRatingAndReview(
+      {required int providerId, required double rate, required String review});
 }

@@ -9,14 +9,15 @@ import '../../../../provider profile/presentation/view/widgets/provider_profile_
 import 'package:intl/intl.dart';
 
 class SummaryTab extends StatelessWidget {
-  const SummaryTab(
-      {super.key,
-      required this.providerName,
-      required this.startDate,
-      this.endDate,
-      required this.fees,
-      required this.selectedPetName,
-      required this.service});
+  const SummaryTab({
+    super.key,
+    required this.providerName,
+    required this.startDate,
+    this.endDate,
+    required this.fees,
+    required this.selectedPetName,
+    required this.service,
+  });
   final String providerName;
   final DateTime? startDate;
   final DateTime? endDate;

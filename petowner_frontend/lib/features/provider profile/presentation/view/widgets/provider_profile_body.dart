@@ -24,6 +24,7 @@ class ProviderProfileBody extends StatelessWidget {
     required this.userName,
     required this.age,
     required this.services,
+    required this.image,
   });
   final int id;
   final String serviceName;
@@ -33,6 +34,7 @@ class ProviderProfileBody extends StatelessWidget {
   final String phoneNumber;
   final String userName;
   final List<Service> services;
+  final String image;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,6 +44,7 @@ class ProviderProfileBody extends StatelessWidget {
           ProviderProfileCard(
             services: services,
             providerName: userName,
+            image: image,
           ),
           heightSizedBox(20),
           Padding(
@@ -81,7 +84,9 @@ class ProviderProfileBody extends StatelessWidget {
                           userName: userName,
                         ),
                         const LocationTabColumn(),
-                        const ReviewsTabColumn(),
+                        ReviewsTabColumn(
+                          providerId: id,
+                        ),
                       ],
                     ),
                   ),
@@ -124,15 +129,27 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
               padding: EdgeInsets.only(right: 10.0.w),
               child: PetYardTextButton(
                 onPressed: () {
-                  context.pushNamed(
-                    Routes.kbookAppointment,
-                    extra: {
-                      'serviceName': serviceName,
-                      'providerId': id,
-                      'providerName': providerName,
-                      'services': services,
-                    },
-                  );
+                  if (serviceName == 'Boarding') {
+                    GoRouter.of(context).push(
+                      Routes.kbookAppointment,
+                      extra: {
+                        'serviceName': serviceName,
+                        'providerId': id,
+                        'providerName': providerName,
+                        'services': services,
+                      },
+                    );
+                  } else if (serviceName == 'Grooming') {
+                    GoRouter.of(context).push(
+                      Routes.kgroomingHome,
+                      extra: {
+                        'serviceName': serviceName,
+                        'providerId': id,
+                        'providerName': providerName,
+                        'services': services,
+                      },
+                    );
+                  }
                 },
                 text: 'Make An Appointment',
                 style: Styles.styles14w600.copyWith(

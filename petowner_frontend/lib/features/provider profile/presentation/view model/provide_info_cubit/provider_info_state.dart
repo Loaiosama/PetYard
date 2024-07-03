@@ -22,3 +22,17 @@ class ProviderInfoSuccess extends ProviderInfoState {
 
   const ProviderInfoSuccess(this.providerInfoModel);
 }
+
+final class ProviderRatingLoading extends ProviderInfoState {}
+
+final class ProviderRatingSuccess extends ProviderInfoState {
+  final List<ProviderRating> providerRatings;
+
+  const ProviderRatingSuccess({required this.providerRatings});
+}
+
+final class ProviderRatingFailure extends ProviderInfoState {
+  final String errorMessage;
+
+  const ProviderRatingFailure({required this.errorMessage});
+}

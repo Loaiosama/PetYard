@@ -19,7 +19,7 @@ class Datum extends Equatable {
   final DateTime? slotStartTime;
   final DateTime? slotEndTime;
   final int? slotPrice;
-
+  final int? providerId;
   const Datum({
     this.reserveId,
     this.slotId,
@@ -39,10 +39,12 @@ class Datum extends Equatable {
     this.slotStartTime,
     this.slotEndTime,
     this.slotPrice,
+    this.providerId,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         reserveId: json['reserve_id'] as int?,
+        providerId: json['provider_id'] as int?,
         slotId: json['slot_id'] as int?,
         petId: json['pet_id'] as int?,
         ownerId: json['owner_id'] as int?,
@@ -89,6 +91,7 @@ class Datum extends Equatable {
         'slot_start_time': slotStartTime?.toIso8601String(),
         'slot_end_time': slotEndTime?.toIso8601String(),
         'slot_price': slotPrice,
+        'provider_id': providerId,
       };
 
   @override
@@ -112,6 +115,7 @@ class Datum extends Equatable {
       slotStartTime,
       slotEndTime,
       slotPrice,
+      providerId,
     ];
   }
 }

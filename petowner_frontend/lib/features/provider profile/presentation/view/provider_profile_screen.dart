@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
-import 'package:petowner_frontend/features/provider%20profile/presentation/view%20model/cubit/provider_info_cubit.dart';
+import 'package:petowner_frontend/features/provider%20profile/presentation/view%20model/provide_info_cubit/provider_info_cubit.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/widgets/provider_profile_body.dart';
 
 class ProviderProfileScreen extends StatelessWidget {
@@ -64,8 +65,8 @@ class ProviderProfileScreen extends StatelessWidget {
                     child: Center(
                       child: IconButton(
                         onPressed: () {
-                          print(id);
-                          print(serviceName);
+                          // print(id);
+                          // print(serviceName);
                         },
                         icon: Tooltip(
                           message: 'More',
@@ -83,6 +84,7 @@ class ProviderProfileScreen extends StatelessWidget {
               body: ProviderProfileBody(
                 id: id,
                 age: state.providerInfoModel.data!.age ?? 0,
+                image: state.providerInfoModel.data!.image ?? '',
                 services: services,
                 serviceName: serviceName,
                 bio: state.providerInfoModel.data!.bio ?? 'No Bio Provided',
@@ -94,8 +96,19 @@ class ProviderProfileScreen extends StatelessWidget {
               ),
             );
           } else if (state is ProviderInfoLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Scaffold(
+                appBar: AppBar(),
+                body: const Center(
+                  child: CircularProgressIndicator(
+                    color: kPrimaryGreen,
+                  ),
+                ));
+          } else if (state is ProviderInfoFailure) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: Center(
+                child: Text(state.errorMessage),
+              ),
             );
           }
           return const Text('Error');

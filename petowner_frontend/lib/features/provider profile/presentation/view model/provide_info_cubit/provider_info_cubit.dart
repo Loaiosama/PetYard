@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/provider_info_model.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_rating.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
 
 part 'provider_info_state.dart';
@@ -17,5 +18,15 @@ class ProviderInfoCubit extends Cubit<ProviderInfoState> {
         (pet) {
       emit(ProviderInfoSuccess(pet));
     });
+  }
+
+  Future fetchProviderRatings({required int providerID}) async {
+    emit(ProviderRatingLoading());
+    var result =
+        await providerInfoRepo.fetchProviderRatings(provideriD: providerID);
+    result.fold(
+        (failure) =>
+            emit(ProviderRatingFailure(errorMessage: failure.errorMessage)),
+        (ratings) => emit(ProviderRatingSuccess(providerRatings: ratings)));
   }
 }

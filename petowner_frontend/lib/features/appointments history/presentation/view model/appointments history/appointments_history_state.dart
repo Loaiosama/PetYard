@@ -64,3 +64,17 @@ final class AcceptedAppointmentFailure extends AppointmentsHistoryState {
 
   const AcceptedAppointmentFailure({required this.errorMessage});
 }
+
+final class AddRatingSuccess extends AppointmentsHistoryState {
+  final bool isSuccess;
+
+  const AddRatingSuccess({required this.isSuccess});
+}
+
+final class AddRatingLoading extends AppointmentsHistoryState {}
+
+final class AddRatingFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const AddRatingFailure({required this.errorMessage});
+}

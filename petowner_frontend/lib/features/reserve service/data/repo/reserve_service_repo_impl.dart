@@ -58,20 +58,20 @@ class ReserveServiceRepoImpl extends ReserveServiceRepo {
       required int slotID}) async {
     try {
       await apiService.setAuthorizationHeader();
-      print('hellooo');
+      // print('hellooo');
       var response = await apiService.post(data: {
         "Slot_ID": slotID,
         "Start_time": startDate.toIso8601String(),
         "End_time": endDate.toIso8601String(),
       }, endPoints: 'Petowner/FeesDisplay');
 
-      print(response.statusCode);
-      print(response.data['Finalcost']);
+      // print(response.statusCode);
+      // print(response.data['Finalcost']);
       int finalCost = 0;
       if (response.statusCode == 201) {
-        print('hena');
+        // print('hena');
         finalCost = response.data['Finalcost'];
-        print('hena');
+        // print('hena');
       }
       return right(finalCost);
     } catch (e) {
@@ -90,7 +90,7 @@ class ReserveServiceRepoImpl extends ReserveServiceRepo {
       required int petID}) async {
     try {
       await apiService.setAuthorizationHeader();
-      print('hellooo');
+      // print('hellooo');
       var response = await apiService.post(data: {
         "Slot_ID": slotID,
         "Pet_ID": petID,
@@ -98,7 +98,7 @@ class ReserveServiceRepoImpl extends ReserveServiceRepo {
         "End_time": endDate.toIso8601String(),
       }, endPoints: 'Petowner/ReserveSlot');
 
-      print(response.statusCode);
+      // print(response.statusCode);
       if (response.statusCode == 201) {
         return true;
       }

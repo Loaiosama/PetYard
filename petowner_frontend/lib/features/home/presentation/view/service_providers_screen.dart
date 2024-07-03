@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
@@ -52,34 +55,101 @@ class ServiceProvidersScreen extends StatelessWidget {
 class ServiceProvidersBody extends StatelessWidget {
   const ServiceProvidersBody({super.key, required this.serviceName});
   final String serviceName;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SearchTextField(
-          onChanged: (p0) {},
+    return BlocProvider(
+      create: (context) => HomeProvidersCubit(HomeRepoImpl(
+        apiService: ApiService(
+          dio: Dio(),
         ),
-        heightSizedBox(20),
-        BlocProvider(
-          create: (context) => HomeProvidersCubit(HomeRepoImpl(
-            apiService: ApiService(
-              dio: Dio(),
-            ),
-          ))
-            ..getAllProvidersOfService(),
-          child: BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
+      ))
+        ..getAllProvidersOfService(serviceName: serviceName),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.85,
+                child: SearchTextField(
+                  onChanged: (p0) {},
+                ),
+              ),
+              const SizedBox(width: 10),
+              BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
+                builder: (context, state) {
+                  return InkWell(
+                    onTap: () {},
+                    child: Tooltip(
+                      message: 'More',
+                      child: PopupMenuButton<int>(
+                        icon: Icon(
+                          FontAwesomeIcons.sort,
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                        onSelected: (int result) {
+                          if (result >= 0) {
+                            // Handle rating filter
+                            context
+                                .read<HomeProvidersCubit>()
+                                .fetchProvidersSortedByRating(
+                                    rating: result, serviceName: serviceName);
+                            print('Selected rating filter: > $result');
+                          }
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<int>>[
+                          for (int i = 5; i > 0; i--)
+                            PopupMenuItem<int>(
+                              value: i,
+                              child: Row(
+                                children: [
+                                  Text('> $i'),
+                                  const Icon(
+                                    Icons.star,
+                                    size: 16,
+                                    color: Colors.amber,
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
             builder: (context, state) {
-              if (state is HomeProvidersSuccess) {
-                // print(state.providersList.length);
+              if (state is HomeProvidersLoading ||
+                  state is SortedProvidersLoading) {
                 return Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView.builder(
+                      itemCount: 5,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return const BuildShimmerListItem();
+                      },
+                    ),
+                  ),
+                );
+              } else if (state is HomeProvidersSuccess) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: ListView.builder(
                       itemCount: state.providersList.length,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         return ProviderListItem(
+                          image:
+                              state.providersList[index].data![0].image ?? '',
                           id: state.providersList[index].data![0].providerId ??
                               -1,
                           serviceName: serviceName,
@@ -91,41 +161,23 @@ class ServiceProvidersBody extends StatelessWidget {
                     ),
                   ),
                 );
-                // return Expanded(
-                //   child: Padding(
-                //     padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                //     child: GridView.builder(
-                //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //         crossAxisCount: 2,
-                //         mainAxisSpacing: 10.0.h,
-                //         crossAxisSpacing: 10.0.w,
-                //         childAspectRatio: MediaQuery.of(context).size.width /
-                //             (MediaQuery.of(context).size.height / 1.5),
-                //       ),
-                //       itemCount: 10,
-                //       physics: const BouncingScrollPhysics(),
-                //       itemBuilder: (context, index) {
-                //         return const ProviderGridItem(
-                //             //   id: state.providersList[index].data![0].providerId ??
-                //             //       1,
-                //             //   userName:
-                //             //       state.providersList[index].data![0].username ??
-                //             //           'no name',
-                //             // ); // Return your grid item widget here
-                //             );
-                //       },
-                //     ),
-                //   ),
-                // );
-              } else if (state is HomeProvidersLoading) {
+              } else if (state is SortedProvidersSuccess) {
                 return Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: ListView.builder(
-                      itemCount: 5,
+                      itemCount: state.providersList.length,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return const BuildShimmerListItem();
+                        final provider = state.providersList[index];
+                        return ProviderListItem(
+                          image: provider.image ?? '',
+                          id: provider.providerId ?? -1,
+                          serviceName: serviceName,
+                          userName: provider.username ?? 'no name',
+                          rating: provider.averageRating,
+                          count: provider.reviewCount,
+                        );
                       },
                     ),
                   ),
@@ -133,7 +185,15 @@ class ServiceProvidersBody extends StatelessWidget {
               } else if (state is HomeProvidersFailure) {
                 return Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 200.h),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 200),
+                  child: Center(
+                    child: Text(state.errorMessage),
+                  ),
+                );
+              } else if (state is SortedProvidersFailure) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 200),
                   child: Center(
                     child: Text(state.errorMessage),
                   ),
@@ -144,8 +204,8 @@ class ServiceProvidersBody extends StatelessWidget {
               );
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -156,10 +216,16 @@ class ProviderListItem extends StatelessWidget {
     required this.userName,
     required this.id,
     required this.serviceName,
+    required this.image,
+    this.rating,
+    this.count,
   });
   final String userName;
   final int id;
   final String serviceName;
+  final String image;
+  final double? rating;
+  final String? count;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -190,9 +256,11 @@ class ProviderListItem extends StatelessWidget {
                     width: 110.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0.r),
-                      image: const DecorationImage(
+                      image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage('assets/images/1.png'),
+                        image: AssetImage(
+                            // 'assets/images/1.png',
+                            '${Constants.profilePictures}/$image'),
                       ),
                     ),
                   ),
@@ -210,7 +278,10 @@ class ProviderListItem extends StatelessWidget {
                         style: Styles.styles12NormalHalfBlack,
                       ),
                       heightSizedBox(4),
-                      const RatingRowWidget(),
+                      RatingRowWidget(
+                        rating: rating,
+                        count: count,
+                      ),
                     ],
                   ),
                 ],

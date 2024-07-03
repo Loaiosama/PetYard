@@ -32,7 +32,7 @@ class HomeScreenBody extends StatelessWidget {
                   heightSizedBox(16),
                   const DiscoverServiceWidget(),
                   heightSizedBox(16),
-                  SeeAllRow(title: 'Recommended Carer', onPressed: () {}),
+                  SeeAllRow(title: 'Recommended Provider', onPressed: () {}),
                   heightSizedBox(10),
                 ],
               ),

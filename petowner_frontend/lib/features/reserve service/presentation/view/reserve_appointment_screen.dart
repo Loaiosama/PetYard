@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +42,7 @@ class _BookAppointmentState extends State<BookAppointment> {
   int? slotId;
   int? finalCost;
   int? selectedPetID;
+  List groomingTypes = [];
   List<Step> steps() => [
         Step(
           title: const Text(''),
@@ -201,6 +204,10 @@ class _BookAppointmentState extends State<BookAppointment> {
                                 .push(Routes.kReservationSuccess, extra: {
                               'services': widget.services,
                               'providerName': widget.providerName,
+                              'startTime': startDate,
+                              'endTime': endDate,
+                              'serviceName': widget.serviceName,
+                              'date': DateTime.now(),
                             });
                           } else if (state is ReserveSlotFailure) {
                             GoRouter.of(context)

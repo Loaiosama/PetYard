@@ -52,4 +52,17 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
         (accepted) =>
             emit(AcceptedAppointmentSuccess(acceptedReservations: accepted)));
   }
+
+  Future addRatingAndReview(
+      {required int providerId,
+      required double rate,
+      required String review}) async {
+    emit(AddRatingLoading());
+    await Future.delayed(const Duration(milliseconds: 100));
+    var result = await appointmentHistoryRepo.addRatingAndReview(
+        providerId: providerId, rate: rate, review: review);
+    result.fold(
+        (failure) => emit(AddRatingFailure(errorMessage: failure.errorMessage)),
+        (success) => emit(AddRatingSuccess(isSuccess: success)));
+  }
 }

@@ -22,3 +22,17 @@ final class HomeProvidersSuccess extends HomeProvidersState {
 
   const HomeProvidersSuccess({required this.providersList});
 }
+
+final class SortedProvidersLoading extends HomeProvidersState {}
+
+final class SortedProvidersFailure extends HomeProvidersState {
+  final String errorMessage;
+
+  const SortedProvidersFailure({required this.errorMessage});
+}
+
+final class SortedProvidersSuccess extends HomeProvidersState {
+  final List<ProviderSorted> providersList;
+
+  const SortedProvidersSuccess({required this.providersList});
+}

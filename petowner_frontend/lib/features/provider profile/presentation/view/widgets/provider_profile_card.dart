@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
@@ -10,9 +11,13 @@ import '../../../../../core/utils/theming/styles.dart';
 
 class ProviderProfileCard extends StatelessWidget {
   const ProviderProfileCard(
-      {super.key, required this.providerName, required this.services});
+      {super.key,
+      required this.providerName,
+      required this.services,
+      this.image});
   final String providerName;
   final List<Service> services;
+  final String? image;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -22,10 +27,12 @@ class ProviderProfileCard extends StatelessWidget {
           height: 80.h,
           width: 70.w,
           decoration: BoxDecoration(
-            image: const DecorationImage(
+            image: DecorationImage(
               image: AssetImage(
-                'assets/images/1.png',
-              ),
+                  // 'assets/images/1.png',
+                  '${Constants.profilePictures}/$image'
+                  // '${Constants.providersImage}\\$image',
+                  ),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(12.0),

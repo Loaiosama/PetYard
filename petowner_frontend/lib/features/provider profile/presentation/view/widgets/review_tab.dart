@@ -1,39 +1,86 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/repos/provider_info_repo.dart';
+import 'package:petowner_frontend/features/provider%20profile/presentation/view%20model/provide_info_cubit/provider_info_cubit.dart';
 
 class ReviewsTabColumn extends StatelessWidget {
-  const ReviewsTabColumn({super.key});
-
+  const ReviewsTabColumn({super.key, required this.providerId});
+  final int providerId;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        heightSizedBox(12),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 10,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return const ReviewListItem();
-            },
-          ),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => ProviderInfoCubit(
+          ProviderInfoRepo(apiService: ApiService(dio: Dio())))
+        ..fetchProviderRatings(providerID: providerId),
+      child: BlocBuilder<ProviderInfoCubit, ProviderInfoState>(
+        builder: (context, state) {
+          if (state is ProviderRatingLoading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: kPrimaryGreen,
+              ),
+            );
+          } else if (state is ProviderRatingFailure) {
+            return Center(
+              child: Text(state.errorMessage),
+            );
+          } else if (state is ProviderRatingSuccess) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                heightSizedBox(12),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.providerRatings.length,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ReviewListItem(
+                        image: state.providerRatings[index].ownerImage ?? '',
+                        rate: state.providerRatings[index].rateValue ?? 0,
+                        review: state.providerRatings[index].comment ?? '',
+                        reviewrName:
+                            state.providerRatings[index].ownerName ?? '',
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          }
+          return const Center(
+            child: Text('Something went wrong!'),
+          );
+        },
+      ),
     );
   }
 }
 
 class ReviewListItem extends StatelessWidget {
-  const ReviewListItem({super.key});
-  final int review = 4;
+  const ReviewListItem(
+      {super.key,
+      required this.rate,
+      required this.reviewrName,
+      required this.review,
+      required this.image});
+  // final int review = 4;
+  final int rate;
+  final String reviewrName;
+  final String review;
+  final String image;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 18.0.h),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,11 +88,11 @@ class ReviewListItem extends StatelessWidget {
               Container(
                 height: 50.h,
                 width: 50.w,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: AssetImage(
-                      'assets/images/1.png',
+                      '${Constants.profilePictures}/$image',
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -56,7 +103,7 @@ class ReviewListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Jane Cooper',
+                    reviewrName,
                     style: Styles.styles14w600,
                   ),
                   heightSizedBox(4),
@@ -65,7 +112,7 @@ class ReviewListItem extends StatelessWidget {
                       5,
                       (index) => Icon(
                         Icons.star,
-                        color: index < review ? Colors.yellow : Colors.grey,
+                        color: index < rate ? Colors.yellow : Colors.grey,
                         size: 22.sp,
                       ),
                     ),
@@ -78,7 +125,7 @@ class ReviewListItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 60.0.w),
             child: Text(
-              'As someone who lives in a remote area with limited access to healthcare, this telemedicine app has been a game changer for me. I can easily schedule virtual appointments with doctors and get the care I need without having to travel long distances.',
+              review,
               style: Styles.styles12NormalHalfBlack,
             ),
           ),

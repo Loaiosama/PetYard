@@ -57,6 +57,7 @@ dependencies:
   stroke_text: ^0.0.2
   syncfusion_flutter_datepicker: ^25.1.40
   numberpicker: ^2.1.2
+  flutter_rating_bar: ^4.0.1
  
 
 dev_dependencies:
@@ -76,8 +77,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - ../PetYard_Back_End/public/img/
     - assets/svgs/
     - assets/images/
+    - assets/images/profile_pictures/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
