@@ -106,9 +106,9 @@ class PendingTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
-                      slotPrice:
-                          state.pendingReservations[0].data![0].slotPrice ??
-                              0.0,
+                      slotPrice: state
+                              .pendingReservations[index].data![0].finalPrice ??
+                          0.0,
                       boardingStartDate:
                           state.pendingReservations[index].data?[0].startTime,
                       boardingEndDate:
@@ -164,9 +164,9 @@ class CancelledTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
-                      slotPrice:
-                          state.rejectedReservations[0].data![0].slotPrice ??
-                              0.0,
+                      slotPrice: state
+                              .rejectedReservations[index].data![0].slotPrice ??
+                          0.0,
                       boardingStartDate:
                           state.rejectedReservations[index].data?[0].startTime,
                       boardingEndDate:

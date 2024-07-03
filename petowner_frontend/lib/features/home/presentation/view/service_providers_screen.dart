@@ -100,7 +100,7 @@ class ServiceProvidersBody extends StatelessWidget {
                         },
                         itemBuilder: (BuildContext context) =>
                             <PopupMenuEntry<int>>[
-                          for (int i = 5; i > 0; i--)
+                          for (int i = 5; i >= 0; i--)
                             PopupMenuItem<int>(
                               value: i,
                               child: Row(

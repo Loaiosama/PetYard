@@ -7,14 +7,14 @@ class SearchTextField extends StatelessWidget {
   final void Function(String) onChanged;
 
   const SearchTextField({
-    Key? key,
+    super.key,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 10.0.h, left: 20.0.w, right: 20.0.w),
+      padding: EdgeInsets.only(top: 10.0.h, left: 20.0.w),
       child: Row(
         children: [
           Expanded(

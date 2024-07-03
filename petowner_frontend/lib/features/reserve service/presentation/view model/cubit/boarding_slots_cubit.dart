@@ -39,7 +39,7 @@ class BoardingSlotsCubit extends Cubit<BoardingSlotsState> {
       {required DateTime startDate,
       required DateTime endDate,
       required int slotID}) async {
-    print('object');
+    // print('object');
     emit(BoardingFeesDisplayLoading());
     var result = await reserveServiceRepo.feesDisplay(
         startDate: startDate, endDate: endDate, slotID: slotID);
