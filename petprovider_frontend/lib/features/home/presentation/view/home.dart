@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
+import 'package:petprovider_frontend/features/handle%20requests/presentation/view/handel_requests.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/home_screen_body.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/profile_screen.dart';
 
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List screens = [
     const HomeScreenBody(),
     Container(),
-    Container(),
+    Jobs(),
     Container(),
     const ProfileScreen(),
   ];

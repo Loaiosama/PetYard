@@ -7,8 +7,12 @@ import 'package:petprovider_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view/choose_grooming_types.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view_model/choose_types_cubit/grooming_cubit.dart';
+import 'package:petprovider_frontend/features/handle%20requests/data/model/Pet.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
+import 'package:petprovider_frontend/features/pet%20profile/data/model/owner.dart';
+import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_owner_profile.dart';
+import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_profile.dart';
 import 'package:petprovider_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
 import 'package:petprovider_frontend/features/registration/signin/presentation/view/widgets/choose_service.dart';
 import 'package:petprovider_frontend/features/registration/signin/presentation/view_model/signin_cubit/sign_in_cubit.dart';
@@ -137,6 +141,42 @@ abstract class AppRouter {
                 ),
               ),
             );
+          }),
+      GoRoute(
+        name: Routes.KPetProfile,
+        path: Routes.KPetProfile,
+        pageBuilder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final Pet pet = args['pet'] as Pet;
+          final int age = args['age'] as int;
+          final int ownerId = args['ownerId'] as int; // Extract ownerId
+
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: PetProfile(
+              pet: pet,
+              age: age,
+              ownerId: ownerId, // Pass ownerId to PetProfile
+            ),
+          );
+        },
+      ),
+      GoRoute(
+          name: Routes.KPetOwnerProfile,
+          path: Routes.KPetOwnerProfile,
+          pageBuilder: (context, state) {
+            final args = state.extra as Map<String, dynamic>;
+            final Owner owner = args['onwer'] as Owner;
+            final Pet pet = args['pet'] as Pet;
+
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: PetOwnerProfile(
+                  owner: owner,
+                  pet: pet,
+                ));
           }),
 
       // // Navigate to forget password screen

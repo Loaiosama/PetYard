@@ -11,4 +11,6 @@ class Routes {
   static const String kChooseGroomingTypes = '/chooseGroomingTypes';
   static const String kAddMoreGroomingTypes = '/addMoreGroomingTypes';
   static const String kProfileScreen = '/profileScreen';
+  static const String KPetProfile = '/petPfrofile';
+  static const String KPetOwnerProfile = '/petOwnerProfile';
 }

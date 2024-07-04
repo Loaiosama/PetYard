@@ -53,6 +53,11 @@ dependencies:
   shimmer: ^3.0.0
   stroke_text: ^0.0.2
   syncfusion_flutter_datepicker: ^25.1.40
+  google_maps_flutter: ^2.7.0
+  geocoding: ^3.0.0
+  geolocator: ^12.0.0
+  flutter_polyline_points: ^2.0.1
+  bitmap: ^0.2.0
 
   flutter:
     sdk: flutter
