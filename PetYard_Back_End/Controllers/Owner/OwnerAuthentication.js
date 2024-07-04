@@ -11,6 +11,7 @@ const sharp = require('sharp');
 
 
 
+
 const multerStorage=multer.memoryStorage();
 
 const multerFilter=(req,file,cb)=>{
@@ -41,71 +42,477 @@ const resizePhoto=(req,res,next)=>{
     next();
 }
 
-const signUp = async (req, res) => {
-    const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
-    let Image = req.file ? req.file.filename : 'default.png';
-    try {
+// const signUp = async (req, res) => {
+//     const { firstName, lastName, pass, email, phoneNumber,dateOfBirth } = req.body;
+//     let Image = req.file ? req.file.filename : 'default.png';
+//     try {
 
-        if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
+//         if (!firstName || !lastName || !pass || !email || !phoneNumber  || !dateOfBirth) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         } 
+
+//         const client = await pool.connect();
+//         const emailExists = 'Select * FROM Petowner WHERE Email = $1';
+//         const phoneExists = 'Select * FROM Petowner WHERE Phone = $1';
+//         const resultEmail = await client.query(emailExists, [email]);
+//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+//         if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Email and Phone number." })
+//         }
+//         else if(resultPhone.rows.length === 1)
+//         {  
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Phone number." })
+
+//         }
+//         else if(resultEmail.rows.length === 1)
+//         {  
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Email." })
+
+//         }
+//         else {
+//             const hashedPassword = await bcrypt.hash(pass, saltRounds);
+
+//             const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
+//             const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image]);
+
+
+            
+//         const {validationCode} = Model.CreateValidationCode();
+
+//         const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
+
+//         await sendemail.sendemail({
+//             email: email,
+//             subject: 'Your Validation code  (valid for 10 min) ',
+//             message
+//         });
+
+//             res.status(201).json({
+//                  message: "Sign up successful" 
+//             })
+//         }
+
+//         client.release();
+ 
+//     }
+//     catch (e) {
+//         console.error("Error during signUp", e);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// }
+
+// const signUp = async (req, res) => {
+//     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
+//     let Image = req.file ? req.file.filename : 'default.png';
+//     try {
+//         if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         }
+
+//         const client = await pool.connect();
+//         const emailExists = 'SELECT * FROM Petowner WHERE Email = $1';
+//         const phoneExists = 'SELECT * FROM Petowner WHERE Phone = $1';
+//         const resultEmail = await client.query(emailExists, [email]);
+//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+//         if (resultEmail.rows.length > 0 || resultPhone.rows.length > 0) {
+//             let message = "User already exists, try another ";
+//             if (resultEmail.rows.length > 0) message += "Email ";
+//             if (resultPhone.rows.length > 0) message += "Phone number ";
+//             return res.status(400).json({ message: message.trim() + "." });
+//         } else {
+//             const hashedPassword = await bcrypt.hash(pass, saltRounds);
+//             const { validationCode, validationCodeExpires } = Model.CreateValidationCode();
+
+//             const insertQuery = `
+//                 INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image, validation_code, validation_code_expires)
+//                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
+//             await client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Image, validationCode, validationCodeExpires]);
+
+//             const message = `Your Validation code is ${validationCode}. Insert the Validation code to enjoy our services.`;
+
+//             await sendemail.sendemail({
+//                 email: email,
+//                 subject: 'Your Validation code (valid for 10 min)',
+//                 message
+//             });
+
+//             res.status(201).json({
+//                 message: "Sign up initiated. Please check your email for the validation code."
+//             });
+//         }
+
+//         client.release();
+//     } catch (e) {
+//         console.error("Error during signUp", e);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+// const signUp = async (req, res) => {
+//     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
+//     let Image = req.file ? req.file.filename : 'default.png';
+//     try {
+//         if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         }
+
+//         const client = await pool.connect();
+//         const emailExists = 'SELECT * FROM Petowner WHERE Email = $1';
+//         const phoneExists = 'SELECT * FROM Petowner WHERE Phone = $1';
+//         const resultEmail = await client.query(emailExists, [email]);
+//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+//         if (resultEmail.rows.length > 0) {
+//             res.status(400).json({ message: "User already exists with this email." });
+//         } else if (resultPhone.rows.length > 0) {
+//             res.status(400).json({ message: "User already exists with this phone number." });
+//         } else {
+//             const { validationCode, validationCodeExpires } = Model.CreateValidationCode();
+
+//             // Temporarily store user data and validation code
+//             const tempUserData = {
+//                 firstName,
+//                 lastName,
+//                 pass,
+//                 email,
+//                 phoneNumber,
+//                 dateOfBirth,
+//                 Image,
+//                 validationCode,
+//                 validationCodeExpires
+//             };
+            
+//             // Store user data temporarily (use Redis, memory store, etc.)
+//             // Example: await redisClient.set(email, JSON.stringify(tempUserData), 'EX', 600); // Set expiry of 10 minutes
+
+//             await someTempStore.set(email, tempUserData, { EX: 600 });
+
+//             const message = `Your Validation code ${validationCode} \n Insert the Validation code to enjoy our services`;
+
+//             await sendemail.sendemail({
+//                 email: email,
+//                 subject: 'Your Validation code (valid for 10 min)',
+//                 message
+//             });
+
+//             res.status(201).json({
+//                 message: "Sign up initiated. Please verify your email."
+//             });
+//         }
+
+//         client.release();
+
+//     } catch (e) {
+//         console.error("Error during signUp", e);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// }
+
+
+// const validateCode = async (req, res) => {
+//     const { email, code } = req.body;
+//     try {
+//         if (!email || !code) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please provide email and validation code"
+//             });
+//         }
+
+//         const client = await pool.connect();
+//         const result = await client.query('SELECT * FROM Petowner WHERE Email = $1', [email]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(401).json({
+//                 status: "Fail",
+//                 message: "User not found"
+//             });
+//         }
+
+//         const user = result.rows[0];
+//         if (user.validation_code !== code || user.validation_code_expires < new Date()) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Invalid or expired validation code"
+//             });
+//         }
+
+//         const updateQuery = `
+//             UPDATE Petowner
+//             SET validation_code = NULL, validation_code_expires = NULL
+//             WHERE Email = $1`;
+//         await client.query(updateQuery, [email]);
+
+//         res.status(200).json({
+//             status: "Success",
+//             message: "Validation successful. You can now log in."
+//         });
+
+//         client.release();
+//     } catch (error) {
+//         console.error("Error validating code:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+// const signUp = async (req, res) => {
+//     const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
+//     let Image = req.file ? req.file.filename : 'default.png';
+//     try {
+//         if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         }
+
+//         const client = await pool.connect();
+//         const emailExists = 'SELECT * FROM Petowner WHERE Email = $1';
+//         const phoneExists = 'SELECT * FROM Petowner WHERE Phone = $1';
+//         const resultEmail = await client.query(emailExists, [email]);
+//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+//         if (resultEmail.rows.length > 0) {
+//             res.status(400).json({ message: "User already exists with this email." });
+//         } else if (resultPhone.rows.length > 0) {
+//             res.status(400).json({ message: "User already exists with this phone number." });
+//         } else {
+//             const { validationCode, validationCodeExpires } = Model.CreateValidationCode();
+
+//             const tempUserData = {
+//                 firstName,
+//                 lastName,
+//                 pass,
+//                 email,
+//                 phoneNumber,
+//                 dateOfBirth,
+//                 Image,
+//                 validationCode,
+//                 validationCodeExpires
+//             };
+
+//             await redisClient.set(email, JSON.stringify(tempUserData), 'EX', 600); // Set expiry of 10 minutes
+
+//             const message = `Your Validation code ${validationCode} \n Insert the Validation code to enjoy our services`;
+
+//             await sendemail.sendemail({
+//                 email: email,
+//                 subject: 'Your Validation code (valid for 10 min)',
+//                 message
+//             });
+
+//             res.status(201).json({
+//                 message: "Sign up initiated. Please verify your email."
+//             });
+//         }
+
+//         client.release();
+
+//     } catch (e) {
+//         console.error("Error during signUp", e);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+// const validateCode = async (req, res) => {
+//     const { email, code } = req.body;
+
+//     try {
+//         if (!email || !code) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please provide email and validation code"
+//             });
+//         }
+
+//         const tempUserData = await redisClient.get(email);
+
+//         if (!tempUserData) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Validation code expired or invalid"
+//             });
+//         }
+
+//         const userData = JSON.parse(tempUserData);
+
+//         if (userData.validationCode !== code || userData.validationCodeExpires < Date.now()) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Invalid or expired validation code"
+//             });
+//         }
+
+//         const hashedPassword = await bcrypt.hash(userData.pass, saltRounds);
+
+//         const client = await pool.connect();
+//         const insertQuery = 'INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+//         const newUser = await client.query(insertQuery, [userData.firstName, userData.lastName, hashedPassword, userData.email, userData.phoneNumber, userData.dateOfBirth, userData.Image]);
+
+//         client.release();
+
+//         res.status(201).json({
+//             message: "Sign up successful",
+//             user: newUser.rows[0]
+//         });
+
+//         await redisClient.del(email);
+
+//     } catch (e) {
+//         console.error("Error during validation", e);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+const signUp = async (req, res) => {
+    const { firstName, lastName, pass, email, phoneNumber, dateOfBirth } = req.body;
+    let Image = req.file ? req.file.filename : 'default.png';
+
+    try {
+        if (!firstName || !lastName || !pass || !email || !phoneNumber || !dateOfBirth) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
-        } 
+        }
 
         const client = await pool.connect();
-        const emailExists = 'Select * FROM Petowner WHERE Email = $1';
-        const phoneExists = 'Select * FROM Petowner WHERE Phone = $1';
-        const resultEmail = await client.query(emailExists, [email]);
-        const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+        // Check if email or phone number already exist in the Petowner table
+        const emailExistsQuery = 'SELECT * FROM Petowner WHERE Email = $1';
+        const phoneExistsQuery = 'SELECT * FROM Petowner WHERE Phone = $1';
+        const emailExistsResult = await client.query(emailExistsQuery, [email]);
+        const phoneExistsResult = await client.query(phoneExistsQuery, [phoneNumber]);
+
+        if (emailExistsResult.rows.length > 0) {
+            console.log("Email already exists in Petowner table");
+            return res.status(400).json({ message: "Email already exists, try another email." });
+        }
+
+        if (phoneExistsResult.rows.length > 0) {
+            console.log("Phone number already exists in Petowner table");
+            return res.status(400).json({ message: "Phone number already exists, try another phone number." });
+        }
+
+        // Check if email or phone number already exist in the temporary table
+        const emailExistsTempQuery = 'SELECT * FROM Temp_Petowner WHERE Email = $1';
+        const phoneExistsTempQuery = 'SELECT * FROM Temp_Petowner WHERE Phone = $1';
+        const resultEmail = await client.query(emailExistsTempQuery, [email]);
+        const resultPhone = await client.query(phoneExistsTempQuery, [phoneNumber]);
 
         if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email and Phone number." })
+            console.log("User already exists in temporary table");
+            return res.status(400).json({ message: "User already exists in temporary table, try another Email and Phone number." });
+        } else if (resultPhone.rows.length === 1) {
+            console.log("User already exists in temporary table");
+            return res.status(400).json({ message: "User already exists in temporary table, try another Phone number." });
+        } else if (resultEmail.rows.length === 1) {
+            console.log("User already exists in temporary table");
+            return res.status(400).json({ message: "User already exists in temporary table, try another Email." });
         }
-        else if(resultPhone.rows.length === 1)
-        {  
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Phone number." })
 
-        }
-        else if(resultEmail.rows.length === 1)
-        {  
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email." })
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+        const validationCode = crypto.randomBytes(3).toString('hex'); // Generate validation code
 
-        }
-        else {
-            const hashedPassword = await bcrypt.hash(pass, saltRounds);
+        const insertQuery = `
+            INSERT INTO Temp_Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image, ValidationCode)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *
+        `;
+        const newUser = await client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth, Image, validationCode]);
 
-            const insertQuery = 'Insert INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
-            const newUser = client.query(insertQuery, [firstName, lastName, hashedPassword, email, phoneNumber, dateOfBirth,Image]);
-
-
-            
-        const {validationCode} = Model.CreateValidationCode();
-
-        const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
+        const message = `Your Validation code ${validationCode} \n Insert the Validation code to enjoy with Our Services`;
 
         await sendemail.sendemail({
             email: email,
-            subject: 'Your Validation code  (valid for 10 min) ',
+            subject: 'Your Validation code (valid for 10 min)',
             message
         });
 
-            res.status(201).json({
-                 message: "Sign up successful" 
-            })
-        }
+        res.status(201).json({
+            message: "Sign up successful, check your email for validation code"
+        });
 
         client.release();
- 
-    }
-    catch (e) {
+    } catch (e) {
         console.error("Error during signUp", e);
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+const validateCodeAndTransfer = async (req, res) => {
+    const { email, validationCode } = req.body;
+
+    try {
+        const client = await pool.connect();
+
+        // Check if the validation code matches and is still valid
+        const checkValidationCode = `
+            SELECT * FROM Temp_Petowner
+            WHERE Email = $1 AND ValidationCode = $2 AND ValidationCodeExpires > NOW()
+        `;
+        const result = await client.query(checkValidationCode, [email, validationCode]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Validation code is invalid or has expired"
+            });
+        }
+
+        // If validation is successful, move data to Petowner table
+        const userData = result.rows[0];
+        const insertQuery = `
+            INSERT INTO Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `;
+        await client.query(insertQuery, [
+            userData.first_name,
+            userData.last_name,
+            userData.password,
+            userData.email,
+            userData.phone,
+            userData.date_of_birth,
+            userData.image
+        ]);
+
+        // Delete the temporary record
+        const deleteQuery = `
+            DELETE FROM Temp_Petowner
+            WHERE Email = $1
+        `;
+        await client.query(deleteQuery, [email]);
+
+        client.release();
+
+        res.status(200).json({
+            status: "Success",
+            message: "Account verified and transferred to Petowner table successfully"
+        });
+
+    } catch (error) {
+        console.error("Error during validation and transfer:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+}
+
+
 const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -547,7 +954,8 @@ module.exports = {
     updateInfo,
     CreateChat,
     GetChat,
-    getinfo
+    getinfo,
+    validateCodeAndTransfer
    
       
 }

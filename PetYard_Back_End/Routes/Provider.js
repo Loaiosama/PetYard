@@ -31,6 +31,11 @@ router.delete('/DeleteAcc',authMiddleware, ProviderController.deleteAccount);
 router.put('/updateInfo',authMiddleware, ProviderController.uploadphoto,ProviderController.resizePhoto,ProviderController.updateInfo);
 router.post('/Forgotpassword', ProviderController.forgotPassword);
 router.put('/Resetpassword/:token', ProviderController.resetPassword);
+router.post('/validateCode', ProviderController.validateAndTransfer);
+
+
+
+
 
 router.post('/SelectService',authMiddleware,ProviderController.SelectServices);
 router.delete('/KillService/:Service_ID',authMiddleware,ProviderController.Killservice);

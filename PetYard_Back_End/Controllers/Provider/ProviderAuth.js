@@ -49,13 +49,78 @@ const resizePhoto = (req, res, next) => {
 
 
 
+// const signUp = async (req, res) => {
+//     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
+//     // const Image=req.file.filename;
+//     let Image = req.file ? req.file.filename : 'default.png';
+//     console.log("image = " + Image);
+//     try {
+
+//         if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         }
+
+
+//         const client = await pool.connect();
+//         const UserNameExists = 'Select * FROM ServiceProvider WHERE UserName = $1';
+//         const emailExists = 'Select * FROM ServiceProvider WHERE Email = $1';
+//         const phoneExists = 'Select * FROM ServiceProvider WHERE Phone = $1';
+//         const resultUserNameExists = await client.query(UserNameExists, [UserName]);
+//         const resultEmail = await client.query(emailExists, [email]);
+//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
+
+//         if (resultUserNameExists.rows.length === 1) {
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another  User_Name." })
+//         }
+//         else if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Email and Phone number." })
+//         }
+//         else if (resultPhone.rows.length === 1) {
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Phone number." })
+
+//         }
+//         else if (resultEmail.rows.length === 1) {
+//             console.log("User already exists");
+//             res.status(400).json({ message: "User already exists, try another Email." })
+
+//         }
+//         else {
+//             const hashedPassword = await bcrypt.hash(pass, saltRounds);
+//             const insertQuery = 'Insert INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
+//             const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image]);
+//             const { validationCode } = Model.CreateValidationCode();
+
+//             const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
+
+//             await sendemail.sendemail({
+//                 email: email,
+//                 subject: 'Your Validation code  (valid for 10 min) ',
+//                 message
+//             });
+//             res.status(201).json({ message: "Sign up successful" })
+//         }
+
+//         client.release();
+
+//     }
+//     catch (e) {
+//         console.error("Error during signUp", e);
+//         res.status(500).json({ error: "internal server error" });
+//     }
+
+// }
+
 const signUp = async (req, res) => {
     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
-    // const Image=req.file.filename;
     let Image = req.file ? req.file.filename : 'default.png';
-    console.log("image = " + Image);
-    try {
 
+    try {
         if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
             return res.status(400).json({
                 status: "Fail",
@@ -63,58 +128,98 @@ const signUp = async (req, res) => {
             });
         }
 
-
         const client = await pool.connect();
-        const UserNameExists = 'Select * FROM ServiceProvider WHERE UserName = $1';
-        const emailExists = 'Select * FROM ServiceProvider WHERE Email = $1';
-        const phoneExists = 'Select * FROM ServiceProvider WHERE Phone = $1';
-        const resultUserNameExists = await client.query(UserNameExists, [UserName]);
-        const resultEmail = await client.query(emailExists, [email]);
-        const resultPhone = await client.query(phoneExists, [phoneNumber]);
 
-        if (resultUserNameExists.rows.length === 1) {
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another  User_Name." })
-        }
-        else if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email and Phone number." })
-        }
-        else if (resultPhone.rows.length === 1) {
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Phone number." })
+        // Check if UserName, Email, or Phone already exist in the serviceprovider table
+        const userNameExistsQuery = 'SELECT * FROM serviceprovider WHERE UserName = $1';
+        const emailExistsQuery = 'SELECT * FROM serviceprovider WHERE Email = $1';
+        const phoneExistsQuery = 'SELECT * FROM serviceprovider WHERE Phone = $1';
 
-        }
-        else if (resultEmail.rows.length === 1) {
-            console.log("User already exists");
-            res.status(400).json({ message: "User already exists, try another Email." })
+        const resultUserNameExists = await client.query(userNameExistsQuery, [UserName]);
+        const resultEmailExists = await client.query(emailExistsQuery, [email]);
+        const resultPhoneExists = await client.query(phoneExistsQuery, [phoneNumber]);
 
+        if (resultUserNameExists.rows.length > 0) {
+            return res.status(400).json({ message: "User Name already exists, try another User Name." });
         }
-        else {
-            const hashedPassword = await bcrypt.hash(pass, saltRounds);
-            const insertQuery = 'Insert INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
-            const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image]);
-            const { validationCode } = Model.CreateValidationCode();
 
-            const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
-
-            await sendemail.sendemail({
-                email: email,
-                subject: 'Your Validation code  (valid for 10 min) ',
-                message
-            });
-            res.status(201).json({ message: "Sign up successful" })
+        if (resultEmailExists.rows.length > 0 && resultPhoneExists.rows.length > 0) {
+            return res.status(400).json({ message: "User already exists, try another Email and Phone number." });
         }
+
+        if (resultEmailExists.rows.length > 0) {
+            return res.status(400).json({ message: "Email already exists, try another Email." });
+        }
+
+        if (resultPhoneExists.rows.length > 0) {
+            return res.status(400).json({ message: "Phone number already exists, try another Phone number." });
+        }
+
+        // Insert new user into temp_provider table
+        const hashedPassword = await bcrypt.hash(pass, saltRounds);
+        const { validationCode } = Model.CreateValidationCode();
+
+        const insertQuery = `
+            INSERT INTO temp_provider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image, ValidationCode)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *
+        `;
+        const newUser = await client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image, validationCode]);
+
+        // Send validation code via email
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your Validation code (valid for 10 min)',
+            message: `Your Validation code ${validationCode} \n Insert the Validation code to enjoy with Our Services`
+        });
+
+        res.status(201).json({ message: "Sign up successful" });
 
         client.release();
 
+    } catch (error) {
+        console.error("Error during signUp", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    catch (e) {
-        console.error("Error during signUp", e);
-        res.status(500).json({ error: "internal server error" });
-    }
+};
 
-}
+const validateAndTransfer = async (req, res) => {
+    const { email, validationCode } = req.body;
+
+    try {
+        const client = await pool.connect();
+
+        // Check if the validation code exists and is valid
+        const query = 'SELECT * FROM temp_provider WHERE Email = $1 AND ValidationCode = $2 AND ValidationCodeExpires > CURRENT_TIMESTAMP';
+        const result = await client.query(query, [email, validationCode]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Invalid or expired validation code"
+            });
+        }
+
+        // Insert the validated provider into the ServiceProvider table
+        const providerData = result.rows[0];
+        const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+        await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image]);
+
+        // Delete the provider from temp_provider after successful transfer
+        const deleteQuery = 'DELETE FROM temp_provider WHERE Email = $1';
+        await client.query(deleteQuery, [email]);
+
+        res.status(200).json({ message: "Provider validated and transferred successfully" });
+
+        client.release();
+
+    } catch (error) {
+        console.error("Error validating and transferring provider:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
 const signIn = async (req, res) => {
 
     const { UserName, password } = req.body;
@@ -675,7 +780,8 @@ module.exports = {
     forgotPassword,
     resetPassword,
     Providerinfo,
-    getOwnerInfo
+    getOwnerInfo,
+    validateAndTransfer
 
 
 

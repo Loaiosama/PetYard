@@ -19,8 +19,8 @@ const CreatePasswordResetToken=function(){
 
 const CreateValidationCode = function(){
 
-    const characters = '0123456789';
-    const length = 5; 
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const length = 4; 
     let validationCode = '';
     for (let i = 0; i < length; i++) {
         validationCode += characters.charAt(Math.floor(Math.random() * characters.length));

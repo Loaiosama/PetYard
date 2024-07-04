@@ -27,6 +27,7 @@ const WalkingController = require('../Controllers/Reservation/WalkingController'
 
 router.get('/Getinfo', authMiddleware, PetOwnerController.getinfo);
 router.post('/SignUp', PetOwnerController.uploadphoto, PetOwnerController.resizePhoto, PetOwnerController.signUp);
+router.post('/validateCode', PetOwnerController.validateCodeAndTransfer);
 router.post('/SignIn', PetOwnerController.signIn);
 router.delete('/DeleteAcc', authMiddleware, PetOwnerController.deleteAccount);
 
