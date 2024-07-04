@@ -873,7 +873,7 @@ setInterval(checkAndUpdateAllPendingRequestToRejectForPetowner, 60000);
 module.exports = {
     makeWalkingRequest,
     applyForWalkingRequest,
-    GetAllRequset,
+    // GetAllRequset,
     GetPendingWalkingRequests,
     GetWalkingApplications,
     getAllPendingRequests,
