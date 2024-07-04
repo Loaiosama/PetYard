@@ -92,7 +92,7 @@ router.get('/getGroomingReservation', authMiddleware, GroomingController.getGroo
 //------------------------------ ROUTES FOR Walking CONTROLLER ---------------------------------
 router.post('/applyForWalkingRequest', authMiddleware, WalkingController.applyForWalkingRequest);
 router.get('/getAllPendingRequests', authMiddleware, WalkingController.getAllPendingRequests);
-router.get('/getAllRequest',authMiddleware,WalkingController.GetAllRequset);
+// router.get('/getAllRequest',authMiddleware,WalkingController.GetAllRequset);
 router.get('/getALLAcceptedRequest',authMiddleware,WalkingController.getALLAcceptedRequest);
 
 
