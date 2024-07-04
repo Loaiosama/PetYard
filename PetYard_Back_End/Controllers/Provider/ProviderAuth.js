@@ -48,74 +48,6 @@ const resizePhoto = (req, res, next) => {
 }
 
 
-
-// const signUp = async (req, res) => {
-//     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
-//     // const Image=req.file.filename;
-//     let Image = req.file ? req.file.filename : 'default.png';
-//     console.log("image = " + Image);
-//     try {
-
-//         if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
-//             return res.status(400).json({
-//                 status: "Fail",
-//                 message: "Please Fill All Information"
-//             });
-//         }
-
-
-//         const client = await pool.connect();
-//         const UserNameExists = 'Select * FROM ServiceProvider WHERE UserName = $1';
-//         const emailExists = 'Select * FROM ServiceProvider WHERE Email = $1';
-//         const phoneExists = 'Select * FROM ServiceProvider WHERE Phone = $1';
-//         const resultUserNameExists = await client.query(UserNameExists, [UserName]);
-//         const resultEmail = await client.query(emailExists, [email]);
-//         const resultPhone = await client.query(phoneExists, [phoneNumber]);
-
-//         if (resultUserNameExists.rows.length === 1) {
-//             console.log("User already exists");
-//             res.status(400).json({ message: "User already exists, try another  User_Name." })
-//         }
-//         else if (resultEmail.rows.length === 1 && resultPhone.rows.length === 1) {
-//             console.log("User already exists");
-//             res.status(400).json({ message: "User already exists, try another Email and Phone number." })
-//         }
-//         else if (resultPhone.rows.length === 1) {
-//             console.log("User already exists");
-//             res.status(400).json({ message: "User already exists, try another Phone number." })
-
-//         }
-//         else if (resultEmail.rows.length === 1) {
-//             console.log("User already exists");
-//             res.status(400).json({ message: "User already exists, try another Email." })
-
-//         }
-//         else {
-//             const hashedPassword = await bcrypt.hash(pass, saltRounds);
-//             const insertQuery = 'Insert INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth,Bio,Image) VALUES ($1, $2, $3, $4, $5, $6,$7) RETURNING *';
-//             const newUser = client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image]);
-//             const { validationCode } = Model.CreateValidationCode();
-
-//             const message = `Your Validation code ${validationCode} \n Insert the Validatoin code to enjoy with Our Services`;
-
-//             await sendemail.sendemail({
-//                 email: email,
-//                 subject: 'Your Validation code  (valid for 10 min) ',
-//                 message
-//             });
-//             res.status(201).json({ message: "Sign up successful" })
-//         }
-
-//         client.release();
-
-//     }
-//     catch (e) {
-//         console.error("Error during signUp", e);
-//         res.status(500).json({ error: "internal server error" });
-//     }
-
-// }
-
 const signUp = async (req, res) => {
     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
     let Image = req.file ? req.file.filename : 'default.png';
@@ -706,44 +638,6 @@ const Providerinfo = async (req, res) => {
 
 }
 
-const startChat = async (req, res) => {
-    const provider_id = req.ID;
-    try {
-
-        const client = await pool.connect();
-        const Exists = 'Select * FROM ServiceProvider WHERE provider_id = $1';
-        const result = await client.query(Exists, [provider_id]);
-
-        if (result.rows.length === 0) {
-            return res.status(401).json({
-                status: "Fail",
-                message: "User doesn't exist."
-            });
-        }
-
-
-        const username = result.rows[0].first_name;
-        const Email = result.rows[0].email;
-
-        const r = await axios.put(
-            "https://api.chatengine.io/users/",
-            {
-                username: username + provider_id, secret: username, first_name: username,
-                email: Email
-            },
-            { "headers": { "private-key": "9b5d6df8-7257-4993-9642-45017512c89d" } }
-        );
-        return res.status(r.status).json(r.data);
-    } catch (error) {
-        if (error.response && error.response.status) {
-            return res.status(error.response.status).json(error.response.data);
-        } else {
-
-            return res.status(500).json({ message: 'Internal Server Error' });
-        }
-    }
-
-}
 
 const getOwnerInfo = async (req, res) => {
     const provider_id = req.ID; // Assuming req.ID holds the provider's ID extracted from the token
@@ -852,7 +746,6 @@ module.exports = {
     updateInfo,
     SelectServices,
     Killservice,
-    startChat,
     getallservices,
     getService,
     forgotPassword,
