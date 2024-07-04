@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 
 class SeeAllRow extends StatelessWidget {
@@ -18,17 +18,17 @@ class SeeAllRow extends StatelessWidget {
           title,
           style: Styles.styles18SemiBoldBlack,
         ),
-        TextButton(
-          onPressed: onPressed,
-          child: Text(
-            'See All',
-            style: TextStyle(
-              //blue accent or green
-              color: kPrimaryGreen,
-              fontSize: 14.sp,
-            ),
-          ),
-        ),
+        // TextButton(
+        //   onPressed: onPressed,
+        //   child: Text(
+        //     'See All',
+        //     style: TextStyle(
+        //       //blue accent or green
+        //       color: kPrimaryGreen,
+        //       fontSize: 14.sp,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

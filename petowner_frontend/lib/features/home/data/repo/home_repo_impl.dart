@@ -69,4 +69,25 @@ class HomeRepoImpl extends HomeRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<ProviderSorted>>>
+      fetchRecommendedProviders() async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response =
+          await apiService.get(endpoint: 'PetOwner/recomendedProviders');
+      List<ProviderSorted> providersList = [];
+      for (var item in response['data']) {
+        providersList.add(ProviderSorted.fromJson(item));
+      }
+      return right(providersList);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

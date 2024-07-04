@@ -38,4 +38,15 @@ class HomeProvidersCubit extends Cubit<HomeProvidersState> {
           emit(SortedProvidersSuccess(providersList: providersList)),
     );
   }
+
+  Future<void> fetchRecommendedProviders() async {
+    emit(RecommendedProvidersLoading());
+    final response = await homeRepo.fetchRecommendedProviders();
+    response.fold(
+      (failure) =>
+          emit(RecommendedProvidersFailure(errorMessage: failure.errorMessage)),
+      (providersList) =>
+          emit(RecommendedProvidersSuccess(providersList: providersList)),
+    );
+  }
 }

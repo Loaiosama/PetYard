@@ -6,35 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
-import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/reserve%20service/presentation/view/widgets/payment_tab.dart';
+
 import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
-import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo.dart';
+
 import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo_imp.dart';
 
 import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_cubit.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_states.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/widgets/date_tab.dart';
-import 'package:petowner_frontend/features/sitting/presentation/view/widgets/payment_tab.dart';
-import 'package:petowner_frontend/features/sitting/presentation/view/widgets/summary_tab.dart';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:petowner_frontend/core/utils/networking/api_service.dart';
-import 'package:petowner_frontend/core/utils/routing/routes.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
-import 'package:petowner_frontend/core/utils/theming/styles.dart';
-import 'package:petowner_frontend/features/reserve%20service/presentation/view/widgets/payment_tab.dart';
-import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
-import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo.dart';
-import 'package:petowner_frontend/features/sitting/data/repo/sitting_repo_imp.dart';
-
-import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_cubit.dart';
-import 'package:petowner_frontend/features/sitting/presentation/view%20model/send_sitting_req_states.dart';
-import 'package:petowner_frontend/features/sitting/presentation/view/widgets/date_tab.dart';
+import 'package:petowner_frontend/features/sitting/presentation/view/widgets/map.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/widgets/payment_tab.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/widgets/summary_tab.dart';
 
@@ -91,6 +71,14 @@ class _PetSittingState extends State<PetSitting> {
     } else {
       _showErrorDialog();
     }
+  }
+
+  Location? selectedLocation;
+
+  void _onLocationSelected(Location location) {
+    setState(() {
+      selectedLocation = location;
+    });
   }
 
   List<Step> steps() => [
@@ -158,6 +146,17 @@ class _PetSittingState extends State<PetSitting> {
         Step(
           title: const Text(''),
           label: Text(
+            "Location",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: SetLocation(
+            onLocationSelected: _onLocationSelected,
+          ),
+          isActive: _currentStep >= 2,
+        ),
+        Step(
+          title: const Text(''),
+          label: Text(
             "Summary",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -167,7 +166,7 @@ class _PetSittingState extends State<PetSitting> {
               pricee: price,
               PteName: selectedName,
               petId: selectedId),
-          isActive: _currentStep >= 2,
+          isActive: _currentStep >= 3,
         ),
       ];
 
@@ -221,6 +220,10 @@ class _PetSittingState extends State<PetSitting> {
                     ),
                   ),
                   child: Stepper(
+                    physics: _currentStep == 2
+                        ? const NeverScrollableScrollPhysics()
+                        : const BouncingScrollPhysics(),
+                    elevation: 0.0,
                     controlsBuilder: (context, details) {
                       return const SizedBox();
                     },
@@ -310,18 +313,18 @@ class _PetSittingState extends State<PetSitting> {
                           }
                           return TextButton(
                             onPressed: () {
+                              print(selectedLocation);
                               if (_currentStep < steps().length - 1) {
                                 _validateAndProceed();
                               } else {
                                 var cubit =
                                     BlocProvider.of<SittingReqCubit>(context);
                                 request = SittingRequest(
-                                  startTime: startDate,
-                                  endTime: endDate,
-                                  petID: selectedId,
-                                  finalPrice: price,
-                                  location: Location(x: 31.2089, y: 30.0131),
-                                );
+                                    startTime: startDate,
+                                    endTime: endDate,
+                                    petID: selectedId,
+                                    finalPrice: price,
+                                    location: selectedLocation);
                                 cubit.sendReq(request!);
                               }
                             },

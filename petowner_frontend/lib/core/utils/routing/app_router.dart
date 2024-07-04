@@ -20,6 +20,7 @@ import 'package:petowner_frontend/features/profile/presentation/view/location_sc
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
+import 'package:petowner_frontend/features/profile/presentation/view/widgets/settings_screen.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
@@ -30,6 +31,15 @@ import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20
 import 'package:petowner_frontend/features/sitting/presentation/view/pet_sitting.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/request_success.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
+
+import '../../../features/applications/data/model/pedning_walking_req.dart';
+import '../../../features/applications/data/model/pending_sitting_req.dart';
+import '../../../features/applications/representation/view/applications.dart';
+import '../../../features/applications/representation/view/widgets/sitting_applications.dart';
+import '../../../features/applications/representation/view/widgets/walking_applications.dart';
+import '../../../features/pet walking/data/model/walking_request.dart';
+import '../../../features/pet walking/presentation/view/pet_walking.dart';
+import '../../../features/pet walking/presentation/view/widget/walking_success.dart';
 
 abstract class AppRouter {
   static final GoRouter appRouter = GoRouter(
@@ -349,6 +359,79 @@ abstract class AppRouter {
             context: context,
             state: state,
             child: const ChatScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kSettings,
+        path: Routes.kSettings,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const SettingsScreen(),
+          );
+        },
+      ),
+
+
+      GoRoute(
+        name: Routes.KApplications,
+        path: Routes.KApplications,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const Applications(),
+          );
+        },
+      ),
+      GoRoute(
+          name: Routes.KSittingApplications,
+          path: Routes.KSittingApplications,
+          pageBuilder: (context, state) {
+            final PendingSittingReq req = state.extra as PendingSittingReq;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: SittingApplications(req: req),
+            );
+          }),
+      GoRoute(
+          name: Routes.KWalkingApplications,
+          path: Routes.KWalkingApplications,
+          pageBuilder: (context, state) {
+            final PendingWalkingRequest req =
+            state.extra as PendingWalkingRequest;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: WalkingApplications(req: req),
+            );
+          }),
+      GoRoute(
+        name: Routes.KWalkingSuccess,
+        path: Routes.KWalkingSuccess,
+        pageBuilder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final WalkingRequest req = args['request'] as WalkingRequest;
+          final String petName = args['selectedName'] as String;
+
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: WalkingSuccess(req: req, PetName: petName),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.KPetWalking,
+        path: Routes.KPetWalking,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const PetWalking(),
           );
         },
       ),

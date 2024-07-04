@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/requests.dart';
+import 'package:petowner_frontend/features/applications/representation/view/applications.dart';
 import 'package:petowner_frontend/features/appointments%20history/presentation/view/appointments_screen.dart';
 import 'package:petowner_frontend/features/chat/presentation/view/Messages_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List screens = [
     const HomeScreenBody(),
-    Requests(),
+    const Applications(),
     const MessagesScreen(),
     const AppointmentsScreen(),
     const ProfileScreen(),

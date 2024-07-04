@@ -38,6 +38,14 @@ class ApiService {
     }
   }
 
+  Future<Response> addPet({
+    required String endPoints,
+    required Map<String, dynamic> data,
+  }) async {
+    FormData formData = FormData.fromMap(data);
+    return await dio.post('$baseUrl$endPoints', data: formData);
+  }
+
   Future<Response> post(
       {required String endPoints, required Map<String, dynamic> data}) async {
     try {
@@ -51,7 +59,7 @@ class ApiService {
       );
       return response;
     } catch (error) {
-      debugPrint('Login error: $error');
+      debugPrint(' $error');
       rethrow; // Re-throw the error for handling in the caller
     }
   }
@@ -59,6 +67,7 @@ class ApiService {
   Future<Map<String, dynamic>> get({required String endpoint}) async {
     // await setAuthorizationHeader();
     // print('Request Headers: ${dio.options.headers}');
+    // print(endpoint);
     var response = await dio.get(
       '$baseUrl$endpoint',
     );

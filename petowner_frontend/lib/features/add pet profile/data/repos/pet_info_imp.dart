@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:petowner_frontend/core/errors/failure.dart';
@@ -11,15 +13,43 @@ class PetInfoRepoImp extends PetInfoRepo {
   PetInfoRepoImp({required this.apiService});
 
   @override
-  Future<Either<Failure, String>> addPetInfo(
-      {required PetModel petModel}) async {
+  Future<Either<Failure, String>> addPetInfo({
+    required PetModel petModel,
+    File? image,
+    required String type,
+    required String name,
+    required String gender,
+    required String breed,
+    required DateTime dateOfBirth,
+    required DateTime adoptionDate,
+    required String weight,
+    required String bio,
+  }) async {
     try {
       await apiService.setAuthorizationHeader();
-      var response = await apiService.post(
-        endPoints: 'PetOwner/AddPet',
-        data: petModel.toJson(),
+      print('object');
+      print(petModel.adoptionDate);
+      print(
+        petModel.name,
       );
-
+      print(File(image!.path));
+      print(adoptionDate);
+      var response = await apiService.addPet(
+        endPoints: 'PetOwner/AddPet',
+        data: {
+          'Name': name,
+          'Type': type,
+          'Breed': breed,
+          'Gender': gender,
+          'Date_of_birth': dateOfBirth.toIso8601String(),
+          'Adoption_Date': adoptionDate.toIso8601String(),
+          'Weight': weight,
+          'Bio': bio,
+          'Image': await MultipartFile.fromFile(image.path),
+        },
+      );
+      print('fasdf');
+      print(response);
       if (response.statusCode == 200) {
         // Return a Right with the success message
         return right(response.data['message']);

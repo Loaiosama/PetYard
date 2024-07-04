@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
@@ -52,9 +53,9 @@ class UpcomingAppointmentCard extends StatelessWidget {
                       height: 80.h,
                       width: 70.w,
                       decoration: BoxDecoration(
-                        image: const DecorationImage(
+                        image: DecorationImage(
                           image: AssetImage(
-                            'assets/images/1.png',
+                            '${Constants.profilePictures}/$providerImage',
                           ),
                           fit: BoxFit.cover,
                         ),

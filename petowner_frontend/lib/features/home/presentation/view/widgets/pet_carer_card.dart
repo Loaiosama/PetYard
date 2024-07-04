@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/features/home/data/model/provider_sorted/provider_sorted.dart';
 
 class PetCarerCardWidget extends StatelessWidget {
-  const PetCarerCardWidget({super.key});
+  final ProviderSorted provider;
+
+  const PetCarerCardWidget({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,9 @@ class PetCarerCardWidget extends StatelessWidget {
             height: 120,
             width: 120,
             decoration: BoxDecoration(
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: AssetImage(
-                  'assets/images/1.png',
+                  '${Constants.profilePictures}/${provider.image}',
                 ),
                 fit: BoxFit.cover,
               ),
@@ -28,19 +34,32 @@ class PetCarerCardWidget extends StatelessWidget {
           ),
           widthSizedBox(18),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Olivia Wattson',
+                provider.username ?? 'N/A',
                 style: Styles.styles18BoldBlack,
               ),
               heightSizedBox(6),
-              Text(
-                'Pet Sitter | Pet Walker',
-                style: Styles.styles12RegularOpacityBlack,
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone_android_outlined,
+                    color: Colors.black.withOpacity(0.4),
+                    size: 18.sp,
+                  ),
+                  widthSizedBox(4),
+                  Text(
+                    provider.phone ?? 'N/A',
+                    style: Styles.styles12RegularOpacityBlack,
+                  ),
+                ],
               ),
               heightSizedBox(6),
-              const RatingRowWidget(),
+              RatingRowWidget(
+                rating: provider.averageRating?.toDouble() ?? 0.0,
+                count: provider.reviewCount,
+              ),
             ],
           ),
           const Spacer(),
@@ -50,7 +69,14 @@ class PetCarerCardWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.0.r),
             ),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ServiceListModal(provider: provider);
+                  },
+                );
+              },
               icon: Tooltip(
                 message: 'Book Service',
                 child: Icon(
@@ -73,8 +99,10 @@ class RatingRowWidget extends StatelessWidget {
     this.rating,
     this.count,
   });
+
   final double? rating;
   final String? count;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -92,4 +120,34 @@ class RatingRowWidget extends StatelessWidget {
     );
   }
 }
-// 4.8 (4,279 reviews)
+
+class ServiceListModal extends StatelessWidget {
+  final ProviderSorted provider;
+
+  const ServiceListModal({super.key, required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Services Offered by ${provider.username}',
+            style: Styles.styles18BoldBlack,
+          ),
+          ...?provider.services?.map((service) => ListTile(
+                title: Text(service.type ?? 'N/A'),
+                onTap: () {
+                  GoRouter.of(context).push(Routes.kProviderProfile, extra: {
+                    'id': provider.providerId,
+                    'serviceName': service.type,
+                  });
+                },
+              )),
+        ],
+      ),
+    );
+  }
+}

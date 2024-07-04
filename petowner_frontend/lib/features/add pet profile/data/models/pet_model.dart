@@ -3,18 +3,22 @@ class PetModel {
   String? name;
   String? gender;
   String? breed;
-  String? dateOfBirth;
-  String? adoptionDate;
+  DateTime? dateOfBirth;
+  DateTime? adoptionDate;
   String? weight;
-  String? image;
-  PetModel(
-      {this.type,
-      this.name,
-      this.gender,
-      this.breed,
-      this.dateOfBirth,
-      this.adoptionDate,
-      this.weight});
+  // File? image;
+  String? bio;
+  PetModel({
+    this.type,
+    this.name,
+    this.gender,
+    this.breed,
+    this.dateOfBirth,
+    this.adoptionDate,
+    this.weight,
+    this.bio,
+    // this.image,
+  });
 
   PetModel.fromJson(Map<String, dynamic> json) {
     type = json['Type'];
@@ -24,6 +28,8 @@ class PetModel {
     dateOfBirth = json['Date_of_birth'];
     adoptionDate = json['Adoption_Date'];
     weight = json['Weight'];
+    bio = json['Bio'];
+    // image = json["Image"];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +41,8 @@ class PetModel {
     data['Date_of_birth'] = dateOfBirth;
     data['Adoption_Date'] = adoptionDate;
     data['Weight'] = weight;
+    data['Bio'] = bio;
+    // data['Image'] = image;
     return data;
   }
 }

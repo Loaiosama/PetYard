@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/fonts_helper.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
@@ -36,7 +37,9 @@ class ProfileOptionsCard extends StatelessWidget {
               padding: EdgeInsets.only(top: 10.h, bottom: 6.h, left: 16.w),
               child: InkWell(
                 onTap: () {
-                  GoRouter.of(context).push(route);
+                  route == Routes.kHomeScreen
+                      ? GoRouter.of(context).push(route, extra: 3)
+                      : GoRouter.of(context).push(route);
                 },
                 splashColor: kPrimaryGreen.withOpacity(0.3),
                 child: Row(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/type_tile.dart';
+// import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/type_tile.dart';
 
 class ChooseType extends StatelessWidget {
   const ChooseType({
@@ -65,7 +65,7 @@ class ChooseType extends StatelessWidget {
                         petModel.type = "Dog";
                         context.pushNamed(Routes.kPetBreed, extra: petModel);
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: 220.w,
                         height: 220.h,
                         child: Stack(
@@ -73,7 +73,7 @@ class ChooseType extends StatelessWidget {
                             Center(
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF1B85F3),
+                                  color: const Color(0xFF1B85F3),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 width: 220.w,
@@ -115,7 +115,7 @@ class ChooseType extends StatelessWidget {
                         petModel.type = "Cat";
                         context.pushNamed(Routes.kPetBreed, extra: petModel);
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: 220.w,
                         height: 220.h,
                         child: Stack(

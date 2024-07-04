@@ -36,3 +36,23 @@ final class SortedProvidersSuccess extends HomeProvidersState {
 
   const SortedProvidersSuccess({required this.providersList});
 }
+
+final class RecommendedProvidersLoading extends HomeProvidersState {}
+
+final class RecommendedProvidersFailure extends HomeProvidersState {
+  final String errorMessage;
+
+  const RecommendedProvidersFailure({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+final class RecommendedProvidersSuccess extends HomeProvidersState {
+  final List<ProviderSorted> providersList;
+
+  const RecommendedProvidersSuccess({required this.providersList});
+
+  @override
+  List<Object> get props => [providersList];
+}

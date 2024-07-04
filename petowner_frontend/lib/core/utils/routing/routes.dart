@@ -10,6 +10,7 @@ class Routes {
   static const String kPetInfo = '/petInfo';
   static const String kPetBreed = '/petBreed';
   static const String kPersonalInformation = '/personalInformation';
+  static const String kSettings = '/settings';
   static const String kProviderProfile = '/providerProfile';
   static const String kPetInformation = '/petInformation';
   static const String kProfileLocation = '/profileLocation';
@@ -24,4 +25,9 @@ class Routes {
   static const String KPetSitting = '/PetSitting';
   static const String kChatScreen = '/chatScreen';
   static const String KSuccessReq = '/requestSuccess';
+  static const String KPetWalking = '/petWalking';
+  static const String KApplications = '/applications';
+  static const String KSittingApplications = '/sittingApplications';
+  static const String KWalkingApplications = '/walkingApplications';
+  static const String KWalkingSuccess = '/walkingSuccess';
 }

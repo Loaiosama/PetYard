@@ -8,4 +8,5 @@ abstract class HomeRepo {
       {required String serviceName});
   Future<Either<Failure, List<ProviderSorted>>> fetchProvidersSortedByRating(
       {required int rating, required String serviceName});
+  Future<Either<Failure, List<ProviderSorted>>> fetchRecommendedProviders();
 }

@@ -58,6 +58,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^25.1.40
   numberpicker: ^2.1.2
   flutter_rating_bar: ^4.0.1
+  google_maps_flutter: ^2.6.1
  
 
 dev_dependencies:
@@ -77,7 +78,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - ../PetYard_Back_End/public/img/
+   
     - assets/svgs/
     - assets/images/
     - assets/images/profile_pictures/

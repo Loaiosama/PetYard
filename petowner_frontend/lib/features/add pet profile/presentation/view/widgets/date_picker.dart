@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
 class DatePicker extends StatefulWidget {
   final String labelText;
-  final void Function(String) onDateSelected;
+  final void Function(DateTime) onDateSelected;
+  final String? Function(String?)? validator;
 
-  const DatePicker(
-      {super.key, required this.labelText, required this.onDateSelected});
+  const DatePicker({
+    super.key,
+    required this.labelText,
+    required this.onDateSelected,
+    this.validator,
+  });
 
   @override
   State<DatePicker> createState() => _DatePickerState();
@@ -33,16 +37,15 @@ class _DatePickerState extends State<DatePicker> {
       child: AbsorbPointer(
         absorbing: true,
         child: SizedBox(
-          height: 56.h,
-          child: TextField(
+          child: TextFormField(
             controller: _dateController,
+            validator: widget.validator,
             decoration: InputDecoration(
               iconColor: kPrimaryGreen,
               focusColor: kPrimaryGreen,
               hintText: widget.labelText,
-              // filled: true,
               prefixIcon: const Icon(
-                Icons.calendar_month,
+                Icons.calendar_today,
                 color: kPrimaryGreen,
               ),
               enabledBorder: customFocusedOutlinedBorder,
@@ -65,7 +68,7 @@ class _DatePickerState extends State<DatePicker> {
       builder: (context, child) => Theme(
         data: ThemeData().copyWith(
           colorScheme: const ColorScheme.light(
-            primary: Colors.green, // Change primary color to green
+            primary: kPrimaryGreen, // Change primary color to green
             onPrimary: Colors.white,
             surface: Colors.white,
           ),
@@ -76,7 +79,7 @@ class _DatePickerState extends State<DatePicker> {
     if (picked != null) {
       setState(() {
         _dateController.text = picked.toString().split(" ")[0];
-        widget.onDateSelected(picked.toString().split(" ")[0]);
+        widget.onDateSelected(picked);
       });
     }
   }

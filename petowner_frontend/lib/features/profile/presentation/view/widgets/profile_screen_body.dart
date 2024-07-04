@@ -91,7 +91,6 @@ class OwnerNameAndMail extends StatelessWidget {
       child: BlocBuilder<OwnerInfoCubit, OwnerInfoState>(
         builder: (context, state) {
           if (state is OwnerInfoSuccess) {
-            print('asdasd  ${state.ownerInfo.data?.firstName}');
             return Column(
               children: [
                 Text(
