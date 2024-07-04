@@ -57,6 +57,8 @@ router.put('/UpdateReservation/:reserve_id',authMiddleware,ReservationController
 
 router.get('/GetPetForProvider/:Pet_Id',authMiddleware,PetProfileController.GetPetForProvider);
 
+router.get('/UpcomingRequests',authMiddleware,ReservationController.UpcomingRequests);
+
 
 //------------------------------ ROUTES FOR SITTING CONTROLLER ---------------------------------
 router.post('/applySittingRequest', authMiddleware, SittingController.applySittingRequest);

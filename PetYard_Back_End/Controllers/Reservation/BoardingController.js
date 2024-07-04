@@ -1062,10 +1062,104 @@ const GetAllRejected = async (req, res) => {
     }
 }
 
-const UpcomingRequests=async(req,res)=>{
-    
 
-}
+const UpcomingRequests = async (req, res) => {
+    const providerId = req.ID;
+
+    try {
+        if (!providerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider ID not provided."
+            });
+        }
+
+        // Check if the provider exists
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Provider doesn't exist."
+            });
+        }
+
+        // Queries to retrieve upcoming requests from all relevant tables
+        const sittingRequestsQuery = `
+            SELECT 'Sitting' AS service_type, sr.Reserve_ID, sr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, sr.Start_time, sr.End_time, sr.Final_Price, sr.Status, 
+                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+            FROM SittingReservation sr
+            JOIN Petowner po ON sr.Owner_ID = po.Owner_Id
+            JOIN Pet p ON sr.Pet_ID = p.Pet_ID
+            WHERE sr.Provider_ID = $1 AND sr.Status = 'Accepted'
+        `;
+
+        const walkingRequestsQuery = `
+            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status, 
+                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+            FROM WalkingRequest wr
+            JOIN Petowner po ON wr.Owner_ID = po.Owner_Id
+            JOIN Pet p ON wr.Pet_ID = p.Pet_ID
+            WHERE wr.Provider_ID = $1 AND wr.Status = 'Accepted'
+        `;
+
+        const groomingRequestsQuery = `
+        SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, 
+               po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+        FROM GroomingReservation gr
+        JOIN Petowner po ON gr.Owner_ID = po.Owner_Id
+        JOIN Pet p ON gr.Pet_ID = p.Pet_ID
+        JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
+        WHERE gss.Provider_ID = $1 AND gss.Type = 'Accepted';
+    `;
+
+
+
+    const boardingRequestsQuery = `
+        SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type AS status, 
+            po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+        FROM Reservation r
+        JOIN Petowner po ON r.Owner_ID = po.Owner_Id
+        JOIN Pet p ON r.Pet_ID = p.Pet_ID
+        JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
+        WHERE ss.Provider_ID = $1 AND r.Type = 'Accepted'
+    `;
+
+
+
+        // Execute all queries
+        const sittingRequests = await pool.query(sittingRequestsQuery, [providerId]);
+        const walkingRequests = await pool.query(walkingRequestsQuery, [providerId]);
+        const groomingRequests = await pool.query(groomingRequestsQuery, [providerId]);
+        const boardingRequests = await pool.query(boardingRequestsQuery, [providerId]);
+
+        // Combine results
+        const requests = [
+            ...sittingRequests.rows,
+            ...walkingRequests.rows,
+            ...groomingRequests.rows,
+            ...boardingRequests.rows
+        ];
+
+        // Sort by Start_time in ascending order
+        requests.sort((a, b) => new Date(a.Start_time) - new Date(b.Start_time));
+
+        res.status(200).json({
+            status: "Success",
+            message: "Upcoming requests retrieved.",
+            data: requests
+        });
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+
 
 //  After a certain amount of hours Reject automatically  
 
@@ -1254,6 +1348,6 @@ module.exports = {
     updateCompletedReservations,
     GetALLCompleted,
     GetAllPending,
-    GetAllRejected
-
+    GetAllRejected,
+    UpcomingRequests
 };
