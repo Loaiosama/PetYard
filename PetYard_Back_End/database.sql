@@ -235,6 +235,31 @@ CREATE TABLE IndividualReviews (
     FOREIGN KEY (Owner_ID) REFERENCES Petowner(Owner_Id)
 );
 
+CREATE TABLE Temp_Petowner (
+    Temp_ID SERIAL PRIMARY KEY,
+    First_name VARCHAR(255) NOT NULL,
+    Last_name VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    Phone VARCHAR(255) NOT NULL,
+    Date_of_birth DATE NOT NULL,
+    Image VARCHAR(255),
+    ValidationCode VARCHAR(255) NOT NULL,
+    ValidationCodeExpires TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '10 minutes'
+);
+
+CREATE TABLE temp_provider (
+    Provider_Id SERIAL PRIMARY KEY,
+    UserName VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    Phone VARCHAR(20) UNIQUE NOT NULL,
+    Date_of_birth DATE NOT NULL,
+    Bio TEXT NOT NULL,
+    Image VARCHAR(255) NOT NULL,
+    ValidationCode VARCHAR(255) NOT NULL,
+    ValidationCodeExpires TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '10 minutes'
+);
 
 
 CREATE TABLE LocationUpdates (
