@@ -320,20 +320,17 @@ const GetPendingWalkingRequests = async (req, res) => {
 
 
 
-const GetWalkingApplications = async(req, res) => {
-
+const GetWalkingApplications = async (req, res) => {
     const reserveId = req.params.Reserve_ID;
     const ownerId = req.ID;
 
     try {
-
-        if(!reserveId || !ownerId){
+        if (!reserveId || !ownerId) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please provide reservation ID or ownerId."
-            })
+            });
         }
-
 
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
@@ -355,23 +352,24 @@ const GetWalkingApplications = async(req, res) => {
             });
         }
 
-        const Query = 'SELECT * FROM WalkingApplication WHERE Reserve_ID = $1';
-        const Result = await pool.query(Query, [reserveId]);
+        const query = 'SELECT * FROM WalkingApplication WHERE Reserve_ID = $1 AND Application_Status = $2';
+        const result = await pool.query(query, [reserveId, 'Pending']);
       
         res.status(200).json({
             status: "Success",
-            message: "Applications retrieved successfuly.",
-            data: Result.rows
-        })
+            message: "Applications retrieved successfully.",
+            data: result.rows
+        });
 
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
             status: "Fail",
             message: "Internal Server Error."
-        })
+        });
     }
-}
+};
+
 
 
 
