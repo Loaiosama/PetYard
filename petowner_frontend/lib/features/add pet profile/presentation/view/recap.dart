@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/data/models/pet_model.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/recap_details.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/recap_details.dart';
 
 class Recap extends StatelessWidget {
   final PetModel petModel;

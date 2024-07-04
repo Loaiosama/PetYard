@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petowner_frontend/core/utils/theming/styles.dart';
+// import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/custom_text_form_field.dart';
 
 class SignUpTextFieldColumn extends StatelessWidget {
@@ -30,23 +30,23 @@ class SignUpTextFieldColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 9.0.w),
-          child: RichText(
-            text: TextSpan(
-              style: Styles.styles16BoldBlack,
-              children: [
-                TextSpan(text: labelText),
-                TextSpan(
-                  text: '*',
-                  style: Styles.styles14NormalBlack.copyWith(
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.only(left: 9.0.w),
+        //   child: RichText(
+        //     text: TextSpan(
+        //       style: Styles.styles16BoldBlack,
+        //       children: [
+        //         TextSpan(text: labelText),
+        //         TextSpan(
+        //           text: '*',
+        //           style: Styles.styles14NormalBlack.copyWith(
+        //             color: Colors.red,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
         SizedBox(height: 6.h),
         CustomRegistrationTextField(
           validator: (value) {

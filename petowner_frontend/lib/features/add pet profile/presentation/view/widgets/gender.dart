@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petowner_frontend/features/add%20pet%20profile/presentation/widgets/gender_button.dart';
+import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/widgets/gender_button.dart';
 
 class Gender extends StatefulWidget {
   final void Function(String) onGenderSelected;

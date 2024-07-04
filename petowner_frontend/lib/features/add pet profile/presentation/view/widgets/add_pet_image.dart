@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
@@ -69,14 +70,7 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
           padding: const EdgeInsets.all(4),
           decoration: const ShapeDecoration(
             shape: CircleBorder(),
-            gradient: LinearGradient(
-              end: Alignment.centerLeft,
-              begin: Alignment.centerRight,
-              colors: [
-                Colors.green,
-                kPrimaryGreen,
-              ],
-            ),
+            color: kPrimaryGreen,
           ),
           child: Container(
             padding: const EdgeInsets.all(4),
@@ -89,9 +83,10 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
                 fit: BoxFit.contain,
                 child: CircleAvatar(
                   radius: 60.r,
-                  backgroundColor: Colors.white,
-                  backgroundImage:
-                      image != null ? FileImage(File(image!.path)) : null,
+                  // backgroundImage: image != null
+                  //     ? FileImage(File(image!.path))
+                  //     : AssetImage('assetName'),
+                  backgroundImage: AssetImage('assets/images/pet_blank.jpg'),
                 ),
               ),
             ),
@@ -112,19 +107,12 @@ class _AddPetPhotoState extends State<AddPetPhoto> {
                   borderRadius: BorderRadius.circular(10.0),
                   borderSide: const BorderSide(color: Colors.white),
                 ),
-                gradient: const LinearGradient(
-                  end: Alignment.centerLeft,
-                  begin: Alignment.centerRight,
-                  colors: [
-                    Colors.green,
-                    kPrimaryGreen,
-                  ],
-                ),
+                color: kPrimaryGreen,
               ),
               child: Icon(
-                Iconsax.camera,
+                FontAwesomeIcons.penToSquare,
                 color: Colors.white,
-                size: 18.sp,
+                size: 14.sp,
               ),
             ),
           ),

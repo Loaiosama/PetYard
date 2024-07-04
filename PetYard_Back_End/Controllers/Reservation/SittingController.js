@@ -239,8 +239,6 @@ const GetSittingReservations = async (req, res) => {
 
 
 
-
-
 const getSittingApplications = async (req, res) => {
     const reserveId = req.params.Reserve_ID;
     const ownerId = req.ID;
@@ -277,13 +275,13 @@ const getSittingApplications = async (req, res) => {
             SELECT sa.*, sp.UserName AS provider_name, sp.Image AS provider_image
             FROM SittingApplication sa
             JOIN ServiceProvider sp ON sa.Provider_ID = sp.Provider_Id
-            WHERE sa.Reserve_ID = $1
+            WHERE sa.Reserve_ID = $1 AND sa.Application_Status = 'Pending'
         `;
         const result = await pool.query(query, [reserveId]);
 
         res.status(200).json({
             status: "Success",
-            message: "Applications retrieved successfully.",
+            message: "Pending applications retrieved successfully.",
             data: result.rows
         });
 
@@ -295,6 +293,7 @@ const getSittingApplications = async (req, res) => {
         });
     }
 };
+
 
 
 

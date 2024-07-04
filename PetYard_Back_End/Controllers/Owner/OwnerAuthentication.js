@@ -389,6 +389,28 @@ const signUp = async (req, res) => {
             });
         }
 
+        // Phone number validation
+        const phoneRegex = /^\d+$/;
+        if (!phoneRegex.test(phoneNumber)) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Phone number must consist of only digits"
+            });
+        }
+
+        // Age validation
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+        if (age < 16 || (age === 16 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "User must be at least 16 years old"
+            });
+        }
+
         const client = await pool.connect();
 
         // Check if email or phone number already exist in the Petowner table
@@ -511,6 +533,7 @@ const validateCodeAndTransfer = async (req, res) => {
         });
     }
 }
+
 
 
 const signIn = async (req, res) => {
@@ -939,6 +962,60 @@ const getinfo=async(req,res)=>{
 };
   */
 
+const changePassword = async(req, res) =>{
+    const ownerId = req.ID;
+    let{oldPassword, newPassword} = req.body;
+
+    try {
+        if (!ownerId || !oldPassword || !newPassword) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Please provide ownerId, oldPassword, and newPassword.'
+            });
+        }
+
+        const query = 'SELECT Password FROM Petowner WHERE Owner_Id = $1';
+        const result = await pool.query(query, [ownerId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: 'Fail',
+                message: 'Owner not found.'
+            });
+        }
+
+        const currentPasswordHash = result.rows[0].password;
+
+        // Compare the old password with the current password hash
+        const isMatch = await bcrypt.compare(oldPassword, currentPasswordHash);
+        if (!isMatch) {
+            return res.status(400).json({
+                status: 'Fail',
+                message: 'Old password is incorrect.'
+            });
+        }
+
+        // Hash the new password
+        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+        // Update the password in the database
+        const updateQuery = 'UPDATE Petowner SET Password = $1 WHERE Owner_Id = $2';
+        await pool.query(updateQuery, [newPasswordHash, ownerId]);
+
+        res.status(200).json({
+            status: 'Success',
+            message: 'Password changed successfully.'
+        });
+        
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        })
+        
+    }
+}
 
   
 
@@ -955,6 +1032,7 @@ module.exports = {
     CreateChat,
     GetChat,
     getinfo,
+    changePassword,
     validateCodeAndTransfer
    
       
