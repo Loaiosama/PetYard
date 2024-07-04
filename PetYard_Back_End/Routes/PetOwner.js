@@ -48,7 +48,7 @@ router.post('/ReserveSlot', authMiddleware, ReservationController.ReserveSlot);
 router.get('/GetOwnerReservations', authMiddleware, ReservationController.GetOwnerReservations);
 
 
-router.get('/GetAllAcceptedandfinishedReservations', authMiddleware, ReservationController.GetAllAccepted);
+router.get('/GetAllAccepted', authMiddleware, ReservationController.GetAllAccepted);
 router.put('/updateCompletedReservations/:reserve_id', authMiddleware, ReservationController.updateCompletedReservations);
 router.get('/GetALLCompleted', authMiddleware, ReservationController.GetALLCompleted);
 router.get('/GetAllPending', authMiddleware, ReservationController.GetAllPending);
@@ -76,6 +76,7 @@ router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingRe
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 router.put('/rejectApplication', authMiddleware, SittingController.rejectApplication);
+router.put('/completedApplication',authMiddleware,SittingController.completedApplication);
 
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
@@ -103,6 +104,8 @@ router.get('/GetPendingWalkingRequests', authMiddleware, WalkingController.GetPe
 router.get('/GetWalkingApplications/:Reserve_ID', authMiddleware, WalkingController.GetWalkingApplications);
 router.put('/rejectWalkingApplication', authMiddleware, WalkingController.rejectApplication);
 router.put('/acceptWalkingApplication', authMiddleware, WalkingController.acceptApplication);
+router.put('/Completed',authMiddleware,WalkingController.completedApplication);
+
 
 //------------------------------ ROUTES FOR Location CONTROLLER ---------------------------------
 router.post('/setGeoLocation', authMiddleware, geoFenceController.setGeofence);

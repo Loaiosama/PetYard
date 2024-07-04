@@ -868,6 +868,129 @@ const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
 setInterval(checkAndUpdateAllPendingRequestToRejectForPetowner, 60000);
 
 
+
+
+
+const processedEmails = new Set();
+
+const checkAndUpdateCompleteReservations = async () => {
+    try {
+
+
+        const currentTime = new Date().toISOString();
+
+        // Select reservations with End_time less than or equal to the current time and type as "Accepted"
+        const reservations = await pool.query('SELECT * FROM WalkingRequest WHERE End_time <= $1 AND Status = $2', [currentTime, 'Accepted']);
+
+        for (const reservation of reservations.rows) {
+            // Retrieve provider name for the expired reservation slot
+            const providerNameQuery = await pool.query(
+                `SELECT * FROM ServiceProvider WHERE Provider_Id=$1`,
+                [reservation.provider_id]
+            );
+           
+            const providerName = providerNameQuery.rows[0].username;
+
+            // Notify user to open the app and update the reservation status
+            const ownerEmailQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id=$1', [reservation.owner_id]);
+            const ownerEmail = ownerEmailQuery.rows[0].email;
+
+            const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id=$1', [reservation.pet_id]);
+            const petName = petQuery.rows[0].name;
+
+            // Format the start time and end time of the reservation
+            const startTime = new Date(reservation.start_time).toLocaleString();
+            const endTime = new Date(reservation.end_time).toLocaleString();
+
+            // Compose message with emojis, start time, and end time
+            const message = `🐾 Hello ${petName} Owner! 🐾\n\nYour reservation with ${providerName} has ended. 
+                            Please open the app and update the status to "complete". 📲\n
+                            Start Time: ${startTime}\nEnd Time: ${endTime}`;
+
+            // Check if the email has already been processed
+            if (!processedEmails.has(ownerEmail)) {
+                // Send email with subject and message
+                await sendemail.sendemail({
+                    email: ownerEmail,
+                    subject: '🐾 Update Reservation Status 🐾',
+                    message
+                });
+                // Add the email to the set of processed emails
+                processedEmails.add(ownerEmail);
+            }
+        }
+    } catch (error) {
+        console.error("Error checking and updating completed reservations:", error);
+    }
+}
+
+// Set interval to run the function periodically
+setInterval(checkAndUpdateCompleteReservations, 60000);
+
+// Initial invocation of the function
+checkAndUpdateCompleteReservations();
+
+
+const completedApplication = async (req, res) => {
+    const ownerId = req.ID;
+    const { Reserve_ID, Provider_ID } = req.body;
+
+    try {
+        if (!Reserve_ID || !ownerId || !Provider_ID) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please provide reservation ID, owner ID, and provider ID."
+            });
+        }
+
+        const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+        const ownerRes = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerRes.rows.length === 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner is not in the database."
+            });
+        }
+
+        const reservationQuery = 'SELECT * FROM WalkingRequest WHERE Reserve_ID = $1 AND Owner_ID = $2';
+        const reservationResult = await pool.query(reservationQuery, [Reserve_ID, ownerId]);
+
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Sitting reservation not found or not authorized."
+            });
+        }
+
+        const applicationQuery = 'SELECT * FROM WalkingApplication WHERE Reserve_ID = $1 AND Provider_ID = $2';
+        const applicationResult = await pool.query(applicationQuery, [Reserve_ID, Provider_ID]);
+
+        if (applicationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Sitting application not found or not authorized."
+            });
+        }
+
+        const updateApplicationQuery = 'UPDATE WalkingRequest SET Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
+        await pool.query(updateApplicationQuery, ['Completed', Reserve_ID, Provider_ID]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Sitting application Completed successfully"
+        });
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
+
 module.exports = {
     makeWalkingRequest,
     applyForWalkingRequest,
@@ -878,5 +1001,6 @@ module.exports = {
     rejectApplication,
     acceptApplication,
     getALLAcceptedRequest,
+    completedApplication
    
 }

@@ -645,7 +645,7 @@ const AddComment = async (req, res) => {
 const getAllReviews = async (req, res) => {
     try {
         const query = `
-            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, r.comments, sp.username AS provider_username
+            SELECT r.Review_ID, r.Provider_ID, r.Rate_value, r.count, sp.username AS provider_username
             FROM Review r
             JOIN ServiceProvider sp ON r.Provider_ID = sp.Provider_Id
         `;
