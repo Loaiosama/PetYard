@@ -1070,20 +1070,19 @@ const UpcomingRequests = async (req, res) => {
             });
         }
 
-      
-
+        // Query to retrieve walking requests along with geofence information
         const walkingRequestsQuery = `
-            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status, 
-                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
+                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image,
+                   gf.Center_Latitude AS geofence_latitude, gf.Center_Longitude AS geofence_longitude, gf.Radius AS geofence_radius
             FROM WalkingRequest wr
             JOIN Petowner po ON wr.Owner_ID = po.Owner_Id
             JOIN Pet p ON wr.Pet_ID = p.Pet_ID
+            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
             WHERE wr.Provider_ID = $1 AND wr.Status = 'Accepted'
         `;
 
-       
         const walkingRequests = await pool.query(walkingRequestsQuery, [providerId]);
-       
 
         // Combine results
         const requests = [
@@ -1099,13 +1098,73 @@ const UpcomingRequests = async (req, res) => {
             data: requests
         });
     } catch (error) {
-        console.error("Error :", error);
+        console.error("Error:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error."
         });
     }
 };
+
+const UpcomingOwnerRequests = async (req, res) => {
+    const ownerId = req.ID;
+
+    try {
+        if (!ownerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Owner ID not provided."
+            });
+        }
+
+        // Check if the owner exists
+        const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+        const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+        if (ownerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Owner doesn't exist."
+            });
+        }
+
+        // Query to retrieve walking requests along with geofence information for the owner
+        const walkingRequestsQuery = `
+            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
+                   sp.First_name AS provider_first_name, sp.Last_name AS provider_last_name, sp.Email AS provider_email, sp.Phone AS provider_phone, sp.Location AS provider_location, sp.Image AS provider_image,
+                   gf.Center_Latitude AS geofence_latitude, gf.Center_Longitude AS geofence_longitude, gf.Radius AS geofence_radius
+            FROM WalkingRequest wr
+            JOIN ServiceProvider sp ON wr.Provider_ID = sp.Provider_Id
+            JOIN Pet p ON wr.Pet_ID = p.Pet_ID
+            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
+            WHERE wr.Owner_ID = $1 AND wr.Status = 'Accepted'
+        `;
+
+        const walkingRequests = await pool.query(walkingRequestsQuery, [ownerId]);
+
+        // Combine results
+        const requests = [
+            ...walkingRequests.rows,
+        ];
+
+        // Sort by Start_time in ascending order
+        requests.sort((a, b) => new Date(a.Start_time) - new Date(b.Start_time));
+
+        res.status(200).json({
+            status: "Success",
+            message: "Upcoming requests retrieved.",
+            data: requests
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+
 
 module.exports = {
     makeWalkingRequest,
@@ -1119,6 +1178,7 @@ module.exports = {
     getALLAcceptedRequest,
     completedApplication,
     UpcomingRequests,
-    startWalk
+    startWalk,
+    UpcomingOwnerRequests
    
 }
