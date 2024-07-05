@@ -19,7 +19,7 @@ const CreatePasswordResetToken=function(){
 
 const CreateValidationCode = function(){
 
-    const characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const characters = '0123456789';
     const length = 4; 
     let validationCode = '';
     for (let i = 0; i < length; i++) {

@@ -112,7 +112,7 @@ const signUp = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(pass, saltRounds);
-        const validationCode = crypto.randomBytes(3).toString('hex'); // Generate validation code
+        const { validationCode } = Model.CreateValidationCode();
 
         const insertQuery = `
             INSERT INTO Temp_Petowner (First_name, Last_name, Password, Email, Phone, Date_of_birth, Image, ValidationCode)
