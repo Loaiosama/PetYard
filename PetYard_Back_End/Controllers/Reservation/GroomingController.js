@@ -7,7 +7,7 @@ const createGroomingSlots = async (req, res) => {
     let { Start_time, End_time, Slot_length } = req.body;
 
     try {
-        if (!providerId || !Start_time || !End_time  || !Slot_length) {
+        if (!providerId || !Start_time || !End_time || !Slot_length) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing information."
@@ -16,6 +16,15 @@ const createGroomingSlots = async (req, res) => {
 
         const startTime = new Date(Start_time);
         const endTime = new Date(End_time);
+        const currentTime = new Date();
+
+        // Check if the start time is in the past
+        if (startTime < currentTime) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Start time has already passed. Please choose a future start time."
+            });
+        }
 
         const checkOverlapQuery = `
             SELECT * FROM GroomingServiceSlots
@@ -53,7 +62,6 @@ const createGroomingSlots = async (req, res) => {
 
             const slotData = queryRes.rows[0];
 
-          
             const adjustedSlot = {
                 slot_id: slotData.slot_id,
                 provider_id: slotData.provider_id,
@@ -88,6 +96,7 @@ const createGroomingSlots = async (req, res) => {
         });
     }
 };
+
 
 
 const setGroomingTypesForProvider = async (req, res) => {

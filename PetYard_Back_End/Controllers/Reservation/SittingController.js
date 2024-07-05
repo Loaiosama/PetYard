@@ -13,6 +13,17 @@ const makeRequest = async (req, res) => {
             });
         }
 
+        const startTime = new Date(Start_time);
+        const currentTime = new Date();
+
+        // Check if the start time is in the past
+        if (startTime < currentTime) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Start time has already passed. Please choose a future start time."
+            });
+        }
+
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
 
@@ -28,7 +39,7 @@ const makeRequest = async (req, res) => {
         // Perform the duplicate check using the location as text
         const duplicateCheckQuery = `
             SELECT * FROM SittingReservation 
-            WHERE Pet_ID = $1 AND Start_time = $2 AND End_time = $3  AND Owner_ID = $4`;
+            WHERE Pet_ID = $1 AND Start_time = $2 AND End_time = $3 AND Owner_ID = $4`;
         const duplicateCheckRes = await pool.query(duplicateCheckQuery, [Pet_ID, Start_time, End_time, ownerId]);
 
         if (duplicateCheckRes.rows.length > 0) {
@@ -59,6 +70,7 @@ const makeRequest = async (req, res) => {
         });
     }
 };
+
 
 
 
