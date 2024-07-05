@@ -1178,6 +1178,48 @@ const UpcomingOwnerRequests = async (req, res) => {
 };
 
 
+const trackWalkingRequest = async (req, res) => {
+    const ownerId = req.ID;
+    const { Reserve_ID } = req.params;
+
+    try {
+        if (!ownerId || !Reserve_ID) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Missing information."
+            });
+        }
+
+        // Check if the walking request exists and if the status is "In Progress"
+        const query = `
+            SELECT * FROM WalkingRequest 
+            WHERE Reserve_ID = $1 AND Owner_ID = $2 AND Status = 'In Progress'
+        `;
+        const result = await pool.query(query, [Reserve_ID, ownerId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Walking request not found or not in progress."
+            });
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Walking request is in progress.",
+            data: result.rows[0]
+        });
+
+    } catch (e) {
+        console.error("Error:", e);
+        return res.status(500).json({
+            status: "fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+
 
 module.exports = {
     makeWalkingRequest,
@@ -1191,6 +1233,7 @@ module.exports = {
     completedApplication,
     UpcomingRequests,
     startWalk,
-    UpcomingOwnerRequests
+    UpcomingOwnerRequests,
+    trackWalkingRequest
    
 }
