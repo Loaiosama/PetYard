@@ -101,6 +101,7 @@ router.get('/getAllPendingRequests', authMiddleware, WalkingController.getAllPen
 // router.get('/getAllRequest',authMiddleware,WalkingController.GetAllRequset);
 router.get('/getALLAcceptedRequest',authMiddleware,WalkingController.getALLAcceptedRequest);
 router.get('/UpcomingRequestsForWalking',authMiddleware,WalkingController.UpcomingRequests);
+router.put('/startWalk', authMiddleware, WalkingController.startWalk);
 
 
 

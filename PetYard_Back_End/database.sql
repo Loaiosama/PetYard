@@ -74,7 +74,7 @@ CREATE TABLE ServiceSlots (
     FOREIGN KEY (Provider_ID) REFERENCES ServiceProvider(Provider_Id)
 );
 
-CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected','Completed');
+CREATE TYPE Status AS ENUM ('Accepted', 'Pending', 'Rejected', 'In Progress', 'Completed');
 
 CREATE TABLE Reservation (
     Reserve_ID SERIAL PRIMARY KEY,
