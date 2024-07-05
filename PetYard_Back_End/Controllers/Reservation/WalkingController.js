@@ -930,6 +930,59 @@ const checkAndUpdateCompleteReservations = async () => {
     }
 }
 
+
+const startWalk = async (req, res) => {
+    const providerId = req.ID;
+    const { Reserve_ID } = req.body;
+
+    try {
+        if (!providerId || !Reserve_ID) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Please enter provider ID and reserve ID."
+            });
+        }
+
+        // Fetch the reservation details
+        const reservationQuery = 'SELECT * FROM WalkingRequest WHERE Reserve_ID = $1 AND Provider_ID = $2';
+        const reservationResult = await pool.query(reservationQuery, [Reserve_ID, providerId]);
+
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Reservation not found or not authorized."
+            });
+        }
+
+        const reservation = reservationResult.rows[0];
+        const currentTime = new Date();
+        const startTime = new Date(reservation.start_time);
+
+        if (currentTime < startTime) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Cannot start the walk. The current time must be at least the start time."
+            });
+        }
+
+        // Update the reservation status to 'In Progress'
+        const updateReservationQuery = 'UPDATE WalkingRequest SET Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
+        await pool.query(updateReservationQuery, ['In Progress', Reserve_ID, providerId]);
+
+        res.status(200).json({
+            status: "Success",
+            message: "Walk started successfully."
+        });
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
+
 // Set interval to run the function periodically
 setInterval(checkAndUpdateCompleteReservations, 60000);
 
@@ -1065,6 +1118,7 @@ module.exports = {
     acceptApplication,
     getALLAcceptedRequest,
     completedApplication,
-    UpcomingRequests
+    UpcomingRequests,
+    startWalk
    
 }
