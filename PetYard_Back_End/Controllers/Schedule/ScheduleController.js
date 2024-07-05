@@ -15,6 +15,17 @@ const CreateSlot = async (req, res) => {
             });
         }
 
+        const startTime = new Date(Start_time);
+        const currentTime = new Date();
+
+        // Check if the start time is in the past
+        if (startTime < currentTime) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Start time has already passed. Please choose a future start time."
+            });
+        }
+
         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
         const result = await pool.query(Query, [provider_id]);
 
@@ -24,12 +35,17 @@ const CreateSlot = async (req, res) => {
                 message: "User doesn't exist."
             });
         }
-        
+
         const client = await pool.connect();
         const addslotQuery = 'INSERT INTO ServiceSlots (Service_ID, Provider_ID, Price, Start_time, End_time) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-        const addedService = await client.query(addslotQuery, [Service_ID, provider_id,Price,Start_time,End_time]);
+        const addedService = await client.query(addslotQuery, [Service_ID, provider_id, Price, startTime.toISOString(), End_time]);
         client.release();
-        res.status(201).json({ message: "Slot added successfully" });
+
+        res.status(201).json({
+            status: "Success",
+            message: "Slot added successfully",
+            data: addedService.rows[0]
+        });
 
     } catch (error) {
         console.error("Error adding slot:", error);
@@ -39,6 +55,9 @@ const CreateSlot = async (req, res) => {
         });
     }
 };
+
+
+
 const GetAllSlots=async(req,res)=>{
   const provider_id = req.ID;
   try {

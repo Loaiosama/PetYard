@@ -13,6 +13,18 @@ const makeWalkingRequest = async (req, res) => {
             });
         }
 
+        const startTime = new Date(Start_time);
+        const endTime = new Date(End_time);
+        const currentTime = new Date();
+
+        // Check if the start time is in the past
+        if (startTime < currentTime) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Start time has already passed. Please choose a future start time."
+            });
+        }
+
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
 
@@ -30,7 +42,7 @@ const makeWalkingRequest = async (req, res) => {
                 ($3 < End_time AND $4 > Start_time) -- New request overlaps with existing request
             )
         `;
-        const overlapCheckRes = await pool.query(overlapCheckQuery, [Pet_ID, ownerId, Start_time, End_time]);
+        const overlapCheckRes = await pool.query(overlapCheckQuery, [Pet_ID, ownerId, startTime.toISOString(), endTime.toISOString()]);
 
         if (overlapCheckRes.rows.length > 0) {
             return res.status(400).json({
@@ -46,7 +58,7 @@ const makeWalkingRequest = async (req, res) => {
             VALUES ($1, $2, $3, $4, $5) 
             RETURNING *
         `;
-        const insertRes = await pool.query(insertQuery, [Pet_ID, Start_time, End_time, Final_Price, ownerId]);
+        const insertRes = await pool.query(insertQuery, [Pet_ID, startTime.toISOString(), endTime.toISOString(), Final_Price, ownerId]);
 
         // Insert geofence data into Geofence table using the returned Reserve_ID
         const reserveId = insertRes.rows[0].reserve_id;
@@ -74,6 +86,7 @@ const makeWalkingRequest = async (req, res) => {
         });
     }
 };
+
 
 
 const applyForWalkingRequest = async (req, res) => {
@@ -1169,7 +1182,6 @@ const UpcomingOwnerRequests = async (req, res) => {
 module.exports = {
     makeWalkingRequest,
     applyForWalkingRequest,
-    // GetAllRequset,
     GetPendingWalkingRequests,
     GetWalkingApplications,
     getAllPendingRequests,
