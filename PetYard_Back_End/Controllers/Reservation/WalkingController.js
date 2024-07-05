@@ -989,7 +989,64 @@ const completedApplication = async (req, res) => {
     }
 };
 
+const UpcomingRequests = async (req, res) => {
+    const providerId = req.ID;
 
+    try {
+        if (!providerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider ID not provided."
+            });
+        }
+
+        // Check if the provider exists
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "Provider doesn't exist."
+            });
+        }
+
+      
+
+        const walkingRequestsQuery = `
+            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status, 
+                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+            FROM WalkingRequest wr
+            JOIN Petowner po ON wr.Owner_ID = po.Owner_Id
+            JOIN Pet p ON wr.Pet_ID = p.Pet_ID
+            WHERE wr.Provider_ID = $1 AND wr.Status = 'Accepted'
+        `;
+
+       
+        const walkingRequests = await pool.query(walkingRequestsQuery, [providerId]);
+       
+
+        // Combine results
+        const requests = [
+            ...walkingRequests.rows,
+        ];
+
+        // Sort by Start_time in ascending order
+        requests.sort((a, b) => new Date(a.Start_time) - new Date(b.Start_time));
+
+        res.status(200).json({
+            status: "Success",
+            message: "Upcoming requests retrieved.",
+            data: requests
+        });
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
 
 module.exports = {
     makeWalkingRequest,
@@ -1001,6 +1058,7 @@ module.exports = {
     rejectApplication,
     acceptApplication,
     getALLAcceptedRequest,
-    completedApplication
+    completedApplication,
+    UpcomingRequests
    
 }

@@ -100,6 +100,7 @@ router.post('/applyForWalkingRequest', authMiddleware, WalkingController.applyFo
 router.get('/getAllPendingRequests', authMiddleware, WalkingController.getAllPendingRequests);
 // router.get('/getAllRequest',authMiddleware,WalkingController.GetAllRequset);
 router.get('/getALLAcceptedRequest',authMiddleware,WalkingController.getALLAcceptedRequest);
+router.get('/UpcomingRequestsForWalking',authMiddleware,WalkingController.UpcomingRequests);
 
 
 
