@@ -395,14 +395,20 @@ const getAllPendingRequests = async (req, res) => {
         }
 
         const requestQuery = `
-        SELECT DISTINCT wr.*, gf.center_latitude, gf.center_longitude, p.Name AS pet_name, p.Image AS pet_image
-        FROM WalkingRequest wr
-        LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
-        LEFT JOIN Pet p ON wr.Pet_ID = p.Pet_Id
-        WHERE wr.Status = $1
-        ORDER BY wr.start_time
+            SELECT DISTINCT wr.*, gf.center_latitude, gf.center_longitude, p.Name AS pet_name, p.Image AS pet_image
+            FROM WalkingRequest wr
+            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
+            LEFT JOIN Pet p ON wr.Pet_ID = p.Pet_Id
+            WHERE wr.Status = $1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM WalkingApplication wa
+                WHERE wa.Reserve_ID = wr.Reserve_ID
+                AND wa.Provider_ID = $2
+            )
+            ORDER BY wr.start_time
         `;
-        const requestRes = await pool.query(requestQuery, ['Pending']);
+        const requestRes = await pool.query(requestQuery, ['Pending', providerId]);
 
         if (requestRes.rows.length === 0) {
             return res.status(404).json({
