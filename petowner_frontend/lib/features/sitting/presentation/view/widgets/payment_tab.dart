@@ -172,13 +172,6 @@ class _PaymentTabSittingState extends State<PaymentTabSitting> {
         SizedBox(
           height: 20.h,
         ),
-        Text(
-          "Set Your Location",
-          style: Styles.styles16BoldBlack,
-        ),
-        SizedBox(
-          height: 5.h,
-        ),
       ],
     );
   }

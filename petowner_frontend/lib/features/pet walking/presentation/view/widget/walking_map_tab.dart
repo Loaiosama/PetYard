@@ -6,10 +6,10 @@ import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/pet%20walking/data/model/walking_request.dart';
 
-
 class WalkingMapTab extends StatefulWidget {
   final Function(WalkingLocation) onLocationSelected;
   final Function(int) onRadiusChanged;
+
   const WalkingMapTab(
       {super.key,
       required this.onLocationSelected,
@@ -70,73 +70,89 @@ class _WalkingMapTabState extends State<WalkingMapTab> {
           height: 20.h,
         ),
         if (selectedLocation != null)
-          Container(
-            height: 200.h,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-            width: 300.w,
-            child: GoogleMap(
-              markers: {
-                Marker(
-                    markerId: MarkerId("selected"),
-                    position: selectedLocation!),
-              },
-              circles: {
-                Circle(
-                  circleId: CircleId("1"),
-                  center: selectedLocation!,
-                  radius: radius,
-                  fillColor: Colors.transparent,
-                  strokeColor: kPrimaryGreen,
-                  strokeWidth: 3,
-                ),
-              },
-              mapType: MapType.normal,
-              initialCameraPosition:
-                  CameraPosition(target: selectedLocation!, zoom: 14),
-              onMapCreated: (GoogleMapController controller) {
-                _mapcontroller.complete(controller);
-              },
+          Material(
+            elevation: 3.0.sp,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Container(
+                    height: 200.h,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                    width: 300.w,
+                    child: GoogleMap(
+                      markers: {
+                        Marker(
+                          markerId: MarkerId("selected"),
+                          position: selectedLocation!,
+                        ),
+                      },
+                      circles: {
+                        Circle(
+                          circleId: CircleId("1"),
+                          center: selectedLocation!,
+                          radius: radius,
+                          fillColor: Colors.transparent,
+                          strokeColor: kPrimaryGreen,
+                          strokeWidth: 3,
+                        ),
+                      },
+                      mapType: MapType.normal,
+                      initialCameraPosition:
+                          CameraPosition(target: selectedLocation!, zoom: 14),
+                      onMapCreated: (GoogleMapController controller) {
+                        _mapcontroller.complete(controller);
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Radius (meters)',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  radius = double.tryParse(value) ?? 1000.0;
+                                  widget.onRadiusChanged(radius.toInt());
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: 90.w,
+                          height: 45.h,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: kPrimaryGreen),
+                          child: Center(
+                            child: Text("Set Radius",
+                                style: Styles.styles14w600
+                                    .copyWith(color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: 'Radius (meters)',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        radius = double.tryParse(value) ?? 1000.0;
-                        widget.onRadiusChanged(radius.toInt());
-                      });
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Container(
-                width: 90.w,
-                height: 45.h,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: kPrimaryGreen),
-                child: Center(
-                  child: Text("Set Radius",
-                      style: Styles.styles14w600.copyWith(color: Colors.white)),
-                ),
-              )
-            ],
-          ),
-        ),
       ],
     );
   }

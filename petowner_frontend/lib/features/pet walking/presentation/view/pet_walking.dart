@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/pet%20walking/data/model/walking_request.dart';
 import 'package:petowner_frontend/features/pet%20walking/data/model/walking_request.dart';
 import 'package:petowner_frontend/features/pet%20walking/data/repo/walking_request_repo_imp.dart';
@@ -47,8 +48,8 @@ class _PetWalkingState extends State<PetWalking> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Invalid Time Selection'),
-          content: Text(
+          title: const Text('Invalid Time Selection'),
+          content: const Text(
               'End time must be after start time. Please adjust the time.'),
           actions: [
             TextButton(
@@ -91,6 +92,181 @@ class _PetWalkingState extends State<PetWalking> {
     setState(() {
       selectedRadius = radius;
     });
+  }
+
+  void _validatePet() {
+    if (selectedName == null) {
+      _petDialog();
+    } else {
+      setState(() {
+        if (_currentStep < steps().length - 1) {
+          _currentStep += 1;
+        }
+      });
+    }
+  }
+
+  void _petDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "No Pet Selected",
+              style: Styles.styles14w600,
+            ),
+            content: Text(
+              "Please Choose a Pet to Complete the request",
+              style: Styles.styles12RegularOpacityBlack,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OK',
+                  style: Styles.styles12NormalHalfBlack
+                      .copyWith(color: kPrimaryGreen),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _petAndDateDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "There is a problem in pet and date selection",
+              style: Styles.styles14w600,
+            ),
+            content: Text(
+              "Please Choose a valid data",
+              style: Styles.styles12RegularOpacityBlack,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OK',
+                  style: Styles.styles12NormalHalfBlack
+                      .copyWith(color: kPrimaryGreen),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _paymentDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "please Set the price of the Request",
+              style: Styles.styles14NormalBlack,
+            ),
+            content: Text(
+              "Please reset the price",
+              style: Styles.styles12NormalHalfBlack,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OK',
+                  style: Styles.styles12NormalHalfBlack
+                      .copyWith(color: kPrimaryGreen),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _locatioDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Location is not selected",
+              style: Styles.styles14w600,
+            ),
+            content: Text(
+              "Please Choose a Location",
+              style: Styles.styles12NormalHalfBlack,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OK',
+                  style: Styles.styles12NormalHalfBlack
+                      .copyWith(color: kPrimaryGreen),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void _validateDateTab() {
+    if ((_selectedDate == null ||
+            _startHour == null ||
+            _endHour == null ||
+            startDateTime!.isAfter(endDateTime!)) &&
+        selectedName == null) {
+      _petAndDateDialog();
+    } else if (selectedName == null) {
+      _petDialog();
+    } else if (_selectedDate == null ||
+        _startHour == null ||
+        _endHour == null ||
+        startDateTime!.isAfter(endDateTime!)) {
+      _showErrorDialog();
+    } else {
+      setState(() {
+        if (_currentStep < steps().length - 1) {
+          _currentStep += 1;
+        }
+      });
+    }
+  }
+
+  void _paymentValidation() {
+    if (price == null) {
+      _paymentDialog();
+    } else {
+      setState(() {
+        if (_currentStep < steps().length - 1) {
+          _currentStep += 1;
+        }
+      });
+    }
+  }
+
+  void _locationValidation() {
+    if (selectedLocation == null) {
+      _locatioDialog();
+    } else {
+      setState(() {
+        if (_currentStep < steps().length - 1) {
+          _currentStep += 1;
+        }
+      });
+    }
   }
 
   List<Step> steps() => [
@@ -144,7 +320,7 @@ class _PetWalkingState extends State<PetWalking> {
         ),
         Step(
           title: const Text(''),
-          label: Text(
+          label: const Text(
             "Payment",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -157,7 +333,7 @@ class _PetWalkingState extends State<PetWalking> {
         ),
         Step(
           title: const Text(''),
-          label: Text(
+          label: const Text(
             "Location",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -169,7 +345,7 @@ class _PetWalkingState extends State<PetWalking> {
         ),
         Step(
           title: const Text(''),
-          label: Text(
+          label: const Text(
             "Summary",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -217,7 +393,7 @@ class _PetWalkingState extends State<PetWalking> {
             ),
           ),
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "Make Walking Request",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -328,8 +504,12 @@ class _PetWalkingState extends State<PetWalking> {
                           return TextButton(
                             onPressed: () {
                               print(selectedLocation);
-                              if (_currentStep < steps().length - 1) {
-                                _validateAndProceed();
+                              if (_currentStep == 0) {
+                                _validateDateTab();
+                              } else if (_currentStep == 1) {
+                                _paymentValidation();
+                              } else if (_currentStep == 2) {
+                                _locationValidation();
                               } else {
                                 print(startDate);
                                 print(endDate);
