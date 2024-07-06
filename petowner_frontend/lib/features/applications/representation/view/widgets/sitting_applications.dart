@@ -24,10 +24,19 @@ class SittingApplications extends StatefulWidget {
 }
 
 class _SittingApplicationsState extends State<SittingApplications> {
+  final Set<int> appliedReservations = {};
+  final Map<int, String> reservationStatuses = {};
+
   @override
   Widget build(BuildContext context) {
-    final Set<int> rejected = {};
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Sitting Applications",
+          style: Styles.styles18BoldBlack,
+        ),
+      ),
       body: BlocProvider(
           create: (context) => SittingApplicationsCubit(
               SittingAppRepoImp(api: ApiService(dio: Dio())))
@@ -82,7 +91,7 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: 6.0.w),
+                                        padding: EdgeInsets.only(left: 8.0.w),
                                         child: Text(
                                             app.providerName ?? "No Name",
                                             style: Styles.styles16w600),
@@ -115,12 +124,25 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                       child: BlocConsumer<ApplicationCubit,
                                           ApplicationState>(
                                         builder: (context, appState) {
-                                          if (rejected.contains(index)) {
-                                            return Text(
-                                              "Rejected",
-                                              style: Styles.styles16BoldBlack
-                                                  .copyWith(color: Colors.red),
-                                            );
+                                          if (appliedReservations
+                                              .contains(index)) {
+                                            String? status =
+                                                reservationStatuses[index];
+                                            if (status == "Accepted") {
+                                              return Text(
+                                                "Accepted",
+                                                style: Styles.styles18BoldBlack
+                                                    .copyWith(
+                                                        color: Colors.green),
+                                              );
+                                            } else {
+                                              return Text(
+                                                "Rejected",
+                                                style: Styles.styles18BoldBlack
+                                                    .copyWith(
+                                                        color: Colors.red),
+                                              );
+                                            }
                                           } else if (appState
                                               is ApplicationLoading) {
                                             return const CircularProgressIndicator(
@@ -149,6 +171,12 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                                             context)
                                                         .acceptApplication(
                                                             updateApplication);
+                                                    setState(() {
+                                                      appliedReservations
+                                                          .add(index);
+                                                      reservationStatuses[
+                                                          index] = "Accepted";
+                                                    });
                                                   },
                                                   text: "Accept",
                                                   style: Styles
@@ -179,10 +207,13 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                                         .rejectApplication(
                                                             updateApplication);
                                                     setState(() {
-                                                      rejected.add(index);
+                                                      appliedReservations
+                                                          .add(index);
+                                                      reservationStatuses[
+                                                          index] = "Rejected";
                                                     });
                                                   },
-                                                  text: " Reject ",
+                                                  text: "Reject",
                                                   style: Styles
                                                       .styles12NormalHalfBlack
                                                       .copyWith(
@@ -198,7 +229,9 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                           }
                                         },
                                         listener: (context, state) {
-                                          if (state is ApplicationSuccess) {}
+                                          if (state is ApplicationSuccess) {
+                                            // Perform any additional actions on success
+                                          }
                                         },
                                       ))
                                 ],

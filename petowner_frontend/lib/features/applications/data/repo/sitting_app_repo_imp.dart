@@ -23,16 +23,24 @@ class SittingAppRepoImp extends SittingAppRepo {
   Future<Either<Failure, List<SittingApplication>>> fetchSittingApplications(
       int ownerId) async {
     try {
+      print("abl token sitting app");
       await api.setAuthorizationHeader();
+      print("b3d token sitting app");
       var response =
           await api.get(endpoint: "PetOwner/getSittingApplications/$ownerId");
+      print("b3d response sitting app");
       for (var item in response['data']) {
+        print("in for sitting app");
         var app = SittingApplication.fromJson(item);
+        print("b3d app sitting app");
         applications.add(app);
       }
+      print("abl right sitting app");
       return right(applications);
     } catch (e) {
+      print("gwa el e");
       if (e is DioException) {
+        print("able left");
         return left(ServerFailure.fromDioError(e));
       }
       return left(ServerFailure(e.toString()));

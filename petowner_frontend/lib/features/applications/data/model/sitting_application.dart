@@ -6,7 +6,7 @@ class SittingApplication {
   String? applicationStatus;
   String? applicationDate;
   String? providerName;
-  Null? providerImage;
+  String? providerImage;
 
   SittingApplication(
       {this.applicationId,

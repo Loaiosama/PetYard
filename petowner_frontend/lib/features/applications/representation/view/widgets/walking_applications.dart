@@ -8,6 +8,7 @@ import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/empty_list.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petowner_frontend/features/applications/data/model/pedning_walking_req.dart';
+
 import 'package:petowner_frontend/features/applications/data/model/update_application.dart';
 import 'package:petowner_frontend/features/applications/data/repo/sitting_app_repo_imp.dart';
 import 'package:petowner_frontend/features/applications/representation/view%20model/update%20walking%20application%20cubit/update_walking_app_cubit.dart';
@@ -24,10 +25,19 @@ class WalkingApplications extends StatefulWidget {
 }
 
 class _WalkingApplicationsState extends State<WalkingApplications> {
+  final Set<int> appliedReservations = {};
+  final Map<int, String> reservationStatuses = {};
+
   @override
   Widget build(BuildContext context) {
-    final Set<int> rejected = {};
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Walking Applications",
+          style: Styles.styles18BoldBlack,
+        ),
+      ),
       body: BlocProvider(
           create: (context) => WalkingApplicationsCubit(
               SittingAppRepoImp(api: ApiService(dio: Dio())))
@@ -36,8 +46,10 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
               BlocBuilder<WalkingApplicationsCubit, WalkingApplicationsState>(
             builder: (context, state) {
               if (state is WalkingApplicationsLoading) {
-                return CircularProgressIndicator(
-                  color: kPrimaryGreen,
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: kPrimaryGreen,
+                  ),
                 );
               } else if (state is WalkingApplicationsFailure) {
                 print(state.message);
@@ -98,7 +110,7 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                             width: 5.w,
                                           ),
                                           Text(
-                                            "Pet Sitting",
+                                            "Pet Walking",
                                             style: Styles.styles14NormalBlack,
                                           )
                                         ],
@@ -113,12 +125,25 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                       child: BlocConsumer<WalkingUpdaetCubit,
                                           WalkingState>(
                                         builder: (context, appState) {
-                                          if (rejected.contains(index)) {
-                                            return Text(
-                                              "Rejected",
-                                              style: Styles.styles16BoldBlack
-                                                  .copyWith(color: Colors.red),
-                                            );
+                                          if (appliedReservations
+                                              .contains(index)) {
+                                            String? status =
+                                                reservationStatuses[index];
+                                            if (status == "Accepted") {
+                                              return Text(
+                                                "Accepted",
+                                                style: Styles.styles18BoldBlack
+                                                    .copyWith(
+                                                        color: Colors.green),
+                                              );
+                                            } else {
+                                              return Text(
+                                                "Rejected",
+                                                style: Styles.styles18BoldBlack
+                                                    .copyWith(
+                                                        color: Colors.red),
+                                              );
+                                            }
                                           } else if (appState
                                               is WalkingLoading) {
                                             return const CircularProgressIndicator(
@@ -147,6 +172,12 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                                             context)
                                                         .acceptWalkingRequest(
                                                             updateApplication);
+                                                    setState(() {
+                                                      appliedReservations
+                                                          .add(index);
+                                                      reservationStatuses[
+                                                          index] = "Accepted";
+                                                    });
                                                   },
                                                   text: "Accept",
                                                   style: Styles
@@ -177,10 +208,13 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                                         .rejectWalkingRequest(
                                                             updateApplication);
                                                     setState(() {
-                                                      rejected.add(index);
+                                                      appliedReservations
+                                                          .add(index);
+                                                      reservationStatuses[
+                                                          index] = "Rejected";
                                                     });
                                                   },
-                                                  text: " Reject ",
+                                                  text: "Reject",
                                                   style: Styles
                                                       .styles12NormalHalfBlack
                                                       .copyWith(
@@ -196,7 +230,9 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                           }
                                         },
                                         listener: (context, state) {
-                                          if (state is WalkingSuccess) {}
+                                          if (state is WalkingSuccess) {
+                                            // Perform any additional actions on success
+                                          }
                                         },
                                       ))
                                 ],
