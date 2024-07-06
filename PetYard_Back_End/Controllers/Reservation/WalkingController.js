@@ -1194,7 +1194,7 @@ const UpcomingOwnerRequests = async (req, res) => {
 
 const trackWalkingRequest = async (req, res) => {
     const ownerId = req.ID;
-    const { Reserve_ID } = req.params;
+    const { Reserve_ID } = req.params.Reserve_ID;
 
     try {
         if (!ownerId || !Reserve_ID) {

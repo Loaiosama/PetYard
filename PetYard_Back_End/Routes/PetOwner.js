@@ -106,7 +106,7 @@ router.put('/rejectWalkingApplication', authMiddleware, WalkingController.reject
 router.put('/acceptWalkingApplication', authMiddleware, WalkingController.acceptApplication);
 router.put('/Completed',authMiddleware,WalkingController.completedApplication);
 router.get('/UpcomingOwnerRequests', authMiddleware, WalkingController.UpcomingOwnerRequests);
-router.get('/trackWalkingRequest', authMiddleware, WalkingController.trackWalkingRequest);
+router.get('/trackWalkingRequest/:Reserve_ID', authMiddleware, WalkingController.trackWalkingRequest);
 
 //------------------------------ ROUTES FOR Location CONTROLLER ---------------------------------
 router.post('/setGeoLocation', authMiddleware, geoFenceController.setGeofence);
