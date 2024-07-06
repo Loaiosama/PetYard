@@ -84,7 +84,7 @@ router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTy
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 router.put('/updatePriceForService', authMiddleware, GroomingController.updatePriceOfService);
 router.get('/getGroomingReservation', authMiddleware, GroomingController.getGroomingReservationsForProvider);
-
+router.get('/upcomingReqGrooming',authMiddleware , GroomingController.upcomingReq);
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
 // router.post('/createClinicSlots', authMiddleware, ClinicController.createClinicSlots);
