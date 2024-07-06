@@ -465,12 +465,6 @@ const getAllPendingRequests = async (req, res) => {
             ORDER BY start_time`;
         const reservationResult = await pool.query(reservationQuery, ['Pending', providerId]);
 
-        if (reservationResult.rows.length === 0) {
-            return res.status(404).json({
-                status: "Fail",
-                message: "No pending sitting reservations found"
-            });
-        }
 
         res.status(200).json({
             status: "Success",
