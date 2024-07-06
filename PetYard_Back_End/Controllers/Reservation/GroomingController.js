@@ -1018,6 +1018,71 @@ setInterval(checkAndUpdateCompleteReservations, 60000);
 checkAndUpdateCompleteReservations();
 
 
+const upcomingReq=async(req,res)=>
+{
+    const providerId = req.ID;
+
+    try {
+        if (!providerId) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Provider ID is missing."
+            });
+        }
+
+        const providerQuery = "SELECT * FROM ServiceProvider WHERE Provider_Id = $1";
+        const providerRes = await pool.query(providerQuery, [providerId]);
+
+        if (providerRes.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider is not registered in the database."
+            });
+        }
+
+        const groomingRequestsQuery = `
+        SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, 
+               po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
+        FROM GroomingReservation gr
+        JOIN Petowner po ON gr.Owner_ID = po.Owner_Id
+        JOIN Pet p ON gr.Pet_ID = p.Pet_ID
+        JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
+        WHERE gss.Provider_ID = $1 AND gss.Type = 'Accepted'
+    `;
+    const groomingRequests = await pool.query(groomingRequestsQuery, [providerId]);
+
+        if (groomingRequests.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "No slots created."
+            });
+        }
+
+        // Adjusting the times for display (+3 hours)
+        const slots = groomingRequests.rows.map(slot => ({
+            slot_id: slot.slot_id,
+            provider_id: slot.provider_id,
+            start_time: moment.utc(slot.start_time).add(3, 'hours').toISOString(), // Adding 3 hours to start_time
+            end_time: moment.utc(slot.end_time).add(3, 'hours').toISOString(),     // Adding 3 hours to end_time
+            price: slot.price,
+            grooming_type: slot.grooming_type
+        }));
+
+        res.status(200).json({
+            status: "Success",
+            message: "Slots retrieved successfully.",
+            data: slots
+        });
+
+    } catch (e) {
+        console.error("Error: ", e);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
 
 module.exports = {
     createGroomingSlots,
@@ -1034,5 +1099,6 @@ module.exports = {
     updatePriceOfService,
     getFees,
     getGroomingTypesForProvidertoowner,
-    getGroomingReservationsForProvider
+    getGroomingReservationsForProvider,
+    upcomingReq
 }
