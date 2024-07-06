@@ -52,66 +52,6 @@ const getProvidersByType = async (req, res) => {
 
 
 
-// const getProviderInfo = async (req, res) => {
-//     const Provider_id = req.params.Provider_id;
-//     const owner_id = req.ID;
-
-//     try {
-//         if (!Provider_id) {
-//             return res.status(400).json({
-//                 status: "Fail",
-//                 message: "Please provide the provider ID"
-//             });
-//         }
-
-//         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
-//         const ownerResult = await pool.query(ownerQuery, [owner_id]);
-
-//         if (ownerResult.rows.length === 0) {
-//             return res.status(401).json({
-//                 status: "Fail",
-//                 message: "User doesn't exist"
-//             });
-//         }
-
-//         const query = 'SELECT provider_id, username, phone, email, bio, date_of_birth, location, image FROM ServiceProvider WHERE Provider_Id = $1';
-//         const result = await pool.query(query, [Provider_id]);
-
-//         if (result.rows.length === 0) {
-//             return res.status(404).json({
-//                 status: "Fail",
-//                 message: "Provider not found"
-//             });
-//         }
-
-//         const provider = result.rows[0];
-
-//         // Calculate age of the provider
-//         const dob = new Date(provider.date_of_birth);
-//         const ageDiffMs = Date.now() - dob.getTime();
-//         const ageDate = new Date(ageDiffMs); // milliseconds from epoch
-//         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-
-//         // Add age to the provider object
-//         provider.age = age;
-
-//         const q = 'SELECT * FROM Services WHERE Provider_Id = $1';
-//         const res1 = await pool.query(q, [Provider_id]);
-
-//         res.status(200).json({
-//             status: "Success",
-//             provider,
-//             services: res1.rows
-//         });
-
-//     } catch (error) {
-//         console.error("Error fetching provider info:", error);
-//         res.status(500).json({
-//             status: "Fail",
-//             message: "Internal server error"
-//         });
-//     }
-// }
 
 const getProviderInfo = async (req, res) => {
     const providerId = req.params.Provider_id;
@@ -412,21 +352,42 @@ const GetProviderReservations = async (req, res) => {
             });
         }
 
-        const status = "Pending";
-        const reservations = await pool.query(
-            `SELECT R.*, R.Start_time , R.End_time,
+        const acceptedReservations = await pool.query(
+            `SELECT R.Start_time, R.End_time
+             FROM Reservation R
+             INNER JOIN ServiceSlots S ON R.Slot_ID = S.Slot_ID
+             WHERE R.Type = 'Accepted' AND S.Provider_ID = $1`,
+            [provider_id]
+        );
+
+        const acceptedTimeSlots = acceptedReservations.rows.map(res => ({
+            start: new Date(res.start_time),
+            end: new Date(res.end_time)
+        }));
+
+        const pendingReservations = await pool.query(
+            `SELECT R.*, R.Start_time, R.End_time,
             S.Start_time AS slot_start_time,
             S.End_time AS slot_end_time
              FROM Reservation R
              INNER JOIN ServiceSlots S ON R.Slot_ID = S.Slot_ID
-             WHERE R.Type = $1 AND S.Provider_ID = $2`,
-            [status, provider_id]
+             WHERE R.Type = 'Pending' AND S.Provider_ID = $1`,
+            [provider_id]
         );
+
+        const filteredReservations = pendingReservations.rows.filter(reservation => {
+            const resStart = new Date(reservation.start_time);
+            const resEnd = new Date(reservation.end_time);
+
+            return !acceptedTimeSlots.some(slot => 
+                (resStart < slot.end && resEnd > slot.start)
+            );
+        });
 
         res.status(200).json({
             status: "Done",
             message: "Data retrieved successfully",
-            data: reservations.rows
+            data: filteredReservations
         });
 
     } catch (error) {
@@ -435,10 +396,11 @@ const GetProviderReservations = async (req, res) => {
             message: "Internal server error."
         });
     }
-}
+};
 
 
 
+/*
 const UpdateReservation = async (req, res) => {
     const reserve_id = req.params.reserve_id;
     const provider_id = req.ID;
@@ -486,7 +448,7 @@ const UpdateReservation = async (req, res) => {
 
         let expirationTime = reservationResult.rows[0].expirationTime;
         if (expirationTime <= Date.now()) {
-            Type = "Rejected"; // Set type to Rejected if expired
+            Type = "Rejected"; 
         }
 
         const updateQuery = 'UPDATE Reservation SET Slot_ID = $1, Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5, Type = $6 WHERE Reserve_ID = $7';
@@ -522,7 +484,97 @@ const UpdateReservation = async (req, res) => {
             message: "Internal server error."
         });
     }
-}
+};*/
+const UpdateReservation = async (req, res) => {
+    const reserve_id = req.params.reserve_id;
+    const provider_id = req.ID;
+    let { slot_id, pet_id, owner_id, start_time, end_time, Type } = req.body;
+
+    try {
+        if (!provider_id || !reserve_id) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Info not complete."
+            });
+        }
+
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [provider_id]);
+        if (providerResult.rows.length === 0) {
+            return res.status(401).json({
+                status: "Fail",
+                message: "User doesn't exist."
+            });
+        }
+
+        const name = providerResult.rows[0].username;
+
+        // Check if the reservation exists
+        const reservationQuery = 'SELECT * FROM Reservation WHERE Reserve_ID = $1';
+        const reservationResult = await pool.query(reservationQuery, [reserve_id]);
+
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Reservation not found."
+            });
+        }
+
+        // Check if the slot is already reserved by another reservation with status other than 'Rejected' or 'Pending'
+        const existingReservationQuery = `
+            SELECT * FROM Reservation
+            WHERE Slot_ID = $1 AND Type = 'Accepted'
+              AND NOT (End_time <= $2 OR Start_time >= $3)
+        `;
+        const existingReservationResult = await pool.query(existingReservationQuery, [slot_id, start_time, end_time]);
+
+        if (existingReservationResult.rows.length > 0) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Cannot accept because the slot is already reserved."
+            });
+        }
+
+        let expirationTime = reservationResult.rows[0].expirationTime;
+        if (expirationTime <= Date.now()) {
+            Type = "Rejected"; 
+        }
+
+        const updateQuery = 'UPDATE Reservation SET Slot_ID = $1, Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5, Type = $6 WHERE Reserve_ID = $7';
+        await pool.query(updateQuery, [slot_id, pet_id, owner_id, start_time, end_time, Type, reserve_id]);
+
+        const ownerQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [owner_id]);
+        const email = ownerQuery.rows[0].email;
+
+        const petQuery = await pool.query('SELECT * FROM Pet WHERE Pet_Id = $1', [pet_id]);
+        const petName = petQuery.rows[0].name;
+
+        let message;
+        if (Type === "Accepted") {
+            message = `Your reservation got accepted ✅\nProvider Name: ${name}\nYour Pet: ${petName}\nStart Time: ${start_time}\nEnd Time: ${end_time}`;
+        } else if (Type === "Rejected") {
+            message = `Your reservation got Rejected 😞\nProvider Name: ${name}\nYour Pet: ${petName}\nStart Time: ${start_time}\nEnd Time: ${end_time}`;
+        }
+
+        await sendemail.sendemail({
+            email: email,
+            subject: 'Your recent reservation status 😄',
+            message
+        });
+
+        res.status(200).json({
+            status: "Success",
+            message: "Reservation updated successfully"
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error."
+        });
+    }
+};
+
 
 
 
