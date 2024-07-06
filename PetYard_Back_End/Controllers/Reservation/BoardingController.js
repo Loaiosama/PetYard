@@ -798,7 +798,7 @@ const GetAllAccepted = async (req, res) => {
 
         const groomingReservationsQuery = `
             SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
-                   gr.Provider_ID, gr.Owner_ID,
+                   gss.Provider_ID, gr.Owner_ID,
                    sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
                    COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
             FROM GroomingReservation gr
@@ -806,12 +806,12 @@ const GetAllAccepted = async (req, res) => {
             JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
             JOIN Pet p ON gr.Pet_ID = p.Pet_ID
             LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE gr.Owner_ID = $1 AND gr.Status = 'Accepted'
+            WHERE gr.Owner_ID = $1 AND gss.Type = 'Accepted'
         `;
 
         const boardingReservationsQuery = `
-            SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Status,
-                   r.Provider_ID, r.Owner_ID,
+            SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
+                   ss.Provider_ID, r.Owner_ID,
                    sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
                    COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
             FROM Reservation r
@@ -819,7 +819,7 @@ const GetAllAccepted = async (req, res) => {
             JOIN Pet p ON r.Pet_ID = p.Pet_ID
             JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
             LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE r.Owner_ID = $1 AND r.Status = 'Accepted'
+            WHERE r.Owner_ID = $1 AND r.Type = 'Accepted'
         `;
 
         // Execute all queries
@@ -852,6 +852,7 @@ const GetAllAccepted = async (req, res) => {
         });
     }
 }
+
 
 
 
@@ -1016,30 +1017,30 @@ const GetAllPending = async (req, res) => {
         `;
 
         const groomingReservationsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
-                   gr.Provider_ID, gr.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM GroomingReservation gr
-            JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
-            JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
-            JOIN Pet p ON gr.Pet_ID = p.Pet_ID
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE gr.Owner_ID = $1 AND gss.Type = 'Pending'
-        `;
+        SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
+               gss.Provider_ID, gr.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM GroomingReservation gr
+        JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
+        JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
+        JOIN Pet p ON gr.Pet_ID = p.Pet_ID
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE gr.Owner_ID = $1 AND gss.Type = 'Pending'
+    `;
 
-        const boardingReservationsQuery = `
-            SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Status,
-                   r.Provider_ID, r.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM Reservation r
-            JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
-            JOIN Pet p ON r.Pet_ID = p.Pet_ID
-            JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE r.Owner_ID = $1 AND r.Status = 'Pending'
-        `;
+    const boardingReservationsQuery = `
+        SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
+               ss.Provider_ID, r.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM Reservation r
+        JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
+        JOIN Pet p ON r.Pet_ID = p.Pet_ID
+        JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE r.Owner_ID = $1 AND r.Type = 'Pending'
+    `;
 
         // Execute all queries
         const sittingReservations = await pool.query(sittingReservationsQuery, [ownerId]);
@@ -1282,30 +1283,30 @@ const GetALLCompleted = async (req, res) => {
         `;
 
         const groomingReservationsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, 
-                   gr.Provider_ID, gr.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM GroomingReservation gr
-            JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
-            JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
-            JOIN Pet p ON gr.Pet_ID = p.Pet_ID
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE gr.Owner_ID = $1 AND gss.Type = 'Completed'
-        `;
+        SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
+               gss.Provider_ID, gr.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM GroomingReservation gr
+        JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
+        JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
+        JOIN Pet p ON gr.Pet_ID = p.Pet_ID
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE gr.Owner_ID = $1 AND gss.Type = 'Completed'
+    `;
 
-        const boardingReservationsQuery = `
-            SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Status, 
-                   r.Provider_ID, r.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM Reservation r
-            JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
-            JOIN Pet p ON r.Pet_ID = p.Pet_ID
-            JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE r.Owner_ID = $1 AND r.Status = 'Completed'
-        `;
+    const boardingReservationsQuery = `
+        SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
+               ss.Provider_ID, r.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM Reservation r
+        JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
+        JOIN Pet p ON r.Pet_ID = p.Pet_ID
+        JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE r.Owner_ID = $1 AND r.Type = 'Completed'
+    `;
 
         // Execute all queries
         const sittingReservations = await pool.query(sittingReservationsQuery, [ownerId]);
@@ -1502,30 +1503,30 @@ const GetAllRejected = async (req, res) => {
         `;
 
         const groomingReservationsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, 
-                   gr.Provider_ID, gr.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM GroomingReservation gr
-            JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
-            JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
-            JOIN Pet p ON gr.Pet_ID = p.Pet_ID
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE gr.Owner_ID = $1 AND gss.Type = 'Rejected'
-        `;
+        SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
+               gss.Provider_ID, gr.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM GroomingReservation gr
+        JOIN GroomingServiceSlots gss ON gr.Slot_ID = gss.Slot_ID
+        JOIN ServiceProvider sp ON gss.Provider_ID = sp.Provider_Id
+        JOIN Pet p ON gr.Pet_ID = p.Pet_ID
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE gr.Owner_ID = $1 AND gss.Type = 'Rejected'
+    `;
 
-        const boardingReservationsQuery = `
-            SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Status, 
-                   r.Provider_ID, r.Owner_ID,
-                   sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
-                   COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
-            FROM Reservation r
-            JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
-            JOIN Pet p ON r.Pet_ID = p.Pet_ID
-            JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
-            LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
-            WHERE r.Owner_ID = $1 AND r.Status = 'Rejected'
-        `;
+    const boardingReservationsQuery = `
+        SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
+               ss.Provider_ID, r.Owner_ID,
+               sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
+               COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
+        FROM Reservation r
+        JOIN ServiceSlots ss ON r.Slot_ID = ss.Slot_ID
+        JOIN Pet p ON r.Pet_ID = p.Pet_ID
+        JOIN ServiceProvider sp ON ss.Provider_ID = sp.Provider_Id
+        LEFT JOIN (${reviewsSubquery}) rv ON sp.Provider_Id = rv.Provider_ID
+        WHERE r.Owner_ID = $1 AND r.Type = 'Rejected'
+    `;
 
         // Execute all queries
         const sittingReservations = await pool.query(sittingReservationsQuery, [ownerId]);

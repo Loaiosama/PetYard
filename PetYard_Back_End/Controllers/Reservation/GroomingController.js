@@ -1040,7 +1040,7 @@ const upcomingReq = async (req, res) => {
         }
 
         const groomingRequestsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, 
+            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, gr.Owner_ID,
                    po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
             FROM GroomingReservation gr
             JOIN Petowner po ON gr.Owner_ID = po.Owner_Id
