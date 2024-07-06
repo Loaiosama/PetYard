@@ -111,19 +111,21 @@ const getProviderInfo = async (req, res) => {
         // Get provider rating and review count
         const ratingQuery = `
             SELECT 
-                COALESCE(AVG(r.Rate_value), 0) AS provider_rating, 
-                COALESCE(COUNT(r.Rate_value), 0) AS review_count
+                COALESCE(Rate_value, 0) AS provider_rating, 
+                COALESCE(count, 0) AS review_count
             FROM Review r
             WHERE r.Provider_ID = $1
         `;
         const ratingResult = await pool.query(ratingQuery, [providerId]);
 
+        const ratingData = ratingResult.rows[0] || { provider_rating: 0, review_count: 0 };
+
         res.status(200).json({
             status: "Success",
             provider,
             services: servicesResult.rows,
-            rating: ratingResult.rows[0].provider_rating,
-            reviewCount: ratingResult.rows[0].review_count
+            rating: ratingData.provider_rating,
+            reviewCount: ratingData.review_count
         });
 
     } catch (error) {
@@ -133,8 +135,7 @@ const getProviderInfo = async (req, res) => {
             message: "Internal server error"
         });
     }
-}
-
+};
 
 
 
