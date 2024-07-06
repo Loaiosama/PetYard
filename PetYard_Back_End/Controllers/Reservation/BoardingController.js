@@ -20,7 +20,9 @@ const getProvidersByType = async (req, res) => {
 
         // Query to fetch providers based on service type, including image, rate, and count
         const query = `
-            SELECT p.Provider_ID, p.UserName, p.Email, p.Bio, p.Image, r.Rate_value, r.count
+            SELECT p.Provider_ID, p.UserName, p.Email, p.Bio, p.Image, 
+                   COALESCE(r.Rate_value, 0) AS Rate_value, 
+                   COALESCE(r.count, 0) AS count
             FROM ServiceProvider p
             INNER JOIN Services s ON p.Provider_ID = s.Provider_ID
             LEFT JOIN Review r ON p.Provider_ID = r.Provider_ID
