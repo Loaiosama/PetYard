@@ -27,13 +27,14 @@ CREATE TABLE ServiceProvider (
     Provider_Id SERIAL PRIMARY KEY,
     UserName VARCHAR(225) UNIQUE, 
     Password VARCHAR(225),
-    Phone VARCHAR(225) UNIQUE, -- Making Phone unique
+    Phone VARCHAR(225) UNIQUE, -- MakWaiting for pgAing Phone unique
     Email VARCHAR(225) UNIQUE, -- Making Email unique
     Bio VARCHAR(350) ,
     ResetToken VARCHAR(225),
     Date_of_birth DATE,
     Location POINT,
-    Image VARCHAR(255) -- Assuming 255 characters for the image path or URL
+    Image VARCHAR(255) ,-- Assuming 255 characters for the image path or URL
+    ImageNational VARCHAR(500)
 );
 
 
@@ -258,7 +259,8 @@ CREATE TABLE temp_provider (
     Bio TEXT NOT NULL,
     Image VARCHAR(255) NOT NULL,
     ValidationCode VARCHAR(255) NOT NULL,
-    ValidationCodeExpires TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '10 minutes'
+    ValidationCodeExpires TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '10 minutes',
+    ImageNational VARCHAR(500)
 );
 
 

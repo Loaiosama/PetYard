@@ -8,7 +8,7 @@ const saltRounds = 10;
 const crypto = require('crypto');//reset pass - forget pass
 const Model = require('./../../Models/UserModel');
 const sendemail = require("./../../Utils/email");
-
+/*
 const multerStorage = multer.memoryStorage();
 // const multerFilter = (req, file, cb) => {
 //     if (file.mimetype.startsWith('image')) {
@@ -48,13 +48,61 @@ const resizePhoto = (req, res, next) => {
 }
 
 
+*/
+
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image') || ['jpg', 'jpeg', 'png', 'gif'].includes(file.originalname.split('.').pop().toLowerCase())) {
+        cb(null, true);
+    } else {
+        cb("File format not supported! Please upload only images.", false);
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+});
+
+const uploadphoto = upload.fields([
+    { name: 'Image', maxCount: 1 },
+    { name: 'ImageNational', maxCount: 1 }
+]);
+
+const resizePhoto = async (req, res, next) => {
+    if (!req.files) return next();
+
+    if (req.files.Image) {
+        req.files.Image[0].filename = `Provider-${req.ID}-${Date.now()}.jpeg`;
+        await sharp(req.files.Image[0].buffer)
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/img/users/ServiceProvider/${req.files.Image[0].filename}`);
+    }
+
+    if (req.files.ImageNational) {
+        req.files.ImageNational[0].filename = `Provider-National-${req.ID}-${Date.now()}.jpeg`;
+        await sharp(req.files.ImageNational[0].buffer)
+            .resize(500, 500)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/img/users/ServiceProvider/${req.files.ImageNational[0].filename}`);
+    }
+
+    next();
+};
+
+
 const signUp = async (req, res) => {
     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
-    let Image = req.file ? req.file.filename : 'default.png';
-
+    let Image = req.files && req.files.Image ? req.files.Image[0].filename : 'default.png';
+    let ImageNational = req.files && req.files.ImageNational ? req.files.ImageNational[0].filename : 'default.png';
 
     try {
-        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
+        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
@@ -110,16 +158,43 @@ const signUp = async (req, res) => {
             return res.status(400).json({ message: "Phone number already exists, try another Phone number." });
         }
 
+        
+        const userNameExistsQuery1 = 'SELECT * FROM temp_provider WHERE UserName = $1';
+        const emailExistsQuery1 = 'SELECT * FROM temp_provider WHERE Email = $1';
+        const phoneExistsQuery1 = 'SELECT * FROM temp_provider WHERE Phone = $1';
+
+        const resultUserNameExists1 = await client.query(userNameExistsQuery1, [UserName]);
+        const resultEmailExists1 = await client.query(emailExistsQuery1, [email]);
+        const resultPhoneExists1 = await client.query(phoneExistsQuery1, [phoneNumber]);
+        
+        if (resultUserNameExists1.rows.length > 0) {
+            return res.status(400).json({ message: "Check your email you have validation code" });
+        }
+
+        if (resultEmailExists1.rows.length > 0 && resultPhoneExists1.rows.length > 0) {
+            return res.status(400).json({ message: "Check your email you have validation code." });
+        }
+
+        if (resultEmailExists1.rows.length > 0) {
+            return res.status(400).json({ message: "Check your email you have validation code." });
+        }
+
+        if (resultPhoneExists1.rows.length > 0) {
+            return res.status(400).json({ message: "Check your email you have validation code." });
+        }
+
+
+
         // Insert new user into temp_provider table
         const hashedPassword = await bcrypt.hash(pass, saltRounds);
         const { validationCode } = Model.CreateValidationCode();
 
         const insertQuery = `
-            INSERT INTO temp_provider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image, ValidationCode)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO temp_provider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image, ValidationCode, ImageNational)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING *
         `;
-        const newUser = await client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image, validationCode]);
+        const newUser = await client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image, validationCode, ImageNational]);
 
         // Send validation code via email
         await sendemail.sendemail({
@@ -157,8 +232,8 @@ const validateAndTransfer = async (req, res) => {
 
         // Insert the validated provider into the ServiceProvider table
         const providerData = result.rows[0];
-        const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-        await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image]);
+        const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image,ImageNational) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *';
+        await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image,providerData.imagenational]);
 
         // Delete the provider from temp_provider after successful transfer
         const deleteQuery = 'DELETE FROM temp_provider WHERE Email = $1';
@@ -753,7 +828,8 @@ module.exports = {
     Providerinfo,
     getOwnerInfo,
     changePassword,
-    validateAndTransfer
+    validateAndTransfer,
+ 
 
 
 
