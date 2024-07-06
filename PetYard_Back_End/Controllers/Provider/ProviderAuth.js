@@ -675,43 +675,100 @@ const getService = async (req, res) => {
         });
     }
 }
-const Providerinfo = async (req, res) => {
-    const providerid = req.ID;
-    try {
 
-        if (!providerid) {
+
+// const Providerinfo = async (req, res) => {
+//     const providerid = req.ID;
+//     try {
+
+//         if (!providerid) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Missing information"
+//             });
+//         }
+//         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+//         const result = await pool.query(Query, [providerid]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(401).json({
+//                 status: "Fail",
+//                 message: "User doesn't exist."
+//             });
+//         }
+//         const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
+//         res.status(200).json({
+//             status: "Done",
+//             message: "One Data Is Here",
+//             providerinfo: result.rows,
+//             data: getservices.rows
+//         });
+
+//     } catch (error) {
+
+//         res.status(500).json({
+//             status: "Fail",
+//             message: "Internal server error"
+//         });
+
+//     }
+
+// }
+
+const Providerinfo = async (req, res) => {
+    const providerId = req.ID;
+
+    try {
+        if (!providerId) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing information"
             });
         }
-        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const result = await pool.query(Query, [providerid]);
 
-        if (result.rows.length === 0) {
+        // Query to get provider information
+        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
                 message: "User doesn't exist."
             });
         }
-        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
+
+        // Query to get provider services
+        const servicesQuery = 'SELECT * FROM Services WHERE Provider_ID = $1';
+        const servicesResult = await pool.query(servicesQuery, [providerId]);
+
+        // Query to get provider rating and review count
+        const ratingQuery = `
+            SELECT 
+                COALESCE(AVG(r.Rate_value), 0) AS provider_rating, 
+                COALESCE(COUNT(r.Rate_value), 0) AS review_count
+            FROM Review r
+            WHERE r.Provider_ID = $1
+        `;
+        const ratingResult = await pool.query(ratingQuery, [providerId]);
+
         res.status(200).json({
             status: "Done",
             message: "One Data Is Here",
-            providerinfo: result.rows,
-            data: getservices.rows
+            providerInfo: providerResult.rows[0],
+            services: servicesResult.rows,
+            rating: ratingResult.rows[0].provider_rating,
+            reviewCount: ratingResult.rows[0].review_count
         });
 
     } catch (error) {
-
+        console.error("Error:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
-
     }
-
 }
+
 
 
 const getOwnerInfo = async (req, res) => {
