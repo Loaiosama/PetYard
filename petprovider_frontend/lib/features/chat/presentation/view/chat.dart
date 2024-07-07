@@ -38,7 +38,7 @@ class ProviderChatScreenState extends State<ProviderChatScreen> {
   }
 
   void _connectWebSocket() {
-    channel = IOWebSocketChannel.connect('ws://192.168.56.1:8082');
+    channel = IOWebSocketChannel.connect('ws://192.168.56.1:8084');
     channel.stream.listen(
       (message) {
         final parsedMessage = jsonDecode(message);
