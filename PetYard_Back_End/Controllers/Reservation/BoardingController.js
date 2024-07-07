@@ -797,7 +797,7 @@ const GetAllAccepted = async (req, res) => {
         `;
 
         const groomingReservationsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,
+            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,gss.Slot_ID,
                    gss.Provider_ID, gr.Owner_ID,
                    sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
                    COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
