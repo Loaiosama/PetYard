@@ -1080,7 +1080,7 @@ const GetAllPending = async (req, res) => {
 const updateCompletedReservations = async (req, res) => {
     const reserve_id = req.params.reserve_id;
     const ownerId = req.ID;
-    let { slot_id, pet_id, start_time, end_time, Type } = req.body;
+    let { Type } = req.body;
     try {
 
 
@@ -1102,8 +1102,8 @@ const updateCompletedReservations = async (req, res) => {
 
 
 
-        const updateQuery = 'UPDATE Reservation SET Slot_ID =$1,  Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5 , Type=$6 WHERE Reserve_ID = $7';
-        await pool.query(updateQuery, [slot_id, pet_id, ownerId, start_time, end_time, Type, reserve_id]);
+        const updateQuery = 'UPDATE Reservation SET Type=$1 WHERE Reserve_ID = $2';
+        await pool.query(updateQuery, [ Type, reserve_id]);
 
 
         res.status(200).json({
