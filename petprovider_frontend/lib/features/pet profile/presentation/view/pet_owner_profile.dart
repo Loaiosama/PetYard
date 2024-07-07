@@ -249,7 +249,9 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
+                                      return const CircularProgressIndicator(
+                                        color: kPrimaryGreen,
+                                      );
                                     } else if (snapshot.hasError) {
                                       return Text(
                                         "Error loading location",
@@ -311,7 +313,7 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
               left: 36.w,
               child: CircleAvatar(
                   radius: 45.sp,
-                  backgroundImage: AssetImage("assets/images/Suiiiiiiiii.jpg")),
+                  backgroundImage: AssetImage("assets/images/man.png")),
             ),
           ],
         ),
