@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petprovider_frontend/core/utils/helpers/spacing.dart';
 
 import '../../../../../../core/utils/networking/api_service.dart';
 import '../../../../../../core/utils/routing/routes.dart';
@@ -76,20 +77,21 @@ class _SignInScreenBodyState extends State<SignInScreenBody> {
                   keyboardType: TextInputType.visiblePassword,
                   isPassword: true,
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      GoRouter.of(context).push(Routes.kForgotPasswordScreen);
-                    },
-                    child: Text(
-                      'Forgot password?',
-                      style: Styles.styles12NormalHalfBlack.copyWith(
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: TextButton(
+                //     onPressed: () {
+                //       GoRouter.of(context).push(Routes.kForgotPasswordScreen);
+                //     },
+                //     child: Text(
+                //       'Forgot password?',
+                //       style: Styles.styles12NormalHalfBlack.copyWith(
+                //         color: Colors.blue,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                heightSizedBox(20),
                 BlocProvider(
                   create: (context) =>
                       SignInCubit(SignInRepo(api: ApiService(dio: Dio()))),

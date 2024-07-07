@@ -58,4 +58,9 @@ class Styles {
     fontWeight: FontsHelper.semiBold,
     color: Colors.black,
   );
+  static TextStyle styles12w600 = TextStyle(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+  );
 }

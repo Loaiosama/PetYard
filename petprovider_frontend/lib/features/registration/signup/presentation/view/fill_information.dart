@@ -279,11 +279,14 @@ class _FillInformationSignUpState extends State<FillInformationSignUp> {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(state.errorMessage)));
                         } else if (state is SignUpSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('SignUp Successful')),
-                          );
-                          // Navigate to the home screen
-                          GoRouter.of(context).push(Routes.kSigninScreen);
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   const SnackBar(content: Text('SignUp Successful')),
+                          // );
+                          // // Navigate to the home screen
+                          // GoRouter.of(context).push(Routes.kSigninScreen);
+                          print(widget.email);
+                          GoRouter.of(context).push(Routes.kValidationCode,
+                              extra: widget.email);
                           // GoRouter.of(context).push(Routes.kChooseService);
                         }
                       },

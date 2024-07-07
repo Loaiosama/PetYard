@@ -22,3 +22,17 @@ final class SignUpFailure extends SignUpState {
 
   const SignUpFailure({required this.errorMessage});
 }
+
+final class ValidationLoading extends SignUpState {}
+
+final class ValidationSuccess extends SignUpState {
+  final bool isValid;
+
+  const ValidationSuccess({required this.isValid});
+}
+
+final class ValidationFailure extends SignUpState {
+  final String errorMessage;
+
+  const ValidationFailure({required this.errorMessage});
+}

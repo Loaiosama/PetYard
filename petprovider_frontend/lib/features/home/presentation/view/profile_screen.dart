@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:petprovider_frontend/core/constants/constants.dart';
 import 'package:petprovider_frontend/core/utils/helpers/spacing.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
@@ -52,7 +53,7 @@ class ProfileScreenBody extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '4.6',
+                                '0.0',
                                 style: Styles.styles14NormalBlack,
                               ),
                               widthSizedBox(6),
@@ -68,7 +69,7 @@ class ProfileScreenBody extends StatelessWidget {
                               ),
                               const Spacer(),
                               Text(
-                                '246 Reviews',
+                                '0 Reviews',
                                 style: Styles.styles12NormalHalfBlack,
                               ),
                             ],
@@ -141,7 +142,7 @@ class ProfileScreenBody extends StatelessWidget {
                                         ),
                                         widthSizedBox(8),
                                         Text(
-                                          '123 Main St',
+                                          'Gza\'er Square',
                                           style: Styles.styles14NormalBlack,
                                         ),
                                       ],
@@ -155,7 +156,7 @@ class ProfileScreenBody extends StatelessWidget {
                                         ),
                                         widthSizedBox(8),
                                         Text(
-                                          'New York',
+                                          'Maadi',
                                           style: Styles.styles14NormalBlack,
                                         ),
                                       ],
@@ -169,7 +170,7 @@ class ProfileScreenBody extends StatelessWidget {
                                         ),
                                         widthSizedBox(8),
                                         Text(
-                                          'USA',
+                                          'Egypt',
                                           style: Styles.styles14NormalBlack,
                                         ),
                                       ],
@@ -221,9 +222,11 @@ class ProfileScreenBody extends StatelessWidget {
                     width: 120.0.w,
                     height: 120.0.h,
                     decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: kSecondaryColor,
-                    ),
+                        shape: BoxShape.circle,
+                        // color: kSecondaryColor,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/image.png'),
+                        )),
                   ),
                 ),
               ]);

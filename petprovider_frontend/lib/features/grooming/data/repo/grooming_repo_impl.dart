@@ -68,9 +68,9 @@ class GroomingRepoImpl extends GroomingRepo {
       required DateTime enddate,
       required int length}) async {
     try {
-      // print(startdate);
-      // print(enddate);
-      // print(length);
+      print(startdate.toIso8601String());
+      print(enddate.toIso8601String());
+      print(length);
       await api.setAuthorizationHeader();
       var response = await api.post(
         endPoints: 'Provider/createGroomingSlots',

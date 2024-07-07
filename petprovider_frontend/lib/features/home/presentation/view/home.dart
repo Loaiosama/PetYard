@@ -1,11 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:petprovider_frontend/features/chat/presentation/view/chat.dart';
+import 'package:petprovider_frontend/features/chat/data/repo/chat_service.dart';
+import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
+import 'package:petprovider_frontend/features/appointments%20history/presentation/view/appointments_screen.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view/handel_requests.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/home_screen_body.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/profile_screen.dart';
+import 'package:petprovider_frontend/features/chat/presentation/view/messages_screen.dart';
+import 'package:petprovider_frontend/features/chat/presentation/view_model/test/cubit/chathistory_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
@@ -32,9 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List screens = [
     const HomeScreenBody(),
-    Container(),
-    Jobs(),
-    Container(),
+    const MessagesScreen(),
+    const Jobs(),
+    const AppointmentsScreen(),
     const ProfileScreen(),
   ];
 

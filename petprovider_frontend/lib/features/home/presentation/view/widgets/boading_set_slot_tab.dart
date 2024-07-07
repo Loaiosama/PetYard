@@ -10,7 +10,7 @@ import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/loading_button.dart';
 import 'package:petprovider_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petprovider_frontend/features/home/data/repo/home_repo_impl.dart';
-import 'package:petprovider_frontend/features/home/presentation/view%20model/cubit/boarding_cubit_cubit.dart';
+import 'package:petprovider_frontend/features/home/presentation/view%20model/boarding_cubit/boarding_cubit_cubit.dart';
 
 class BoardingSetSlotTab extends StatelessWidget {
   const BoardingSetSlotTab({super.key});

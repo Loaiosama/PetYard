@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petprovider_frontend/features/chat/presentation/view/chat.dart';
+import 'package:petprovider_frontend/features/chat/data/repo/chat_service.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/routing/routing_animation.dart';
@@ -8,8 +10,10 @@ import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_i
 import 'package:petprovider_frontend/features/grooming/presentation/view/choose_grooming_types.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view_model/choose_types_cubit/grooming_cubit.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/model/Pet.dart';
+import 'package:petprovider_frontend/features/home/data/models/upcoming_events/upcoming_datum.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/widgets/see_all_upcoming_events.dart';
 import 'package:petprovider_frontend/features/pet%20profile/data/model/owner.dart';
 import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_owner_profile.dart';
 import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_profile.dart';
@@ -17,6 +21,9 @@ import 'package:petprovider_frontend/features/registration/signin/data/repo/sign
 import 'package:petprovider_frontend/features/registration/signin/presentation/view/widgets/choose_service.dart';
 import 'package:petprovider_frontend/features/registration/signin/presentation/view_model/signin_cubit/sign_in_cubit.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/fill_information.dart';
+import 'package:petprovider_frontend/features/registration/signup/presentation/view/validation_code.dart';
+import 'package:petprovider_frontend/features/chat/presentation/view_model/test/cubit/chathistory_cubit.dart';
+import 'package:petprovider_frontend/features/tracking/peresentation/view/tracking.dart';
 
 import '../../../features/registration/signin/presentation/view/signin.dart';
 import '../../../features/registration/signup/presentation/view/signup.dart';
@@ -73,6 +80,19 @@ abstract class AppRouter {
                 email: email,
                 password: password,
                 userName: userName,
+              ),
+            );
+          }),
+      GoRoute(
+          name: Routes.kValidationCode,
+          path: Routes.kValidationCode,
+          pageBuilder: (context, state) {
+            final String email = state.extra as String;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: ValidationCodeScreen(
+                email: email,
               ),
             );
           }),
@@ -178,209 +198,56 @@ abstract class AppRouter {
                   pet: pet,
                 ));
           }),
-
-      // // Navigate to forget password screen
-      // GoRoute(
-      //   path: Routes.kForgotPasswordScreen,
-      //   pageBuilder: (context, state) => transitionGoRoute(
-      //     context: context,
-      //     state: state,
-      //     child: const ForgotPasswordScreen(),
-      //   ),
-      // ),
-      // GoRoute(
-      //   path: Routes.kProfileScreen,
-      //   pageBuilder: (context, state) => transitionGoRoute(
-      //     context: context,
-      //     state: state,
-      //     child: const ProfileScreen(),
-      //   ),
-      // ),
-      // GoRoute(
-      //   path: Routes.kOnBoardingScreen,
-      //   builder: (BuildContext context, GoRouterState state) {
-      //     return const OnBoardingScreen();
-      //   },
-      // ),
-      // Navigate to onboarding screen
-      // GoRoute(
-      //   path: Routes.kOnBoardingScreen,
-      //   builder: (BuildContext context, GoRouterState state) {
-      //     return const OnBoardingScreen2();
-      //   },
-      // ),
-      // // Navigate to choose type of pet screen
-      // GoRoute(
-      //   path: Routes.kChooseType,
-      //   pageBuilder: (context, state) => transitionGoRoute(
-      //     context: context,
-      //     state: state,
-      //     child: const ChooseType(),
-      //   ),
-      // ),
-      // // Navigate to chosse breed of pet screen
-      // GoRoute(
-      //     name: Routes.kPetBreed,
-      //     path: Routes.kPetBreed,
-      //     pageBuilder: (context, state) {
-      //       final PetModel pet = state.extra as PetModel;
-      //       return transitionGoRoute(
-      //         context: context,
-      //         state: state,
-      //         child: PetBreedScreen(petModel: pet),
-      //       );
-      //     }),
-      // // Navigate to personal information screen
-      // GoRoute(
-      //   path: Routes.kPersonalInformation,
-      //   pageBuilder: (context, state) => transitionGoRoute(
-      //     context: context,
-      //     state: state,
-      //     child: const PersonalInformationScreen(),
-      //   ),
-      // ),
-      // // Navigate to provider profile screen
-      // GoRoute(
-      //     name: Routes.kProviderProfile,
-      //     path: Routes.kProviderProfile,
-      //     pageBuilder: (context, state) {
-      //       final Map<String, dynamic> extras =
-      //           state.extra as Map<String, dynamic>;
-      //       final int id = extras['id'] as int;
-      //       final String serviceName = extras['serviceName'] as String;
-      //       return transitionGoRoute(
-      //         context: context,
-      //         state: state,
-      //         child: ProviderProfileScreen(
-      //           id: id,
-      //           serviceName: serviceName,
-      //         ),
-      //       );
-      //     }),
-      // GoRoute(
-      //     name: Routes.kPetInformation,
-      //     path: Routes.kPetInformation,
-      //     pageBuilder: (context, state) {
-      //       final int id = state.extra as int;
-      //       return transitionGoRoute(
-      //         context: context,
-      //         state: state,
-      //         child: PetInformationScreen(
-      //           id: id,
-      //         ),
-      //       );
-      //     }),
-      // GoRoute(
-      //   path: Routes.kProfileLocation,
-      //   pageBuilder: (context, state) => transitionGoRoute(
-      //     context: context,
-      //     state: state,
-      //     child: const ProfileLocationScreen(),
-      //   ),
-      // ),
-      // GoRoute(
-      //   name: Routes.kbookAppointment,
-      //   path: Routes.kbookAppointment,
-      //   pageBuilder: (context, state) {
-      //     final Map<String, dynamic> extras =
-      //         state.extra as Map<String, dynamic>;
-      //     final int providerId = extras['providerId'] as int;
-      //     final String serviceName = extras['serviceName'] as String;
-      //     final String providerName = extras['providerName'] as String;
-      //     final List<Service> services = extras['services'] as List<Service>;
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: BookAppointment(
-      //         services: services,
-      //         serviceName: serviceName,
-      //         providerId: providerId,
-      //         providerName: providerName,
-      //       ),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kServiceProviders,
-      //   path: Routes.kServiceProviders,
-      //   pageBuilder: (context, state) {
-      //     final String service = state.extra as String;
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: ServiceProvidersScreen(
-      //         serviceName: service,
-      //       ),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kAddPetInfo,
-      //   path: Routes.kAddPetInfo,
-      //   pageBuilder: (context, state) {
-      //     //final Object? breed = state.extra;
-      //     final PetModel pet = state.extra as PetModel;
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: PetInfo(
-      //         petModel: pet,
-      //       ),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kPetRecap,
-      //   path: Routes.kPetRecap,
-      //   pageBuilder: (context, state) {
-      //     final PetModel pet = state.extra as PetModel;
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: Recap(petModel: pet),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kReservationSuccess,
-      //   path: Routes.kReservationSuccess,
-      //   pageBuilder: (context, state) {
-      //     final Map<String, dynamic> extras =
-      //         state.extra as Map<String, dynamic>;
-      //     final List<Service> services = extras['services'] as List<Service>;
-      //     final String providerName = extras['providerName'] as String;
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: ReservationSuccess(
-      //         providerName: providerName,
-      //         services: services,
-      //       ),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kReservationFailure,
-      //   path: Routes.kReservationFailure,
-      //   pageBuilder: (context, state) {
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: const ReservationFailure(),
-      //     );
-      //   },
-      // ),
-      // GoRoute(
-      //   name: Routes.kChatScreen,
-      //   path: Routes.kChatScreen,
-      //   pageBuilder: (context, state) {
-      //     return transitionGoRoute(
-      //       context: context,
-      //       state: state,
-      //       child: const ChatScreen(),
-      //     );
-      //   },
-      // ),
+      GoRoute(
+          name: Routes.kSeeAllUpcomingEvents,
+          path: Routes.kSeeAllUpcomingEvents,
+          pageBuilder: (context, state) {
+            final List<UpcomingDatum> data = state.extra as List<UpcomingDatum>;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: SeeAllUpcomingEvents(
+                  data: data,
+                ));
+          }),
+      GoRoute(
+          name: Routes.kChatScreen,
+          path: Routes.kChatScreen,
+          pageBuilder: (context, state) {
+            final extras = state.extra as Map<String, dynamic>;
+            final int senderId = extras['senderId'] as int;
+            final int receiverId = extras['receiverId'] as int;
+            final String role = extras['role'] as String;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: BlocProvider(
+                  create: (context) => ChathistoryCubit(
+                      ChatService(apiService: ApiService(dio: Dio()))),
+                  child: ProviderChatScreen(
+                    receiverId: receiverId,
+                    role: role,
+                    senderId: senderId,
+                  ),
+                ));
+          }),
+      GoRoute(
+          name: Routes.KTrackWalk,
+          path: Routes.KTrackWalk,
+          pageBuilder: (context, state) {
+            final args = state.extra as Map<String, dynamic>;
+            final double lat = args['lat'] as double;
+            final double long = args['long'] as double;
+            final double radius = args['radius'] as double;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: TrackingWalking(
+                  lat: lat,
+                  long: long,
+                  radius: radius,
+                ));
+          }),
     ],
   );
 }
