@@ -423,12 +423,12 @@ const getAllPendingRequests = async (req, res) => {
         `;
         const requestRes = await pool.query(requestQuery, ['Pending', providerId]);
 
-        if (requestRes.rows.length === 0) {
+        /*if (requestRes.rows.length === 0) {
             return res.status(404).json({
                 status: "Fail",
                 message: "No pending walking requests found"
             });
-        }
+        }*/
 
         res.status(200).json({
             status: "Success",
@@ -1196,9 +1196,11 @@ const UpcomingOwnerRequests = async (req, res) => {
 
 const trackWalkingRequest = async (req, res) => {
     const ownerId = req.ID;
-    const { Reserve_ID } = req.params.Reserve_ID;
+    const { Reserve_ID } = req.params;
 
     try {
+        console.log(ownerId);
+        console.log(Reserve_ID);
         if (!ownerId || !Reserve_ID) {
             return res.status(400).json({
                 status: "fail",

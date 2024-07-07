@@ -13,6 +13,7 @@ const GroomingController = require('../Controllers/Reservation/GroomingControlle
 const ReviewController = require('../Controllers/Review/ReviewController');
 const PetProfileController=require('../Controllers/Pet_Profile/PetProfileController');
 const WalkingController = require('../Controllers/Reservation/WalkingController');
+const chatController = require('../Controllers/chat/chatController');
 
 
 
@@ -83,7 +84,8 @@ router.delete('/deleteGroomingTypes/:groomingTypeId',authMiddleware,GroomingCont
 router.get('/getGroomingTypes', authMiddleware, GroomingController.getGroomingTypesForProvider);
 router.get('/getGroomingSlots', authMiddleware, GroomingController.getGroomingSlots);
 router.put('/updatePriceForService', authMiddleware, GroomingController.updatePriceOfService);
-router.get('/getGroomingReservation', authMiddleware, GroomingController.getGroomingReservationsForProvider);
+router.get('/getGroomingReservation', authMiddleware, GroomingController.getGroomingReservationsForProvider)
+router.get('/upcomingReqGrooming',authMiddleware , GroomingController.upcomingReq);
 router.get('/upcomingReqGrooming',authMiddleware , GroomingController.upcomingReq);
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
@@ -102,6 +104,9 @@ router.get('/getAllPendingRequests', authMiddleware, WalkingController.getAllPen
 router.get('/getALLAcceptedRequest',authMiddleware,WalkingController.getALLAcceptedRequest);
 router.get('/UpcomingRequestsForWalking',authMiddleware,WalkingController.UpcomingRequests);
 router.put('/startWalk', authMiddleware, WalkingController.startWalk);
+
+router.get('/getAllChats', authMiddleware, chatController.getAllChatsForProvider);
+router.get('/getChatHistory/:providerId/:ownerId', chatController.getChatMessagesHistory);
 
 
 

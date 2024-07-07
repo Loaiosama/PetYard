@@ -466,6 +466,7 @@ const getAllPendingRequests = async (req, res) => {
         const reservationResult = await pool.query(reservationQuery, ['Pending', providerId]);
 
 
+
         res.status(200).json({
             status: "Success",
             message: "Pending sitting reservations retrieved successfully.",
