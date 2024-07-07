@@ -1,18 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
-import 'package:petowner_frontend/features/chat/data/models/chat/chat.dart';
-import 'package:petowner_frontend/features/chat/data/models/chat/datum.dart';
-import 'package:petowner_frontend/features/chat/presentation/view_model/chat/cubit/chat_cubit.dart';
-import '../../data/repo/chat_service.dart';
+import 'package:petowner_frontend/core/utils/theming/styles.dart';
+import 'package:petowner_frontend/core/widgets/search_text_field.dart';
 
-class MessagesScreen extends StatelessWidget {
-  const MessagesScreen({super.key});
+class MessagesScreenOld extends StatelessWidget {
+  const MessagesScreenOld({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +17,7 @@ class MessagesScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Text(
           'Messages',
-          style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+          style: Styles.styles18SemiBoldBlack,
         ),
         centerTitle: true,
         actions: [
@@ -33,6 +26,7 @@ class MessagesScreen extends StatelessWidget {
             width: 40,
             margin: EdgeInsets.only(right: 10.0.w),
             decoration: BoxDecoration(
+              // shape: BoxShape.rectangle,
               border: Border.all(
                 color: Colors.black.withOpacity(0.2),
                 style: BorderStyle.solid,
@@ -66,16 +60,14 @@ class MessagesScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ChatCubit(ChatService(apiService: ApiService(dio: Dio())))
-            ..fetchChats(), // Replace '2' with the actual providerId
-      child: Column(
-        children: [
-          SizedBox(height: 20.h),
-          const Expanded(child: MessageItemListView()),
-        ],
-      ),
+    return Column(
+      children: [
+        SearchTextField(
+          onChanged: (p0) {},
+        ),
+        heightSizedBox(20),
+        const Expanded(child: MessageItemListView()),
+      ],
     );
   }
 }
@@ -85,52 +77,27 @@ class MessageItemListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatCubit, List<Chat>>(
-      builder: (context, chats) {
-        if (chats.isEmpty) {
-          return const Center(child: Text('No chats available'));
-        }
-
-        return ListView.separated(
-          itemCount: chats.length,
-          separatorBuilder: (context, index) => const Divider(),
-          itemBuilder: (context, index) {
-            final chat = chats[index]
-                .data
-                ?.first; // Adjusting to get the first chat data
-            if (chat == null) {
-              return const SizedBox(); // Return an empty widget if chat is null
-            }
-            return MessageItem(chat: chat);
-          },
-        );
+    return ListView.separated(
+      itemCount: 10,
+      separatorBuilder: (context, index) => const Divider(),
+      itemBuilder: (context, index) {
+        return const MessageItem();
       },
     );
   }
 }
 
 class MessageItem extends StatelessWidget {
-  final ChatDatum chat;
-
-  const MessageItem({super.key, required this.chat});
+  const MessageItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(chat.role);
-        GoRouter.of(context).push(Routes.kChatScreen, extra: {
-          "senderId": chat.senderId,
-          "receiverId": chat.receiverId,
-          "role": 'petOwner'
-          // "senderId": chat.role == 'provider' ? chat.senderId : chat.receiverId,
-          // "receiverId":
-          //     chat.role == 'provider' ? chat.receiverId : chat.senderId,
-          // "role": chat.role
-        });
+        GoRouter.of(context).push(Routes.kChatScreen);
       },
       borderRadius: BorderRadius.circular(4.0.r),
-      splashColor: Colors.green.withOpacity(0.2),
+      splashColor: kPrimaryGreen.withOpacity(0.2),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0.w),
         child: Row(
@@ -141,44 +108,50 @@ class MessageItem extends StatelessWidget {
               width: 70.w,
               decoration: BoxDecoration(
                 image: const DecorationImage(
-                  image: AssetImage('assets/images/profile_pictures/y.jpg'),
+                  image: AssetImage(
+                    'assets/images/1.png',
+                  ),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
               ),
             ),
-            SizedBox(width: 10.w),
+            widthSizedBox(10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  chat.role == 'serviceProvider'
-                      ? 'Service Provider'
-                      : 'Mohamed',
-                  style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+                  'Olivia Austin',
+                  style: Styles.styles16BoldBlack.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                SizedBox(height: 4.h),
+                heightSizedBox(4),
+                Text(
+                  'Pet Sitter || Pet Walker',
+                  style: Styles.styles12NormalHalfBlack,
+                ),
+                heightSizedBox(2),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: Text(
-                    // 'Chat between ${chat.senderId} and ${chat.receiverId}',
-                    'Chat between you and Mohamed ',
-                    style: TextStyle(fontSize: 12.sp, color: Colors.black54),
+                    'Fine, I\'ll do a check. Does the patient have a history of certain diseases?',
+                    style: Styles.styles12NormalHalfBlack,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ),
-                SizedBox(height: 2.h),
-                // Last message preview, to be fetched and shown here
               ],
             ),
+            // widthSizedBox(10),
             const Spacer(),
             Column(
               children: [
                 Text(
-                  '10:11pm', // This should be the timestamp of the last message
-                  style: TextStyle(fontSize: 12.sp, color: Colors.black54),
+                  '10:11pm',
+                  style: Styles.styles12RegularOpacityBlack,
                 ),
-                SizedBox(height: 20.h),
+                heightSizedBox(20),
                 Container(
                   decoration: BoxDecoration(
                     color: kPrimaryGreen,
@@ -188,7 +161,7 @@ class MessageItem extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         vertical: 4.0.h, horizontal: 6.0.w),
                     child: const Text(
-                      '  ', // This should be the number of unread messages
+                      '2',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

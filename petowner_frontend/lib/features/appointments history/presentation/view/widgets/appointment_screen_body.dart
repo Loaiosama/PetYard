@@ -106,6 +106,12 @@ class PendingTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
+                      rate: state.pendingReservations[index].data?[0]
+                              .providerRating ??
+                          0.0,
+                      rateCount: state.pendingReservations[index].data?[0]
+                              .reviewCount ??
+                          0.0,
                       slotPrice: state
                               .pendingReservations[index].data![0].finalPrice ??
                           0.0,
@@ -164,8 +170,14 @@ class CancelledTabColumn extends StatelessWidget {
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CompletedCancelledPendingTabCard(
-                      slotPrice: state
-                              .rejectedReservations[index].data![0].slotPrice ??
+                      rate: state.rejectedReservations[index].data?[0]
+                              .providerRating ??
+                          0.0,
+                      rateCount: state.rejectedReservations[index].data?[0]
+                              .reviewCount ??
+                          '0.0',
+                      slotPrice: state.rejectedReservations[index].data![0]
+                              .finalPrice ??
                           0.0,
                       boardingStartDate:
                           state.rejectedReservations[index].data?[0].startTime,
@@ -216,6 +228,7 @@ class CompletedTabColumn extends StatelessWidget {
           );
         } else if (state is CompletedAppointmentsSuccses) {
           List completedReservations = state.completedReservations;
+          // print(state.completedReservations[1].data?[0].finalPrice);
           return completedReservations.isNotEmpty
               ? ListView.builder(
                   itemCount: completedReservations.length,
@@ -225,6 +238,12 @@ class CompletedTabColumn extends StatelessWidget {
                       providerId: state.completedReservations[index].data?[0]
                               .providerId ??
                           -1,
+                      rate: state.completedReservations[index].data?[0]
+                              .providerRating ??
+                          0.0,
+                      rateCount: state.completedReservations[index].data?[0]
+                              .reviewCount ??
+                          '0.0',
                       boardingStartDate:
                           state.completedReservations[index].data?[0].startTime,
                       boardingEndDate:
@@ -241,7 +260,7 @@ class CompletedTabColumn extends StatelessWidget {
                       appointmentStatus: 'Appointment Done.',
                       statusColor: kPrimaryGreen,
                       slotPrice:
-                          state.completedReservations[0].data![0].slotPrice ??
+                          state.completedReservations[0].data![0].finalPrice ??
                               0.0,
                       status: 'completed',
                     );
@@ -284,6 +303,9 @@ class UpcomingTabColumn extends StatelessWidget {
                       // providerID: state.acceptedReservations[index].data?[0]
                       //         .providerId ??
                       //     -1,
+                      slotPrice: state.acceptedReservations[index].data?[0]
+                              .finalPrice ??
+                          0.0,
                       providerImage: state.acceptedReservations[index].data?[0]
                               .providerImage ??
                           '',
@@ -297,6 +319,17 @@ class UpcomingTabColumn extends StatelessWidget {
                           state.acceptedReservations[index].data?[0].endTime,
                       boardingStartDate:
                           state.acceptedReservations[index].data?[0].startTime,
+                      groomingStartTime:
+                          state.acceptedReservations[index].data?[0].startTime,
+                      groomingEndTime:
+                          state.acceptedReservations[index].data?[0].endTime,
+
+                      ownerID:
+                          state.acceptedReservations[index].data?[0].ownerId ??
+                              -1,
+                      providerID: state.acceptedReservations[index].data?[0]
+                              .providerId ??
+                          -1,
                     );
                   },
                 )

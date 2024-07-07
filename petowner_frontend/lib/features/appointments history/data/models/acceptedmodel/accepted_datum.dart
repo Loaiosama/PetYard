@@ -19,6 +19,7 @@ class AcceptedDatum extends Equatable {
   final DateTime? slotStartTime;
   final DateTime? slotEndTime;
   final int? slotPrice;
+  final int? providerId;
 
   const AcceptedDatum({
     this.reserveId,
@@ -39,36 +40,37 @@ class AcceptedDatum extends Equatable {
     this.slotStartTime,
     this.slotEndTime,
     this.slotPrice,
+    this.providerId,
   });
 
   factory AcceptedDatum.fromJson(Map<String, dynamic> json) => AcceptedDatum(
-        reserveId: json['reserve_id'] as int?,
-        slotId: json['slot_id'] as int?,
-        petId: json['pet_id'] as int?,
-        ownerId: json['owner_id'] as int?,
-        startTime: json['start_time'] == null
-            ? null
-            : DateTime.parse(json['start_time'] as String),
-        endTime: json['end_time'] == null
-            ? null
-            : DateTime.parse(json['end_time'] as String),
-        expirationtime: json['expirationtime'] as String?,
-        finalPrice: json['final_price'] as int?,
-        type: json['type'] as String?,
-        providerName: json['provider_name'] as String?,
-        providerEmail: json['provider_email'] as String?,
-        providerPhone: json['provider_phone'] as String?,
-        providerBio: json['provider_bio'] as String?,
-        providerImage: json['provider_image'] as String?,
-        serviceType: json['service_type'] as String?,
-        slotStartTime: json['slot_start_time'] == null
-            ? null
-            : DateTime.parse(json['slot_start_time'] as String),
-        slotEndTime: json['slot_end_time'] == null
-            ? null
-            : DateTime.parse(json['slot_end_time'] as String),
-        slotPrice: json['slot_price'] as int?,
-      );
+      reserveId: json['reserve_id'] as int?,
+      slotId: json['slot_id'] as int?,
+      petId: json['pet_id'] as int?,
+      ownerId: json['owner_id'] as int?,
+      startTime: json['start_time'] == null
+          ? null
+          : DateTime.parse(json['start_time'] as String),
+      endTime: json['end_time'] == null
+          ? null
+          : DateTime.parse(json['end_time'] as String),
+      expirationtime: json['expirationtime'] as String?,
+      finalPrice: json['final_price'] as int?,
+      type: json['type'] as String?,
+      providerName: json['provider_name'] as String?,
+      providerEmail: json['provider_email'] as String?,
+      providerPhone: json['provider_phone'] as String?,
+      providerBio: json['provider_bio'] as String?,
+      providerImage: json['provider_image'] as String?,
+      serviceType: json['service_type'] as String?,
+      slotStartTime: json['slot_start_time'] == null
+          ? null
+          : DateTime.parse(json['slot_start_time'] as String),
+      slotEndTime: json['slot_end_time'] == null
+          ? null
+          : DateTime.parse(json['slot_end_time'] as String),
+      slotPrice: json['slot_price'] as int?,
+      providerId: json['provider_id'] as int?);
 
   Map<String, dynamic> toJson() => {
         'reserve_id': reserveId,
@@ -89,6 +91,7 @@ class AcceptedDatum extends Equatable {
         'slot_start_time': slotStartTime?.toIso8601String(),
         'slot_end_time': slotEndTime?.toIso8601String(),
         'slot_price': slotPrice,
+        'provider_id': providerId,
       };
 
   @override
@@ -112,6 +115,7 @@ class AcceptedDatum extends Equatable {
       slotStartTime,
       slotEndTime,
       slotPrice,
+      providerId,
     ];
   }
 }

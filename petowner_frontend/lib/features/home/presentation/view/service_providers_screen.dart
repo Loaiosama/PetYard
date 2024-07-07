@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -156,6 +155,9 @@ class ServiceProvidersBody extends StatelessWidget {
                           userName:
                               state.providersList[index].data![0].username ??
                                   'no name',
+                          rating:
+                              state.providersList[index].data![0].rate ?? 0.0,
+                          count: state.providersList[index].data![0].count ?? 0,
                         );
                       },
                     ),
@@ -224,8 +226,8 @@ class ProviderListItem extends StatelessWidget {
   final int id;
   final String serviceName;
   final String image;
-  final double? rating;
-  final String? count;
+  final num? rating;
+  final dynamic? count;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -279,64 +281,19 @@ class ProviderListItem extends StatelessWidget {
                       ),
                       heightSizedBox(4),
                       RatingRowWidget(
-                        rating: rating,
+                        rating: rating!.toDouble(),
                         count: count,
-                      ),
+                      )
+
+                      // RatingRowWidget(
+                      //   rating: rating,
+                      //   count: count,
+                      // )
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProviderGridItem extends StatelessWidget {
-  const ProviderGridItem({
-    super.key,
-    // required this.userName, required this.id,
-  });
-  // final String userName;
-  // final int id;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      splashColor: kPrimaryGreen.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(10.0.r),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 140.h,
-            width: MediaQuery.of(context).size.width * 0.40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0.r),
-              image: const DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage('assets/images/1.png'),
-              ),
-            ),
-          ),
-          heightSizedBox(4),
-          Text(
-            'Olivia Ausitn',
-            style: Styles.styles16w600,
-          ),
-          heightSizedBox(2),
-          Text(
-            'Pet Boarder | Pet Walker',
-            style: Styles.styles12NormalHalfBlack,
-          ),
-          heightSizedBox(2),
-          const RatingRowWidget(),
-          heightSizedBox(2),
-          Text(
-            '200EG\$/day',
-            style: Styles.styles12w600.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),

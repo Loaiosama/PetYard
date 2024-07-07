@@ -33,8 +33,7 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
     try {
       await apiService.setAuthorizationHeader();
 
-      var response = await apiService.get(
-          endpoint: 'Petowner/GetAllAcceptedandfinishedReservations');
+      var response = await apiService.get(endpoint: 'Petowner/GetAllAccepted');
 
       for (var item in response['data']) {
         var datum = AcceptedDatum.fromJson(item);
@@ -61,8 +60,9 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
       await apiService.setAuthorizationHeader();
 
       var response = await apiService.get(endpoint: 'PetOwner/GetALLCompleted');
-
+      // print(response);
       for (var item in response['data']) {
+        print(item);
         var datum = Datum.fromJson(item);
         var completedModel = Completedmodel(
           status: response['status'],
@@ -71,6 +71,7 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
         );
         completedReservations.add(completedModel);
       }
+      print(completedReservations);
       return right(completedReservations);
     } catch (e) {
       if (e is DioException) {

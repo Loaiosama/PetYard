@@ -14,10 +14,14 @@ class ProviderProfileCard extends StatelessWidget {
       {super.key,
       required this.providerName,
       required this.services,
-      this.image});
+      this.image,
+      this.rating,
+      this.count});
   final String providerName;
   final List<Service> services;
   final String? image;
+  final num? rating;
+  final dynamic? count;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -66,7 +70,10 @@ class ProviderProfileCard extends StatelessWidget {
               ),
             ),
             heightSizedBox(8),
-            const RatingRowWidget(),
+            RatingRowWidget(
+              rating: rating!.toDouble(),
+              count: count,
+            ),
           ],
         ),
         // widthSizedBox(10),

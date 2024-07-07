@@ -25,7 +25,7 @@ class HomeRepoImpl extends HomeRepo {
       var response = await apiService.get(
           endpoint: 'PetOwner/GetProvidersByType/$serviceName');
       Provider providers = const Provider();
-
+      // print(response['data']);
       // AllPetsModel allPetsModel = const AllPetsModel();
       for (var item in response['data']) {
         // print('item $item');

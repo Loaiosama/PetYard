@@ -9,7 +9,8 @@ class Datum extends Equatable {
   final DateTime? dateOfBirth;
   final dynamic location;
   final String? image;
-
+  final num? rate;
+  final dynamic? count;
   const Datum({
     this.providerId,
     this.username,
@@ -19,6 +20,8 @@ class Datum extends Equatable {
     this.dateOfBirth,
     this.location,
     this.image,
+    this.rate,
+    this.count,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -32,6 +35,8 @@ class Datum extends Equatable {
             : DateTime.parse(json['date_of_birth'] as String),
         location: json['location'] as dynamic,
         image: json['image'] as String?,
+        rate: json['rate_value'] as num,
+        count: json['count'] as dynamic,
       );
 
   Map<String, dynamic> toJson() => {
@@ -43,6 +48,8 @@ class Datum extends Equatable {
         'date_of_birth': dateOfBirth?.toIso8601String(),
         'location': location,
         'image': image,
+        'rate_value': rate,
+        'count': count,
       };
 
   @override
@@ -56,6 +63,8 @@ class Datum extends Equatable {
       dateOfBirth,
       location,
       image,
+      rate,
+      count,
     ];
   }
 }

@@ -1,11 +1,17 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
 import 'package:petowner_frontend/core/widgets/reservation_success.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/choose_request.dart';
-import 'package:petowner_frontend/features/chat/presentation/view/chat_screen.dart';
+import 'package:petowner_frontend/features/chat%20old/presentation/view/chat_screen.dart';
+import 'package:petowner_frontend/features/chat/data/repo/chat_service.dart';
+import 'package:petowner_frontend/features/chat/presentation/view/chat.dart';
+import 'package:petowner_frontend/features/chat/presentation/view_model/test/cubit/chathistory_cubit.dart';
 import 'package:petowner_frontend/features/grooming/presentation/view/grooming_home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/home.dart';
 import 'package:petowner_frontend/features/home/presentation/view/service_providers_screen.dart';
@@ -31,6 +37,7 @@ import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20
 import 'package:petowner_frontend/features/sitting/presentation/view/pet_sitting.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/request_success.dart';
 import 'package:petowner_frontend/features/splash/splash_view.dart';
+import 'package:petowner_frontend/features/tracking/presentation/view/walking_traking.dart';
 
 import '../../../features/applications/data/model/pedning_walking_req.dart';
 import '../../../features/applications/data/model/pending_sitting_req.dart';
@@ -351,17 +358,38 @@ abstract class AppRouter {
           );
         },
       ),
+      // GoRoute(
+      //   name: Routes.kChatScreen,
+      //   path: Routes.kChatScreen,
+      //   pageBuilder: (context, state) {
+      //     return transitionGoRoute(
+      //       context: context,
+      //       state: state,
+      //       child: ChatScreen(),
+      //     );
+      //   },
+      // ),
       GoRoute(
-        name: Routes.kChatScreen,
-        path: Routes.kChatScreen,
-        pageBuilder: (context, state) {
-          return transitionGoRoute(
-            context: context,
-            state: state,
-            child: const ChatScreen(),
-          );
-        },
-      ),
+          name: Routes.kChatScreen,
+          path: Routes.kChatScreen,
+          pageBuilder: (context, state) {
+            final extras = state.extra as Map<String, dynamic>;
+            final int senderId = extras['senderId'] as int;
+            final int receiverId = extras['receiverId'] as int;
+            final String role = extras['role'] as String;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: BlocProvider(
+                  create: (context) => ChathistoryCubit(
+                      ChatService(apiService: ApiService(dio: Dio()))),
+                  child: OwnerChatScreen(
+                    receiverId: receiverId,
+                    role: role,
+                    senderId: senderId,
+                  ),
+                ));
+          }),
       GoRoute(
         name: Routes.kSettings,
         path: Routes.kSettings,
@@ -373,7 +401,6 @@ abstract class AppRouter {
           );
         },
       ),
-
 
       GoRoute(
         name: Routes.KApplications,
@@ -402,7 +429,7 @@ abstract class AppRouter {
           path: Routes.KWalkingApplications,
           pageBuilder: (context, state) {
             final PendingWalkingRequest req =
-            state.extra as PendingWalkingRequest;
+                state.extra as PendingWalkingRequest;
             return transitionGoRoute(
               context: context,
               state: state,
@@ -435,6 +462,23 @@ abstract class AppRouter {
           );
         },
       ),
+      GoRoute(
+          name: Routes.KTrackWalk,
+          path: Routes.KTrackWalk,
+          pageBuilder: (context, state) {
+            final args = state.extra as Map<String, dynamic>;
+            final double lat = args['lat'] as double;
+            final double long = args['long'] as double;
+            final int radius = args['radius'] as int;
+            return transitionGoRoute(
+                context: context,
+                state: state,
+                child: TrackingWalking(
+                  lat: lat,
+                  long: long,
+                  radius: radius,
+                ));
+          }),
     ],
   );
 }

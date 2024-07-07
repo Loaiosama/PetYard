@@ -1,9 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/core/widgets/petyard_text_button.dart';
@@ -16,6 +18,11 @@ class UpcomingAppointmentCard extends StatelessWidget {
     required this.providerImage,
     this.boardingStartDate,
     this.boardingEndDate,
+    this.groomingStartTime,
+    this.groomingEndTime,
+    required this.slotPrice,
+    required this.providerID,
+    required this.ownerID,
     // required this.providerID,
   });
   final String providerName;
@@ -23,7 +30,11 @@ class UpcomingAppointmentCard extends StatelessWidget {
   final String providerImage;
   final DateTime? boardingStartDate;
   final DateTime? boardingEndDate;
-  // final int providerID;
+  final DateTime? groomingStartTime;
+  final DateTime? groomingEndTime;
+  final num slotPrice;
+  final int providerID;
+  final int ownerID;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -78,59 +89,90 @@ class UpcomingAppointmentCard extends StatelessWidget {
                           style: Styles.styles12NormalHalfBlack,
                         ),
                         heightSizedBox(2),
-                        service == 'Boarding'
-                            ? Text(
-                                '-${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} \n-${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
-                                style: Styles.styles12NormalHalfBlack,
-                              )
-                            : Container(),
+                        if (service == 'Boarding')
+                          Text(
+                            '-${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} \n-${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
+                            style: Styles.styles12NormalHalfBlack,
+                          ),
+                        if (service == 'Grooming')
+                          Text(
+                            // '-From Wednesday, 08 May 2023',
+                            DateFormat('EEEE, d MMM, yyyy')
+                                .format(groomingStartTime!),
+                            style: Styles.styles12NormalHalfBlack,
+                          ),
+                        Text(
+                          // '-From Wednesday, 08 May 2023',
+                          '${DateFormat('HH:mm').format(groomingStartTime!)} - '
+                          '${DateFormat('HH:mm').format(groomingEndTime!)} ',
+                          style: Styles.styles12NormalHalfBlack,
+                        ),
                       ],
                     ),
                     // widthSizedBox(10),
                     const Spacer(),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Tooltip(
-                        message: 'Send a message to $providerName.',
-                        child: Icon(
-                          FluentIcons.chat_20_regular,
-                          color: kPrimaryGreen,
-                          size: 28.0.sp,
+                    Column(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            GoRouter.of(context)
+                                .push(Routes.kChatScreen, extra: {
+                              "senderId": ownerID,
+                              "receiverId": providerID,
+                              "role": 'petOwner',
+                              // "senderId": chat.role == 'provider' ? chat.senderId : chat.receiverId,
+                              // "receiverId":
+                              //     chat.role == 'provider' ? chat.receiverId : chat.senderId,
+                              // "role": chat.role
+                            });
+                          },
+                          icon: Tooltip(
+                            message: 'Send a message to $providerName.',
+                            child: Icon(
+                              FluentIcons.chat_20_regular,
+                              color: kPrimaryGreen,
+                              size: 28.0.sp,
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(
+                          '$slotPrice/EGP',
+                          style: Styles.styles12w600,
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 heightSizedBox(20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PetYardTextButton(
-                      onPressed: () {},
-                      width: 140.w,
-                      height: 50.h,
-                      radius: 24.0.r,
-                      color: Colors.transparent,
-                      borderColor: kPrimaryGreen,
-                      text: 'Cancel Appointment',
-                      style: Styles.styles14w600.copyWith(
-                        color: kPrimaryGreen,
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                    PetYardTextButton(
-                      onPressed: () {},
-                      width: 140.w,
-                      height: 50.h,
-                      radius: 24.0.r,
-                      text: 'Reschedule',
-                      style: Styles.styles14w600.copyWith(
-                        color: Colors.white,
-                        fontSize: 11.sp,
-                      ),
-                    ),
-                  ],
+                PetYardTextButton(
+                  onPressed: () {},
+                  height: 50.h,
+                  radius: 14.0.r,
+                  text: 'Mark as done',
+                  style: Styles.styles14w600.copyWith(
+                    color: Colors.white,
+                    fontSize: 11.sp,
+                  ),
                 ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     // PetYardTextButton(
+                //     //   onPressed: () {},
+                //     //   width: 140.w,
+                //     //   height: 50.h,
+                //     //   radius: 24.0.r,
+                //     //   color: Colors.transparent,
+                //     //   borderColor: kPrimaryGreen,
+                //     //   text: 'Cancel Appointment',
+                //     //   style: Styles.styles14w600.copyWith(
+                //     //     color: kPrimaryGreen,
+                //     //     fontSize: 11.sp,
+                //     //   ),
+                //     // ),
+
+                //   ],
+                // ),
               ],
             ),
           ),

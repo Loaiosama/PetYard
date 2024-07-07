@@ -30,4 +30,5 @@ class Routes {
   static const String KSittingApplications = '/sittingApplications';
   static const String KWalkingApplications = '/walkingApplications';
   static const String KWalkingSuccess = '/walkingSuccess';
+  static const String KTrackWalk = '/trackingWalking';
 }

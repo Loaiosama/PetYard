@@ -137,7 +137,7 @@ class AboutTabColumn extends StatelessWidget {
               ),
               widthSizedBox(8),
               Text(
-                '20 Completed bookings hmm',
+                '20 Completed bookings',
                 style: Styles.styles12NormalHalfBlack,
               ),
             ],

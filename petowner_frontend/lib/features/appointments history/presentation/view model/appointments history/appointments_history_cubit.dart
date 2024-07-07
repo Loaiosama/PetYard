@@ -18,7 +18,7 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
     var result = await appointmentHistoryRepo.fetchCompletedReservations();
     result.fold(
         (failure) => emit(
-            CompletedAppointmentsFailure(errorMessage: failure.toString())),
+            CompletedAppointmentsFailure(errorMessage: failure.errorMessage)),
         (completed) => emit(
             CompletedAppointmentsSuccses(completedReservations: completed)));
   }
@@ -28,7 +28,7 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
     var result = await appointmentHistoryRepo.fetchPendingReservations();
     result.fold(
         (failure) =>
-            emit(PendingAppointmentFailure(errorMessage: failure.toString())),
+            emit(PendingAppointmentFailure(errorMessage: failure.errorMessage)),
         (pending) =>
             emit(PendingAppointmentSuccess(pendingReservations: pending)));
   }
@@ -37,8 +37,8 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
     emit(RejectedAppointmentLoading());
     var result = await appointmentHistoryRepo.fetchRejectedReservations();
     result.fold(
-        (failure) =>
-            emit(RejectedAppointmentFailure(errorMessage: failure.toString())),
+        (failure) => emit(
+            RejectedAppointmentFailure(errorMessage: failure.errorMessage)),
         (rejected) =>
             emit(RejectedAppointmentSuccess(rejectedReservations: rejected)));
   }
@@ -47,8 +47,8 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
     emit(AcceptedAppointmentLoading());
     var result = await appointmentHistoryRepo.fetchAcceptedReservations();
     result.fold(
-        (failure) =>
-            emit(AcceptedAppointmentFailure(errorMessage: failure.toString())),
+        (failure) => emit(
+            AcceptedAppointmentFailure(errorMessage: failure.errorMessage)),
         (accepted) =>
             emit(AcceptedAppointmentSuccess(acceptedReservations: accepted)));
   }

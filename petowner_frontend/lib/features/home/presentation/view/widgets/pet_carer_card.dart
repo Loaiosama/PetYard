@@ -101,7 +101,7 @@ class RatingRowWidget extends StatelessWidget {
   });
 
   final double? rating;
-  final String? count;
+  final dynamic count;
 
   @override
   Widget build(BuildContext context) {

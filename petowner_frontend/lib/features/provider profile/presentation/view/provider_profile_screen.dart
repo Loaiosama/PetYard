@@ -93,6 +93,8 @@ class ProviderProfileScreen extends StatelessWidget {
                 phoneNumber:
                     state.providerInfoModel.data!.phone ?? 'No Phone Number.',
                 userName: state.providerInfoModel.data!.username ?? 'No name.',
+                rating: state.providerInfoModel.rating ?? 0.0,
+                count: state.providerInfoModel.count ?? 0,
               ),
             );
           } else if (state is ProviderInfoLoading) {

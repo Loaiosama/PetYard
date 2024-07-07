@@ -28,6 +28,10 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
     required this.slotPrice,
     required this.status,
     this.providerId,
+    this.groomingStartTime,
+    this.groomingEndTime,
+    this.rate,
+    this.rateCount,
   });
   final int? providerId;
   final String appointmentStatus;
@@ -37,8 +41,12 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
   final String providerImage;
   final DateTime? boardingStartDate;
   final DateTime? boardingEndDate;
+  final DateTime? groomingStartTime;
+  final DateTime? groomingEndTime;
   final num slotPrice;
   final String status;
+  final num? rate;
+  final dynamic? rateCount;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -76,15 +84,16 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                           ),
                         ),
                         heightSizedBox(4),
-                        service == 'Boarding'
-                            ? Text(
-                                '${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} | ${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
-                                style: Styles.styles12RegularOpacityBlack,
-                              )
-                            : Text(
-                                'Monday, 24 Jun | 8:30',
-                                style: Styles.styles12RegularOpacityBlack,
-                              ),
+                        if (service == 'Boarding')
+                          Text(
+                            '${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} | ${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
+                            style: Styles.styles12RegularOpacityBlack,
+                          ),
+                        if (service == 'Grooming')
+                          Text(
+                            '',
+                            style: Styles.styles12RegularOpacityBlack,
+                          ),
                       ],
                     ),
                     status == 'completed'
@@ -114,48 +123,6 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                                 )),
                           )
                         : const SizedBox(),
-                    // IconButton(
-                    //   onPressed: () {},
-                    //   icon: Tooltip(
-                    //     message: 'More',
-                    //     child: status == 'completed'
-                    //         ? PopupMenuButton<int>(
-                    //             icon: Icon(
-                    //               Icons.more_vert_outlined,
-                    //               color: Colors.black.withOpacity(0.5),
-                    //               size: 22.0.sp,
-                    //             ),
-                    //             onSelected: (int result) {
-                    //               if (result == 0) {
-                    //                 // Visit profile action
-                    //               } else if (result == 1) {
-                    //                 showModalBottomSheet(
-                    //                   context: context,
-                    //                   isScrollControlled: true,
-                    //                   builder: (context) => RatingReviewSheet(
-                    //                       providerName: providerName),
-                    //                 );
-                    //               }
-                    //             },
-                    //             itemBuilder: (BuildContext context) =>
-                    //                 <PopupMenuEntry<int>>[
-                    //               const PopupMenuItem<int>(
-                    //                 value: 0,
-                    //                 child: Text('Visit Profile'),
-                    //               ),
-                    //               const PopupMenuItem<int>(
-                    //                 value: 1,
-                    //                 child: Text('Rating & Review'),
-                    //               ),
-                    //             ],
-                    //           )
-                    //         : Icon(
-                    //             Icons.more_vert_outlined,
-                    //             color: Colors.black.withOpacity(0.5),
-                    //             size: 22.0.sp,
-                    //           ),
-                    //   ),
-                    // ),
                   ],
                 ),
                 Padding(
@@ -200,7 +167,10 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                             style: Styles.styles12NormalHalfBlack,
                           ),
                           heightSizedBox(2),
-                          const RatingRowWidget(),
+                          RatingRowWidget(
+                            rating: rate?.toDouble() ?? 0.0,
+                            count: rateCount ?? '0.0',
+                          ),
                         ],
                       ),
                       const Spacer(),
@@ -295,6 +265,8 @@ class RatingReviewSheetState extends State<RatingReviewSheet> {
                 child: BlocConsumer<AppointmentsHistoryCubit,
                     AppointmentsHistoryState>(
                   listener: (context, state) {
+                    var cubit =
+                        BlocProvider.of<AppointmentsHistoryCubit>(context);
                     if (state is AddRatingSuccess) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -303,6 +275,7 @@ class RatingReviewSheetState extends State<RatingReviewSheet> {
                         ),
                       );
                       Navigator.pop(context);
+                      cubit.fetchCompletedReservations();
                     } else if (state is AddRatingFailure) {
                       // Handle failure state
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -25,6 +25,8 @@ class ProviderProfileBody extends StatelessWidget {
     required this.age,
     required this.services,
     required this.image,
+    required this.rating,
+    required this.count,
   });
   final int id;
   final String serviceName;
@@ -35,6 +37,8 @@ class ProviderProfileBody extends StatelessWidget {
   final String userName;
   final List<Service> services;
   final String image;
+  final num rating;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -45,6 +49,8 @@ class ProviderProfileBody extends StatelessWidget {
             services: services,
             providerName: userName,
             image: image,
+            rating: rating,
+            count: count,
           ),
           heightSizedBox(20),
           Padding(
