@@ -20,6 +20,11 @@ class SittingRepoImp extends SittingRepo {
   Future<Either<Failure, String>> sendRequest(SittingRequest req) async {
     try {
       await apiService.setAuthorizationHeader();
+      final startAdjusted =
+          req.startTime!.add(const Duration(hours: 0)).toUtc();
+      final endAdjusted = req.endTime!.add(const Duration(hours: 0)).toUtc();
+      req.endTime = endAdjusted;
+      req.startTime = startAdjusted;
 
       var response = await apiService.post(
           endPoints: 'PetOwner/makeSittingRequest', data: req.toJson());

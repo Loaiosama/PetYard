@@ -419,11 +419,7 @@ class _PetWalkingState extends State<PetWalking> {
                     type: StepperType.horizontal,
                     steps: steps(),
                     currentStep: _currentStep,
-                    onStepTapped: (value) {
-                      setState(() {
-                        _currentStep = value;
-                      });
-                    },
+                    onStepTapped: (value) {},
                     onStepCancel: () {
                       setState(() {
                         if (_currentStep > 0) {

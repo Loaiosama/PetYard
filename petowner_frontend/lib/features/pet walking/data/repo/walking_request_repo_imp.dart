@@ -16,6 +16,12 @@ class WalkingRepoImp extends WalkingRepo {
       print("ana abl el token");
       await apiService.setAuthorizationHeader();
       print("ana b3d el token");
+      final startAdjusted =
+          walkingRequest.startTime!.add(const Duration(hours: 0)).toUtc();
+      final endAdjusted =
+          walkingRequest.endTime!.add(const Duration(hours: 0)).toUtc();
+      walkingRequest.startTime = startAdjusted;
+      walkingRequest.endTime = endAdjusted;
       var response = await apiService.post(
           endPoints: "PetOwner/makeWalkingRequest",
           data: walkingRequest.toJson());
