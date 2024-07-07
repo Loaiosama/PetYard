@@ -158,7 +158,7 @@ const signUp = async (req, res) => {
             return res.status(400).json({ message: "Phone number already exists, try another Phone number." });
         }
 
-        
+
         const userNameExistsQuery1 = 'SELECT * FROM temp_provider WHERE UserName = $1';
         const emailExistsQuery1 = 'SELECT * FROM temp_provider WHERE Email = $1';
         const phoneExistsQuery1 = 'SELECT * FROM temp_provider WHERE Phone = $1';
@@ -166,7 +166,7 @@ const signUp = async (req, res) => {
         const resultUserNameExists1 = await client.query(userNameExistsQuery1, [UserName]);
         const resultEmailExists1 = await client.query(emailExistsQuery1, [email]);
         const resultPhoneExists1 = await client.query(phoneExistsQuery1, [phoneNumber]);
-        
+
         if (resultUserNameExists1.rows.length > 0) {
             return res.status(400).json({ message: "Check your email you have validation code" });
         }
@@ -233,7 +233,7 @@ const validateAndTransfer = async (req, res) => {
         // Insert the validated provider into the ServiceProvider table
         const providerData = result.rows[0];
         const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image,ImageNational) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *';
-        await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image,providerData.imagenational]);
+        await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image, providerData.imagenational]);
 
         // Delete the provider from temp_provider after successful transfer
         const deleteQuery = 'DELETE FROM temp_provider WHERE Email = $1';
@@ -677,97 +677,97 @@ const getService = async (req, res) => {
 }
 
 
-// const Providerinfo = async (req, res) => {
-//     const providerid = req.ID;
-//     try {
-
-//         if (!providerid) {
-//             return res.status(400).json({
-//                 status: "Fail",
-//                 message: "Missing information"
-//             });
-//         }
-//         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-//         const result = await pool.query(Query, [providerid]);
-
-//         if (result.rows.length === 0) {
-//             return res.status(401).json({
-//                 status: "Fail",
-//                 message: "User doesn't exist."
-//             });
-//         }
-//         const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
-//         res.status(200).json({
-//             status: "Done",
-//             message: "One Data Is Here",
-//             providerinfo: result.rows,
-//             data: getservices.rows
-//         });
-
-//     } catch (error) {
-
-//         res.status(500).json({
-//             status: "Fail",
-//             message: "Internal server error"
-//         });
-
-//     }
-
-// }
-
 const Providerinfo = async (req, res) => {
-    const providerId = req.ID;
-
+    const providerid = req.ID;
     try {
-        if (!providerId) {
+
+        if (!providerid) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing information"
             });
         }
+        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+        const result = await pool.query(Query, [providerid]);
 
-        // Query to get provider information
-        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const providerResult = await pool.query(providerQuery, [providerId]);
-
-        if (providerResult.rows.length === 0) {
+        if (result.rows.length === 0) {
             return res.status(401).json({
                 status: "Fail",
                 message: "User doesn't exist."
             });
         }
-
-        // Query to get provider services
-        const servicesQuery = 'SELECT * FROM Services WHERE Provider_ID = $1';
-        const servicesResult = await pool.query(servicesQuery, [providerId]);
-
-        // Query to get provider rating and review count
-        const ratingQuery = `
-            SELECT 
-                COALESCE(AVG(r.Rate_value), 0) AS provider_rating, 
-                COALESCE(COUNT(r.Rate_value), 0) AS review_count
-            FROM Review r
-            WHERE r.Provider_ID = $1
-        `;
-        const ratingResult = await pool.query(ratingQuery, [providerId]);
-
+        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
         res.status(200).json({
             status: "Done",
             message: "One Data Is Here",
-            providerInfo: providerResult.rows[0],
-            services: servicesResult.rows,
-            rating: ratingResult.rows[0].provider_rating,
-            reviewCount: ratingResult.rows[0].review_count
+            providerinfo: result.rows,
+            data: getservices.rows
         });
 
     } catch (error) {
-        console.error("Error:", error);
+
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
+
     }
+
 }
+
+// const Providerinfo = async (req, res) => {
+//     const providerId = req.ID;
+
+//     try {
+//         if (!providerId) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Missing information"
+//             });
+//         }
+
+//         // Query to get provider information
+//         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+//         const providerResult = await pool.query(providerQuery, [providerId]);
+
+//         if (providerResult.rows.length === 0) {
+//             return res.status(401).json({
+//                 status: "Fail",
+//                 message: "User doesn't exist."
+//             });
+//         }
+
+//         // Query to get provider services
+//         const servicesQuery = 'SELECT * FROM Services WHERE Provider_ID = $1';
+//         const servicesResult = await pool.query(servicesQuery, [providerId]);
+
+//         // Query to get provider rating and review count
+//         const ratingQuery = `
+//             SELECT 
+//                 COALESCE(AVG(r.Rate_value), 0) AS provider_rating, 
+//                 COALESCE(COUNT(r.Rate_value), 0) AS review_count
+//             FROM Review r
+//             WHERE r.Provider_ID = $1
+//         `;
+//         const ratingResult = await pool.query(ratingQuery, [providerId]);
+
+//         res.status(200).json({
+//             status: "Done",
+//             message: "One Data Is Here",
+//             providerInfo: providerResult.rows[0],
+//             services: servicesResult.rows,
+//             rating: ratingResult.rows[0].provider_rating,
+//             reviewCount: ratingResult.rows[0].review_count
+//         });
+
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).json({
+//             status: "Fail",
+//             message: "Internal server error"
+//         });
+//     }
+// }
 
 
 
@@ -811,9 +811,9 @@ const getOwnerInfo = async (req, res) => {
     }
 };
 
-const changePassword = async(req, res) =>{
+const changePassword = async (req, res) => {
     const providerId = req.ID;
-    let{oldPassword, newPassword} = req.body;
+    let { oldPassword, newPassword } = req.body;
 
     try {
         if (!providerId || !oldPassword || !newPassword) {
@@ -855,14 +855,14 @@ const changePassword = async(req, res) =>{
             status: 'Success',
             message: 'Password changed successfully.'
         });
-        
+
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error."
         })
-        
+
     }
 }
 
@@ -886,7 +886,7 @@ module.exports = {
     getOwnerInfo,
     changePassword,
     validateAndTransfer,
- 
+
 
 
 
