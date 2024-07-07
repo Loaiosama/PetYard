@@ -291,6 +291,30 @@ CREATE TABLE Notifications (
     FOREIGN KEY (User_ID) REFERENCES PetOwner(Owner_Id) -- Adjust as needed for different user types
 );
 
+-- CREATE TABLE chatmessages (
+--     id SERIAL PRIMARY KEY,
+--     sender_id INT,
+--     receiver_id INT,
+--     role VARCHAR(50), -- 'user' or 'provider' role
+--     message TEXT,
+--     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (sender_id) REFERENCES users(id),
+--     FOREIGN KEY (receiver_id) REFERENCES providers(id)
+-- );
+
+CREATE TABLE chatmessages (
+    id SERIAL PRIMARY KEY,
+    sender_id INT,
+    receiver_id INT,
+    role VARCHAR(50), -- 'user' or 'provider' role
+    message TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES Petowner(Owner_Id),
+    FOREIGN KEY (receiver_id) REFERENCES ServiceProvider(Provider_Id)
+);
+
+
+
 /*
 CREATE TABLE Location (
     id SERIAL PRIMARY KEY,
