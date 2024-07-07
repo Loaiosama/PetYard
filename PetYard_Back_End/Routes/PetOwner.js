@@ -14,6 +14,7 @@ const GroomingController = require('../Controllers/Reservation/GroomingControlle
 const ReviewController = require('../Controllers/Review/ReviewController');
 const geoFenceController = require('../Controllers/Location/geofenceController');
 const WalkingController = require('../Controllers/Reservation/WalkingController')
+const chatController = require('../Controllers/chat/chatController');
 
 
 
@@ -59,12 +60,21 @@ router.post('/FeesDisplay', authMiddleware, ReservationController.FeesDisplay);
 
 
 
+
+//chattt
+router.get('/getAllChats', authMiddleware, chatController.getAllChatsForOwner);
+router.get('/getChatHistory/:providerId', authMiddleware, chatController.getChatHistoryForOwner);
+/////
+
+
+
+
 //------------------------------ ROUTES FOR rating CONTROLLER ---------------------------------
 
-router.post('/AddRating',authMiddleware,ReviewController.AddRating);
-router.post('/AddComment/:review_id',authMiddleware,ReviewController.AddComment);
-router.get('/recomendedProviders',authMiddleware,ReviewController.recomendedProviders);
-router.get('/getAllReviews',authMiddleware,ReviewController.getAllReviews);
+router.post('/AddRating', authMiddleware, ReviewController.AddRating);
+router.post('/AddComment/:review_id', authMiddleware, ReviewController.AddComment);
+router.get('/recomendedProviders', authMiddleware, ReviewController.recomendedProviders);
+router.get('/getAllReviews', authMiddleware, ReviewController.getAllReviews);
 router.get('/GetAllReviewsForSpecificProvider/:providerid', authMiddleware, ReviewController.getAllReviewsForSpecificProvider);
 router.get('/filterByRating/:minRating/:serviceType', authMiddleware, ReviewController.filterByRating);
 
@@ -76,17 +86,17 @@ router.get('/getSittingRequests', authMiddleware, SittingController.GetSittingRe
 router.get('/getSittingApplications/:Reserve_ID', authMiddleware, SittingController.getSittingApplications);
 router.put('/acceptSittingApplication', authMiddleware, SittingController.acceptSittingApplication);
 router.put('/rejectApplication', authMiddleware, SittingController.rejectApplication);
-router.put('/completedApplication',authMiddleware,SittingController.completedApplication);
+router.put('/completedApplication', authMiddleware, SittingController.completedApplication);
 
 
 //------------------------------ ROUTES FOR GROOMING CONTROLLER ---------------------------------
-router.get('/getPendingGroomingSlotsForProvider/:provider_id',authMiddleware,GroomingController.getPendingGroomingSlotsForProvider);
+router.get('/getPendingGroomingSlotsForProvider/:provider_id', authMiddleware, GroomingController.getPendingGroomingSlotsForProvider);
 router.post('/bookGroomingSlot', authMiddleware, GroomingController.bookGroomingSlot);
 router.get('/getGroomingReservations', authMiddleware, GroomingController.getGroomingReservations);
-router.put('/updateGroomingReservationToComplete/:Slot_ID',authMiddleware,GroomingController.updateGroomingReservationtocomplete)
-router.get('/getAllGroomingProviders', authMiddleware,GroomingController.getAllGroomingProviders);
+router.put('/updateGroomingReservationToComplete/:Slot_ID', authMiddleware, GroomingController.updateGroomingReservationtocomplete)
+router.get('/getAllGroomingProviders', authMiddleware, GroomingController.getAllGroomingProviders);
 router.post('/getFees', authMiddleware, GroomingController.getFees);
-router.get('/getGroomingTypes/:providerId',authMiddleware,GroomingController.getGroomingTypesForProvidertoowner);
+router.get('/getGroomingTypes/:providerId', authMiddleware, GroomingController.getGroomingTypesForProvidertoowner);
 
 //------------------------------ ROUTES FOR clinic CONTROLLER ---------------------------------
 
@@ -104,7 +114,7 @@ router.get('/GetPendingWalkingRequests', authMiddleware, WalkingController.GetPe
 router.get('/GetWalkingApplications/:Reserve_ID', authMiddleware, WalkingController.GetWalkingApplications);
 router.put('/rejectWalkingApplication', authMiddleware, WalkingController.rejectApplication);
 router.put('/acceptWalkingApplication', authMiddleware, WalkingController.acceptApplication);
-router.put('/Completed',authMiddleware,WalkingController.completedApplication);
+router.put('/Completed', authMiddleware, WalkingController.completedApplication);
 router.get('/UpcomingOwnerRequests', authMiddleware, WalkingController.UpcomingOwnerRequests);
 router.get('/trackWalkingRequest/:Reserve_ID', authMiddleware, WalkingController.trackWalkingRequest);
 
