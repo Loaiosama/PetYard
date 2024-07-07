@@ -7,6 +7,7 @@ import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view/widgets/boarding_tab.dart';
+import 'package:petprovider_frontend/features/handle%20requests/presentation/view/widgets/grooming_tab.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view/widgets/sitting_tab.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view/widgets/walking_tab.dart';
 import 'package:petprovider_frontend/features/home/data/models/profile_info/datum.dart';
@@ -21,7 +22,7 @@ class Jobs extends StatelessWidget {
     return Scaffold(
       body: Padding(
           padding: EdgeInsets.only(top: 70.0.h),
-          child: SizedBox(child: ServiceTabBar())),
+          child: const SizedBox(child: ServiceTabBar())),
     );
   }
 }
@@ -73,11 +74,10 @@ Widget createTabBar(List<Datum> services, BuildContext context) {
             onTap: (value) {},
             dividerHeight: 0,
             indicator: BoxDecoration(
-              color:
-                  kPrimaryGreen, // Set the background color of the selected tab indicator
+              color: kPrimaryGreen,
               borderRadius: BorderRadius.circular(12),
             ),
-            labelColor: Colors.white, // Text color of the selected tab label
+            labelColor: Colors.white,
             unselectedLabelColor: Colors.black,
             isScrollable: true,
             tabs: services
@@ -109,15 +109,17 @@ Widget createTabBar(List<Datum> services, BuildContext context) {
           child: TabBarView(
             children: services.map((service) {
               if (service.type == "Sitting") {
-                return const SittingTab(); // Use SittingTab for "Sitting" tab
+                return const SittingTab();
               } else if (service.type == "Boarding") {
-                return const BoardingTab(); // Use BoardingTab for "Boarding" tab
+                return const BoardingTab();
               } else if (service.type == "Walking") {
                 return const WalkingTab();
+              } else if (service.type == "Grooming") {
+                return const GroomingTab();
               } else {
                 return Center(
                   child: Text(service.type ?? 'Unknown'),
-                ); // Default widget for other tabs
+                );
               }
             }).toList(),
           ),

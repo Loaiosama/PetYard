@@ -14,17 +14,25 @@ class WalkingRequestRepoImp extends WalkingRequestRepo {
   Future<Either<Failure, List<PendingWalkingRequest>>>
       getPendingWalkingRequests() async {
     try {
+      print("ana abl el token");
       await api.setAuthorizationHeader();
+      print("ana b3d el token");
       var response = await api.get(endpoint: "Provider/getAllPendingRequests");
+      print("ana b3d el response");
       for (var item in response['data']) {
+        print("ana gwa el if");
         var req = PendingWalkingRequest.fromJson(item);
+        print("ana b3d el req");
         requests.add(req);
       }
+      print("ana abl el right");
       return Right(requests);
     } catch (e) {
       if (e is DioException) {
+        print("ana gwa el e ");
         return left(ServerFailure.fromDioError(e));
       }
+      print("ana bra el e");
       return left(ServerFailure(e.toString()));
     }
   }

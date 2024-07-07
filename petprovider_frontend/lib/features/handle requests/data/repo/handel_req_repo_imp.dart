@@ -14,17 +14,24 @@ class HandelReqRepoImp extends HandelReqRepo {
   @override
   Future<Either<Failure, List<SittingRequests>>> fetchRequests() async {
     try {
+      print("ana abl el token sitting req");
       await api.setAuthorizationHeader();
+      print("ana b3d el token sitting req");
       var response =
           await api.get(endpoint: "Provider/getAllSittingPendingRequests");
+      print("ana b3d el repsonse sitting req");
 
       for (var item in response['data']) {
         var req = SittingRequests.fromJson(item);
+        print("ana b3d el req sitting req");
         requests.add(req);
       }
+      print("ana able el right  sitting req");
       return Right(requests);
     } catch (e) {
       if (e is DioException) {
+        print("ana gwa el e");
+
         return left(ServerFailure.fromDioError(e));
       }
       return left(ServerFailure(e.toString()));
