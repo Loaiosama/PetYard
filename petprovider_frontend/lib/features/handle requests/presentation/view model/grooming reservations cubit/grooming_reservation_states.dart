@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:petprovider_frontend/features/handle%20requests/data/model/grooming%20reservation';
+
+import 'package:petprovider_frontend/features/handle%20requests/data/model/grooming%20reservation.dart';
 
 abstract class GroomingReservationState extends Equatable {
   @override

@@ -2,7 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:petprovider_frontend/core/errors/failure.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
-import 'package:petprovider_frontend/features/handle%20requests/data/model/grooming%20reservation';
+
+import 'package:petprovider_frontend/features/handle%20requests/data/model/grooming%20reservation.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/repo/grooming%20repo/grooming_repo.dart';
 
 class GroomingRepoImp extends GroomingRepo {
