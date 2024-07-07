@@ -60,11 +60,9 @@ class ServiceApplications extends StatelessWidget {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    radius: 30.sp,
-                                    backgroundImage: const NetworkImage(
-                                      "assets/images/profile_dog2.jpg",
-                                    ),
-                                  ),
+                                      radius: 30.sp,
+                                      backgroundImage:
+                                          AssetImage(req.image ?? " ")),
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -128,6 +126,10 @@ class ServiceApplications extends StatelessWidget {
                                   const Spacer(),
                                   IconButton(
                                     onPressed: () {
+                                      print("==========");
+                                      print(req.name);
+                                      print("==========");
+
                                       context.pushNamed(
                                           Routes.KSittingApplications,
                                           extra: req);
@@ -191,11 +193,9 @@ class ServiceApplications extends StatelessWidget {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    radius: 30.sp,
-                                    backgroundImage: const NetworkImage(
-                                      "assets/images/profile_dog2.jpg",
-                                    ),
-                                  ),
+                                      radius: 30.sp,
+                                      backgroundImage:
+                                          AssetImage(req.image ?? " ")),
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -246,7 +246,7 @@ class ServiceApplications extends StatelessWidget {
                                             width: 5.w,
                                           ),
                                           Text(
-                                            "Pet Sitting",
+                                            "Pet Walking",
                                             style: Styles.styles14NormalBlack,
                                           )
                                         ],

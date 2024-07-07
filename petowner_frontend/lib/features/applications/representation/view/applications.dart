@@ -16,7 +16,7 @@ class Applications extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Applications",
+          "Requests",
           style: Styles.styles16w600,
         ),
         centerTitle: true,
@@ -64,7 +64,7 @@ class Applications extends StatelessWidget {
                         )).toList(),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: TabBarView(
                     children: [
                       ServiceApplications(service: "Sitting"),

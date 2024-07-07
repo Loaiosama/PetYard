@@ -265,6 +265,8 @@ class SittingAppRepoImp extends SittingAppRepo {
           await api.get(endpoint: "PetOwner/GetWalkingApplications/$id");
       for (var item in response['data']) {
         var app = WalkingApplication.fromJson(item);
+        print(app.providerName);
+        print("lll");
         walkingApplications.add(app);
       }
       return right(walkingApplications);

@@ -4,9 +4,11 @@ class WalkingApplication {
   int? providerId;
   String? expirationtime;
   String? applicationStatus;
-  DateTime? applicationDate;
-  String? username;
-  String? image;
+  String? applicationDate;
+  String? providerName;
+  String? providerImage;
+  int? providerRating;
+  String? reviewCount;
 
   WalkingApplication(
       {this.applicationId,
@@ -15,8 +17,10 @@ class WalkingApplication {
       this.expirationtime,
       this.applicationStatus,
       this.applicationDate,
-      this.username,
-      this.image});
+      this.providerName,
+      this.providerImage,
+      this.providerRating,
+      this.reviewCount});
 
   WalkingApplication.fromJson(Map<String, dynamic> json) {
     applicationId = json['application_id'];
@@ -24,9 +28,11 @@ class WalkingApplication {
     providerId = json['provider_id'];
     expirationtime = json['expirationtime'];
     applicationStatus = json['application_status'];
-    applicationDate = DateTime.parse(json['application_date']);
-    username = json['username'];
-    image = json['image'];
+    applicationDate = json['application_date'];
+    providerName = json['provider_name'];
+    providerImage = json['provider_image'];
+    providerRating = json['provider_rating'];
+    reviewCount = json['review_count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -36,9 +42,11 @@ class WalkingApplication {
     data['provider_id'] = this.providerId;
     data['expirationtime'] = this.expirationtime;
     data['application_status'] = this.applicationStatus;
-    data['application_date'] = this.applicationDate?.toIso8601String();
-    data['username'] = this.username;
-    data['image'] = this.image;
+    data['application_date'] = this.applicationDate;
+    data['provider_name'] = this.providerName;
+    data['provider_image'] = this.providerImage;
+    data['provider_rating'] = this.providerRating;
+    data['review_count'] = this.reviewCount;
     return data;
   }
 }

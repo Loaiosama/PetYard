@@ -78,8 +78,9 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                 children: [
                                   CircleAvatar(
                                     radius: 30.sp,
-                                    backgroundImage: const NetworkImage(
-                                      "assets/images/profile_dog2.jpg",
+                                    backgroundImage: AssetImage(
+                                      widget.req.image ??
+                                          "assets/images/profile_dog2.jpg",
                                     ),
                                   ),
                                   SizedBox(
@@ -97,7 +98,34 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                             style: Styles.styles16w600),
                                       ),
                                       SizedBox(
-                                        height: 5.h,
+                                        height: 4.h,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          SizedBox(
+                                            width: 3.w,
+                                          ),
+                                          Text(
+                                            "${app.providerRating}",
+                                            style:
+                                                Styles.styles12NormalHalfBlack,
+                                          ),
+                                          SizedBox(
+                                            width: 25.w,
+                                          ),
+                                          Text(
+                                            "${app.reviewCount} reviews",
+                                            style:
+                                                Styles.styles12NormalHalfBlack,
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 4.h,
                                       ),
                                       Row(
                                         crossAxisAlignment:
@@ -159,6 +187,9 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                               children: [
                                                 PetYardTextButton(
                                                   onPressed: () {
+                                                    print("+++++");
+                                                    print(app.providerName);
+                                                    print("++++");
                                                     UpdateApplication
                                                         updateApplication =
                                                         UpdateApplication(

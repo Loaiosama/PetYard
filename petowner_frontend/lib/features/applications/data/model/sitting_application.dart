@@ -7,6 +7,8 @@ class SittingApplication {
   String? applicationDate;
   String? providerName;
   String? providerImage;
+  int? providerRating;
+  String? reviewCount;
 
   SittingApplication(
       {this.applicationId,
@@ -16,7 +18,9 @@ class SittingApplication {
       this.applicationStatus,
       this.applicationDate,
       this.providerName,
-      this.providerImage});
+      this.providerImage,
+      this.providerRating,
+      this.reviewCount});
 
   SittingApplication.fromJson(Map<String, dynamic> json) {
     applicationId = json['application_id'];
@@ -27,6 +31,8 @@ class SittingApplication {
     applicationDate = json['application_date'];
     providerName = json['provider_name'];
     providerImage = json['provider_image'];
+    providerRating = json['provider_rating'];
+    reviewCount = json['review_count'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +45,8 @@ class SittingApplication {
     data['application_date'] = this.applicationDate;
     data['provider_name'] = this.providerName;
     data['provider_image'] = this.providerImage;
+    data['provider_rating'] = this.providerRating;
+    data['review_count'] = this.reviewCount;
     return data;
   }
 }
