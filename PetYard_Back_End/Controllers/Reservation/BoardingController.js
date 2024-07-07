@@ -382,7 +382,7 @@ const GetProviderReservations = async (req, res) => {
             const resStart = new Date(reservation.start_time);
             const resEnd = new Date(reservation.end_time);
 
-            return !acceptedTimeSlots.some(slot => 
+            return !acceptedTimeSlots.some(slot =>
                 (resStart < slot.end && resEnd > slot.start)
             );
         });
@@ -540,7 +540,7 @@ const UpdateReservation = async (req, res) => {
 
         let expirationTime = reservationResult.rows[0].expirationTime;
         if (expirationTime <= Date.now()) {
-            Type = "Rejected"; 
+            Type = "Rejected";
         }
 
         const updateQuery = 'UPDATE Reservation SET Slot_ID = $1, Pet_ID = $2, Owner_ID = $3, Start_time = $4, End_time = $5, Type = $6 WHERE Reserve_ID = $7';
@@ -1614,7 +1614,7 @@ const UpcomingRequests = async (req, res) => {
 
 
 
-    const boardingRequestsQuery = `
+        const boardingRequestsQuery = `
         SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type AS status, 
             po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image
         FROM Reservation r
