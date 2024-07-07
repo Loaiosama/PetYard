@@ -365,9 +365,21 @@ const GetWalkingApplications = async (req, res) => {
             });
         }
 
-        const query = 'SELECT * FROM WalkingApplication WHERE Reserve_ID = $1 AND Application_Status = $2';
+        const query = `
+            SELECT wa.*, sp.UserName AS provider_name, sp.Image AS provider_image, 
+                   COALESCE(r.provider_rating, 0) AS provider_rating, 
+                   COALESCE(r.review_count, 0) AS review_count
+            FROM WalkingApplication wa
+            JOIN ServiceProvider sp ON wa.Provider_ID = sp.Provider_Id
+            LEFT JOIN (
+                SELECT Provider_ID, AVG(Rate_value) AS provider_rating, COUNT(Rate_value) AS review_count
+                FROM Review
+                GROUP BY Provider_ID
+            ) r ON sp.Provider_Id = r.Provider_ID
+            WHERE wa.Reserve_ID = $1 AND wa.Application_Status = $2
+        `;
         const result = await pool.query(query, [reserveId, 'Pending']);
-      
+
         res.status(200).json({
             status: "Success",
             message: "Applications retrieved successfully.",
@@ -382,6 +394,7 @@ const GetWalkingApplications = async (req, res) => {
         });
     }
 };
+
 
 
 
