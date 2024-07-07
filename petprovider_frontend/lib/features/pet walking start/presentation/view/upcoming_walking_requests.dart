@@ -131,9 +131,9 @@ class UpcomingWalkingRequests extends StatelessWidget {
                                       is StartWalkingRequestSuccess) {
                                     context
                                         .pushNamed(Routes.KTrackWalk, extra: {
-                                      'lat': request.ownerLocation!.x,
-                                      'long': request.ownerLocation!.y,
-                                      'radius': 1000.0
+                                      'lat': request.geofenceLatitude,
+                                      'long': request.geofenceLongitude,
+                                      'radius': request.geofenceRadius,
                                     });
                                   }
                                 },

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/model/Pet.dart';
@@ -90,6 +91,10 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
     }
   }
 
+  String _formatDateOfBirth(DateTime dateOfBirth) {
+    return DateFormat('yyyy-MM-dd').format(dateOfBirth); // Format the date
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,7 +105,7 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
               height: MediaQuery.of(context).size.width * 0.60,
               width: double.infinity,
               child: Image.asset(
-                'assets/images/profile_dog2.jpg',
+                widget.pet.image ?? 'assets/images/profile_dog2.jpg',
                 fit: BoxFit.cover,
               ),
             ),
@@ -239,7 +244,8 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
                                 InfoContainer(
                                   color: const Color.fromRGBO(240, 188, 68, 1),
                                   title: "Date Of Birth",
-                                  value: widget.owner.dateOfBirth.toString(),
+                                  value: _formatDateOfBirth(
+                                      widget.owner.dateOfBirth!),
                                 ),
                                 SizedBox(
                                   height: 15.h,
@@ -275,7 +281,7 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
                                           ),
                                           Row(
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 FontAwesomeIcons.locationPin,
                                                 size: 20,
                                                 color: Colors.red,
@@ -283,10 +289,15 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
                                               SizedBox(
                                                 width: 10.w,
                                               ),
-                                              Text(
-                                                snapshot.data!,
-                                                style: Styles
-                                                    .styles12NormalHalfBlack,
+                                              SizedBox(
+                                                width: 250.w,
+                                                child: Text(
+                                                  snapshot.data!,
+                                                  style: Styles
+                                                      .styles12NormalHalfBlack,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -313,7 +324,8 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
               left: 36.w,
               child: CircleAvatar(
                   radius: 45.sp,
-                  backgroundImage: AssetImage("assets/images/man.png")),
+                  backgroundImage: AssetImage(
+                      widget.owner.image ?? "assets/images/man.png")),
             ),
           ],
         ),

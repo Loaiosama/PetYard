@@ -165,10 +165,15 @@ class _SittingTabState extends State<SittingTab> {
                                               SizedBox(
                                                 width: 5.w,
                                               ),
-                                              Text(
-                                                snapshot.data!,
-                                                style: Styles
-                                                    .styles12NormalHalfBlack,
+                                              SizedBox(
+                                                width: 80.w,
+                                                child: Text(
+                                                  snapshot.data!,
+                                                  style: Styles
+                                                      .styles12NormalHalfBlack,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),

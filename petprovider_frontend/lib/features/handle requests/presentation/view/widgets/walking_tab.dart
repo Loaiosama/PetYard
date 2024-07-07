@@ -196,11 +196,17 @@ class _WalkingTabState extends State<WalkingTab> {
                                                   SizedBox(
                                                     width: 5.w,
                                                   ),
-                                                  Text(
-                                                    snapshot.data!,
-                                                    style: Styles
-                                                        .styles12NormalHalfBlack
-                                                        .copyWith(fontSize: 10),
+                                                  SizedBox(
+                                                    width: 80.w,
+                                                    child: Text(
+                                                      snapshot.data!,
+                                                      style: Styles
+                                                          .styles12NormalHalfBlack
+                                                          .copyWith(
+                                                              fontSize: 10),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
