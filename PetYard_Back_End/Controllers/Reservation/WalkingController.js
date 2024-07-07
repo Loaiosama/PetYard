@@ -1092,7 +1092,7 @@ const UpcomingRequests = async (req, res) => {
             JOIN Petowner po ON wr.Owner_ID = po.Owner_Id
             JOIN Pet p ON wr.Pet_ID = p.Pet_ID
             LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
-            WHERE wr.Provider_ID = $1 AND wr.Status = 'Accepted'
+            WHERE wr.Provider_ID = $1 AND (wr.Status = 'Accepted' OR wr.Status = 'In Progress')
         `;
 
         const walkingRequests = await pool.query(walkingRequestsQuery, [providerId]);
@@ -1118,6 +1118,7 @@ const UpcomingRequests = async (req, res) => {
         });
     }
 };
+
 
 const UpcomingOwnerRequests = async (req, res) => {
     const ownerId = req.ID;

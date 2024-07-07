@@ -780,7 +780,7 @@ const changePassword = async (req, res) => {
         }
 
         const query = 'SELECT Password FROM ServiceProvider WHERE Provider_Id = $1';
-        const result = await pool.query(query, [ownerId]);
+        const result = await pool.query(query, [providerId]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({
@@ -805,7 +805,7 @@ const changePassword = async (req, res) => {
 
         // Update the password in the database
         const updateQuery = 'UPDATE ServiceProvider SET Password = $1 WHERE Provider_Id = $2';
-        await pool.query(updateQuery, [newPasswordHash, ownerId]);
+        await pool.query(updateQuery, [newPasswordHash, providerId]);
 
         res.status(200).json({
             status: 'Success',
