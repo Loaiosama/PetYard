@@ -251,6 +251,61 @@ const GetSittingReservations = async (req, res) => {
 
 
 
+// const getSittingApplications = async (req, res) => {
+//     const reserveId = req.params.Reserve_ID;
+//     const ownerId = req.ID;
+
+//     try {
+//         if (!reserveId || !ownerId) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please provide reservation ID or ownerId."
+//             });
+//         }
+
+//         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
+//         const ownerRes = await pool.query(ownerQuery, [ownerId]);
+
+//         if (ownerRes.rows.length === 0) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Owner is not in Database"
+//             });
+//         }
+
+//         const reservationQuery = 'SELECT * FROM SittingReservation WHERE Reserve_ID = $1';
+//         const reservationResult = await pool.query(reservationQuery, [reserveId]);
+
+//         if (reservationResult.rows.length === 0) {
+//             return res.status(404).json({
+//                 status: "Fail",
+//                 message: "Sitting reservation not found"
+//             });
+//         }
+
+//         const query = `
+//             SELECT sa.*, sp.UserName AS provider_name, sp.Image AS provider_image
+//             FROM SittingApplication sa
+//             JOIN ServiceProvider sp ON sa.Provider_ID = sp.Provider_Id
+//             WHERE sa.Reserve_ID = $1 AND sa.Application_Status = 'Pending'
+//         `;
+//         const result = await pool.query(query, [reserveId]);
+
+//         res.status(200).json({
+//             status: "Success",
+//             message: "Pending applications retrieved successfully.",
+//             data: result.rows
+//         });
+
+//     } catch (e) {
+//         console.error("Error:", e);
+//         res.status(500).json({
+//             status: "Fail",
+//             message: "Internal Server Error."
+//         });
+//     }
+// };
+
 const getSittingApplications = async (req, res) => {
     const reserveId = req.params.Reserve_ID;
     const ownerId = req.ID;
@@ -284,9 +339,16 @@ const getSittingApplications = async (req, res) => {
         }
 
         const query = `
-            SELECT sa.*, sp.UserName AS provider_name, sp.Image AS provider_image
+            SELECT sa.*, sp.UserName AS provider_name, sp.Image AS provider_image, 
+                   COALESCE(r.provider_rating, 0) AS provider_rating, 
+                   COALESCE(r.review_count, 0) AS review_count
             FROM SittingApplication sa
             JOIN ServiceProvider sp ON sa.Provider_ID = sp.Provider_Id
+            LEFT JOIN (
+                SELECT Provider_ID, AVG(Rate_value) AS provider_rating, COUNT(Rate_value) AS review_count
+                FROM Review
+                GROUP BY Provider_ID
+            ) r ON sp.Provider_Id = r.Provider_ID
             WHERE sa.Reserve_ID = $1 AND sa.Application_Status = 'Pending'
         `;
         const result = await pool.query(query, [reserveId]);
@@ -305,6 +367,7 @@ const getSittingApplications = async (req, res) => {
         });
     }
 };
+
 
 
 
