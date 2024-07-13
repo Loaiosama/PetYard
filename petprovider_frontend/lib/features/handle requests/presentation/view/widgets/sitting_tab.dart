@@ -97,9 +97,7 @@ class _SittingTabState extends State<SittingTab> {
                                       child: CircleAvatar(
                                         radius: 30.sp,
                                         backgroundImage: NetworkImage(
-                                          petState.pet.image ??
-                                              "assets/images/profile_dog2.jpg",
-                                        ),
+                                            'assets/images/profile_pictures/${petState.pet.image}'),
                                       ),
                                     );
                                   } else if (petState is PetInfofaliure) {

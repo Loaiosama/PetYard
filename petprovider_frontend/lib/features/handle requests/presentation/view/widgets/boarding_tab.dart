@@ -111,8 +111,7 @@ class _BoardingTabState extends State<BoardingTab> {
                                           child: CircleAvatar(
                                             radius: 30.sp,
                                             backgroundImage: NetworkImage(
-                                              petState.pet.image ?? " ",
-                                            ),
+                                                'assets/images/profile_pictures/${petState.pet.image}'),
                                           ),
                                         );
                                       } else if (petState is PetInfofaliure) {

@@ -60,6 +60,10 @@ class _WalkingTabState extends State<WalkingTab> {
                     itemCount: state.requests.length,
                     itemBuilder: (context, index) {
                       var request = state.requests[index];
+                      final startTime = (request.startTime ?? DateTime.now())
+                          .add(const Duration(hours: 3));
+                      final endTime = (request.endTime ?? DateTime.now())
+                          .add(const Duration(hours: 3));
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 25.0,
@@ -144,7 +148,7 @@ class _WalkingTabState extends State<WalkingTab> {
                                     Padding(
                                       padding: EdgeInsets.only(left: 4.0.w),
                                       child: Text(
-                                          "${DateFormat("h:mm a").format(request.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(request.endTime ?? DateTime.now())}",
+                                          "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                           style:
                                               Styles.styles12NormalHalfBlack),
                                     ),
