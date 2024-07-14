@@ -12,12 +12,16 @@ import 'package:petprovider_frontend/features/grooming/presentation/view_model/c
 import 'package:petprovider_frontend/features/handle%20requests/data/model/Pet.dart';
 import 'package:petprovider_frontend/features/home/data/models/upcoming_events/upcoming_datum.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/home.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/reset_password.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/available_slots_screen.dart';
 import 'package:petprovider_frontend/features/home/presentation/view/widgets/see_all_upcoming_events.dart';
+import 'package:petprovider_frontend/features/home/presentation/view/widgets/settings_screen.dart';
 import 'package:petprovider_frontend/features/pet%20profile/data/model/owner.dart';
 import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_owner_profile.dart';
 import 'package:petprovider_frontend/features/pet%20profile/presentation/view/pet_profile.dart';
+import 'package:petprovider_frontend/features/pet%20walking%20start/presentation/view/upcoming_walking_requests.dart';
 import 'package:petprovider_frontend/features/registration/signin/data/repo/sign_in_repo.dart';
+import 'package:petprovider_frontend/features/registration/signin/presentation/view/location_screen.dart';
 import 'package:petprovider_frontend/features/registration/signin/presentation/view/widgets/choose_service.dart';
 import 'package:petprovider_frontend/features/registration/signin/presentation/view_model/signin_cubit/sign_in_cubit.dart';
 import 'package:petprovider_frontend/features/registration/signup/presentation/view/fill_information.dart';
@@ -231,6 +235,23 @@ abstract class AppRouter {
                   ),
                 ));
           }),
+      // GoRoute(
+      //     name: Routes.KTrackWalk,
+      //     path: Routes.KTrackWalk,
+      //     pageBuilder: (context, state) {
+      //       final args = state.extra as Map<String, dynamic>;
+      //       final double lat = args['lat'] as double;
+      //       final double long = args['long'] as double;
+      //       final double radius = args['radius'] as double;
+      //       return transitionGoRoute(
+      //           context: context,
+      //           state: state,
+      //           child: TrackingWalking(
+      //             lat: lat,
+      //             long: long,
+      //             radius: radius,
+      //           ));
+      //     }),
       GoRoute(
           name: Routes.KTrackWalk,
           path: Routes.KTrackWalk,
@@ -238,7 +259,7 @@ abstract class AppRouter {
             final args = state.extra as Map<String, dynamic>;
             final double lat = args['lat'] as double;
             final double long = args['long'] as double;
-            final double radius = args['radius'] as double;
+            final int radius = args['radius'] as int;
             return transitionGoRoute(
                 context: context,
                 state: state,
@@ -248,6 +269,50 @@ abstract class AppRouter {
                   radius: radius,
                 ));
           }),
+      GoRoute(
+        name: Routes.kSettings,
+        path: Routes.kSettings,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const SettingsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kUpcomingWalkingRequests,
+        path: Routes.kUpcomingWalkingRequests,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const UpcomingWalkingRequests(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kLocationSignUp,
+        path: Routes.kLocationSignUp,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const LocationScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kResetPassword,
+        path: Routes.kResetPassword,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ChangePasswordScreen(),
+          );
+        },
+      ),
     ],
   );
 }

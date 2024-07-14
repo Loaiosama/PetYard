@@ -17,4 +17,8 @@ class Routes {
   static const String kSeeAllUpcomingEvents = '/seeAll';
   static const String kChatScreen = '/chatScreen';
   static const String KTrackWalk = '/trackingWalking';
+  static const String kSettings = '/settings';
+  static const String kUpcomingWalkingRequests = '/upcomingWalkingRequests';
+  static const String kLocationSignUp = '/locationSignUp';
+  static const String kResetPassword = '/resetPassword';
 }
