@@ -18,6 +18,201 @@ const multerStorage = multer.memoryStorage();
 //         cb("Not an image! please upload only images.", false)
 //     }
 // }
+// const multerFilter = (req, file, cb) => {
+//     // Check if the file is an image by mimetype or file extension
+//     if (file.mimetype.startsWith('image') || ['jpg', 'jpeg', 'png', 'gif'].includes(file.originalname.split('.').pop().toLowerCase())) {
+//         cb(null, true); // Accept the file
+//     } else {
+//         cb("File format not supported! Please upload only images.", false); // Reject the file
+//     }
+// }
+
+
+// const upload = multer({
+
+//     storage: multerStorage,
+//     fileFilter: multerFilter
+// });
+// const uploadphoto = upload.single('Image');
+// const resizePhoto = (req, res, next) => {
+
+//     if (!req.file) return next();
+
+//     req.file.filename = `Provider-${req.ID}-${Date.now()}.jpeg`;
+
+//     // sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
+//     sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petowner_frontend/assets/images/profile_pictures/${req.file.filename}`);
+//     sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petprovider_frontend/assets/images/profile_pictures/${req.file.filename}`);
+//     // sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petprovider_frontend/assets/profile_pictures${req.file.filename}`);
+//     next();
+// }
+
+
+
+
+
+
+
+// const signUp = async (req, res) => {
+//     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
+//     let Image = req.files && req.files.Image ? req.files.Image[0].filename : 'default.png';
+//     console.log(Image);
+//     try {
+//         if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Please Fill All Information"
+//             });
+//         }
+
+//         // Phone number validation
+//         const phoneRegex = /^\d+$/;
+//         if (!phoneRegex.test(phoneNumber)) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Phone number must consist of only digits"
+//             });
+//         }
+
+//         // Age validation
+//         const birthDate = new Date(dateOfBirth);
+//         const today = new Date();
+//         const age = today.getFullYear() - birthDate.getFullYear();
+//         const monthDiff = today.getMonth() - birthDate.getMonth();
+//         const dayDiff = today.getDate() - birthDate.getDate();
+//         if (age < 18 || (age === 18 && (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)))) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "User must be at least 18 years old"
+//             });
+//         }
+
+//         const client = await pool.connect();
+
+//         // Check if UserName, Email, or Phone already exist in the serviceprovider table
+//         const userNameExistsQuery = 'SELECT * FROM serviceprovider WHERE UserName = $1';
+//         const emailExistsQuery = 'SELECT * FROM serviceprovider WHERE Email = $1';
+//         const phoneExistsQuery = 'SELECT * FROM serviceprovider WHERE Phone = $1';
+
+//         const resultUserNameExists = await client.query(userNameExistsQuery, [UserName]);
+//         const resultEmailExists = await client.query(emailExistsQuery, [email]);
+//         const resultPhoneExists = await client.query(phoneExistsQuery, [phoneNumber]);
+
+//         if (resultUserNameExists.rows.length > 0) {
+//             return res.status(400).json({ message: "User Name already exists, try another User Name." });
+//         }
+
+//         if (resultEmailExists.rows.length > 0 && resultPhoneExists.rows.length > 0) {
+//             return res.status(400).json({ message: "User already exists, try another Email and Phone number." });
+//         }
+
+//         if (resultEmailExists.rows.length > 0) {
+//             return res.status(400).json({ message: "Email already exists, try another Email." });
+//         }
+
+//         if (resultPhoneExists.rows.length > 0) {
+//             return res.status(400).json({ message: "Phone number already exists, try another Phone number." });
+//         }
+
+
+//         const userNameExistsQuery1 = 'SELECT * FROM temp_provider WHERE UserName = $1';
+//         const emailExistsQuery1 = 'SELECT * FROM temp_provider WHERE Email = $1';
+//         const phoneExistsQuery1 = 'SELECT * FROM temp_provider WHERE Phone = $1';
+
+//         const resultUserNameExists1 = await client.query(userNameExistsQuery1, [UserName]);
+//         const resultEmailExists1 = await client.query(emailExistsQuery1, [email]);
+//         const resultPhoneExists1 = await client.query(phoneExistsQuery1, [phoneNumber]);
+
+//         if (resultUserNameExists1.rows.length > 0) {
+//             return res.status(400).json({ message: "Check your email you have validation code" });
+//         }
+
+//         if (resultEmailExists1.rows.length > 0 && resultPhoneExists1.rows.length > 0) {
+//             return res.status(400).json({ message: "Check your email you have validation code." });
+//         }
+
+//         if (resultEmailExists1.rows.length > 0) {
+//             return res.status(400).json({ message: "Check your email you have validation code." });
+//         }
+
+//         if (resultPhoneExists1.rows.length > 0) {
+//             return res.status(400).json({ message: "Check your email you have validation code." });
+//         }
+
+
+
+//         // Insert new user into temp_provider table
+//         const hashedPassword = await bcrypt.hash(pass, saltRounds);
+//         const { validationCode } = Model.CreateValidationCode();
+
+//         const insertQuery = `
+//             INSERT INTO temp_provider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image, ValidationCode)
+//             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+//             RETURNING *
+//         `;
+//         const newUser = await client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image, validationCode]);
+
+//         // Send validation code via email
+//         await sendemail.sendemail({
+//             email: email,
+//             subject: 'Your Validation code (valid for 10 min)',
+//             message: `Your Validation code ${validationCode} \n Insert the Validation code to enjoy with Our Services`
+//         });
+
+//         res.status(201).json({ message: "Sign up successful" });
+
+//         client.release();
+
+//     } catch (error) {
+//         console.error("Error during signUp", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+// const validateAndTransfer = async (req, res) => {
+//     const { email, validationCode } = req.body;
+
+//     try {
+//         const client = await pool.connect();
+
+//         // Check if the validation code exists and is valid
+//         const query = 'SELECT * FROM temp_provider WHERE Email = $1 AND ValidationCode = $2 AND ValidationCodeExpires > CURRENT_TIMESTAMP';
+//         const result = await client.query(query, [email, validationCode]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Invalid or expired validation code"
+//             });
+//         }
+
+//         // Insert the validated provider into the ServiceProvider table
+//         const providerData = result.rows[0];
+//         const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+//         await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image]);
+
+//         // Delete the provider from temp_provider after successful transfer
+//         const deleteQuery = 'DELETE FROM temp_provider WHERE Email = $1';
+//         await client.query(deleteQuery, [email]);
+
+//         res.status(200).json({ message: "Provider validated and transferred successfully" });
+
+//         client.release();
+
+//     } catch (error) {
+//         console.error("Error validating and transferring provider:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+
+// const multerFilter = (req, file, cb) => {
+//     if (file.mimetype.startsWith('image')) {
+//         cb(null, true);
+//     }
+//     else {
+//         cb("Not an image! please upload only images.", false)
+//     }
+// }
 const multerFilter = (req, file, cb) => {
     // Check if the file is an image by mimetype or file extension
     if (file.mimetype.startsWith('image') || ['jpg', 'jpeg', 'png', 'gif'].includes(file.originalname.split('.').pop().toLowerCase())) {
@@ -26,20 +221,14 @@ const multerFilter = (req, file, cb) => {
         cb("File format not supported! Please upload only images.", false); // Reject the file
     }
 }
-
-
 const upload = multer({
-
     storage: multerStorage,
     fileFilter: multerFilter
 });
 const uploadphoto = upload.single('Image');
 const resizePhoto = (req, res, next) => {
-
     if (!req.file) return next();
-
     req.file.filename = `Provider-${req.ID}-${Date.now()}.jpeg`;
-
     // sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/img/users/ServiceProvider/${req.file.filename}`);
     sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petowner_frontend/assets/images/profile_pictures/${req.file.filename}`);
     sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`../petprovider_frontend/assets/images/profile_pictures/${req.file.filename}`);
@@ -48,23 +237,16 @@ const resizePhoto = (req, res, next) => {
 }
 
 
-
-
-
-
-
 const signUp = async (req, res) => {
     const { UserName, pass, email, phoneNumber, dateOfBirth, Bio } = req.body;
-    let Image = req.files && req.files.Image ? req.files.Image[0].filename : 'default.png';
-
+    let Image = req.file ? req.file.filename : 'default.png';
     try {
-        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio) {
+        if (!UserName || !pass || !email || !phoneNumber || !dateOfBirth || !Bio || !Image) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Please Fill All Information"
             });
         }
-
         // Phone number validation
         const phoneRegex = /^\d+$/;
         if (!phoneRegex.test(phoneNumber)) {
@@ -73,7 +255,6 @@ const signUp = async (req, res) => {
                 message: "Phone number must consist of only digits"
             });
         }
-
         // Age validation
         const birthDate = new Date(dateOfBirth);
         const today = new Date();
@@ -86,125 +267,75 @@ const signUp = async (req, res) => {
                 message: "User must be at least 18 years old"
             });
         }
-
         const client = await pool.connect();
-
         // Check if UserName, Email, or Phone already exist in the serviceprovider table
         const userNameExistsQuery = 'SELECT * FROM serviceprovider WHERE UserName = $1';
         const emailExistsQuery = 'SELECT * FROM serviceprovider WHERE Email = $1';
         const phoneExistsQuery = 'SELECT * FROM serviceprovider WHERE Phone = $1';
-
         const resultUserNameExists = await client.query(userNameExistsQuery, [UserName]);
         const resultEmailExists = await client.query(emailExistsQuery, [email]);
         const resultPhoneExists = await client.query(phoneExistsQuery, [phoneNumber]);
-
         if (resultUserNameExists.rows.length > 0) {
             return res.status(400).json({ message: "User Name already exists, try another User Name." });
         }
-
         if (resultEmailExists.rows.length > 0 && resultPhoneExists.rows.length > 0) {
             return res.status(400).json({ message: "User already exists, try another Email and Phone number." });
         }
-
         if (resultEmailExists.rows.length > 0) {
             return res.status(400).json({ message: "Email already exists, try another Email." });
         }
-
         if (resultPhoneExists.rows.length > 0) {
             return res.status(400).json({ message: "Phone number already exists, try another Phone number." });
         }
-
-
-        const userNameExistsQuery1 = 'SELECT * FROM temp_provider WHERE UserName = $1';
-        const emailExistsQuery1 = 'SELECT * FROM temp_provider WHERE Email = $1';
-        const phoneExistsQuery1 = 'SELECT * FROM temp_provider WHERE Phone = $1';
-
-        const resultUserNameExists1 = await client.query(userNameExistsQuery1, [UserName]);
-        const resultEmailExists1 = await client.query(emailExistsQuery1, [email]);
-        const resultPhoneExists1 = await client.query(phoneExistsQuery1, [phoneNumber]);
-
-        if (resultUserNameExists1.rows.length > 0) {
-            return res.status(400).json({ message: "Check your email you have validation code" });
-        }
-
-        if (resultEmailExists1.rows.length > 0 && resultPhoneExists1.rows.length > 0) {
-            return res.status(400).json({ message: "Check your email you have validation code." });
-        }
-
-        if (resultEmailExists1.rows.length > 0) {
-            return res.status(400).json({ message: "Check your email you have validation code." });
-        }
-
-        if (resultPhoneExists1.rows.length > 0) {
-            return res.status(400).json({ message: "Check your email you have validation code." });
-        }
-
-
-
         // Insert new user into temp_provider table
         const hashedPassword = await bcrypt.hash(pass, saltRounds);
         const { validationCode } = Model.CreateValidationCode();
-
         const insertQuery = `
             INSERT INTO temp_provider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image, ValidationCode)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *
         `;
         const newUser = await client.query(insertQuery, [UserName, hashedPassword, email, phoneNumber, dateOfBirth, Bio, Image, validationCode]);
-
         // Send validation code via email
         await sendemail.sendemail({
             email: email,
             subject: 'Your Validation code (valid for 10 min)',
             message: `Your Validation code ${validationCode} \n Insert the Validation code to enjoy with Our Services`
         });
-
         res.status(201).json({ message: "Sign up successful" });
-
         client.release();
-
     } catch (error) {
         console.error("Error during signUp", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 const validateAndTransfer = async (req, res) => {
     const { email, validationCode } = req.body;
-
     try {
         const client = await pool.connect();
-
         // Check if the validation code exists and is valid
         const query = 'SELECT * FROM temp_provider WHERE Email = $1 AND ValidationCode = $2 AND ValidationCodeExpires > CURRENT_TIMESTAMP';
         const result = await client.query(query, [email, validationCode]);
-
         if (result.rows.length === 0) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Invalid or expired validation code"
             });
         }
-
         // Insert the validated provider into the ServiceProvider table
         const providerData = result.rows[0];
         const insertQuery = 'INSERT INTO ServiceProvider (UserName, Password, Email, Phone, Date_of_birth, Bio, Image) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
         await client.query(insertQuery, [providerData.username, providerData.password, providerData.email, providerData.phone, providerData.date_of_birth, providerData.bio, providerData.image]);
-
         // Delete the provider from temp_provider after successful transfer
         const deleteQuery = 'DELETE FROM temp_provider WHERE Email = $1';
         await client.query(deleteQuery, [email]);
-
         res.status(200).json({ message: "Provider validated and transferred successfully" });
-
         client.release();
-
     } catch (error) {
         console.error("Error validating and transferring provider:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 const signIn = async (req, res) => {
 
@@ -633,43 +764,169 @@ const getService = async (req, res) => {
 }
 
 
-const Providerinfo = async (req, res) => {
-    const providerid = req.ID;
-    try {
+// const Providerinfo = async (req, res) => {
+//     const providerid = req.ID;
+//     try {
 
-        if (!providerid) {
+//         if (!providerid) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Missing information"
+//             });
+//         }
+//         const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
+//         const result = await pool.query(Query, [providerid]);
+
+//         if (result.rows.length === 0) {
+//             return res.status(401).json({
+//                 status: "Fail",
+//                 message: "User doesn't exist."
+//             });
+//         }
+//         const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
+//         res.status(200).json({
+//             status: "Done",
+//             message: "One Data Is Here",
+//             providerinfo: result.rows,
+//             data: getservices.rows
+//         });
+
+//     } catch (error) {
+
+//         res.status(500).json({
+//             status: "Fail",
+//             message: "Internal server error"
+//         });
+
+//     }
+
+// }
+
+const Providerinfo = async (req, res) => {
+    const providerId = req.ID;
+
+    try {
+        if (!providerId) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Missing information"
+                message: "Please provide the provider ID"
             });
         }
-        const Query = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const result = await pool.query(Query, [providerid]);
 
-        if (result.rows.length === 0) {
-            return res.status(401).json({
+        // Get provider information
+        const providerQuery = `
+            SELECT provider_id, username, phone, email, bio, date_of_birth, location, image 
+            FROM ServiceProvider 
+            WHERE Provider_Id = $1
+        `;
+        const providerResult = await pool.query(providerQuery, [providerId]);
+
+        if (providerResult.rows.length === 0) {
+            return res.status(404).json({
                 status: "Fail",
-                message: "User doesn't exist."
+                message: "Provider not found"
             });
         }
-        const getservices = await pool.query('SELECT * FROM Services WHERE Provider_ID=$1 ', [providerid]);
+
+        const providerinfo = providerResult.rows[0];
+
+        // Calculate age of the provider
+        const dob = new Date(providerinfo.date_of_birth);
+        const ageDiffMs = Date.now() - dob.getTime();
+        const ageDate = new Date(ageDiffMs); // milliseconds from epoch
+        const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+        // Add age to the providerinfo object
+        providerinfo.age = age;
+
+        // Get provider services
+        const servicesQuery = 'SELECT * FROM Services WHERE Provider_Id = $1';
+        const servicesResult = await pool.query(servicesQuery, [providerId]);
+
+        // Get provider rating and review count
+        const ratingQuery = `
+            SELECT 
+                COALESCE(Rate_value, 0) AS provider_rating, 
+                COALESCE(count, 0) AS review_count
+            FROM Review r
+            WHERE r.Provider_ID = $1
+        `;
+        const ratingResult = await pool.query(ratingQuery, [providerId]);
+
+        const ratingData = ratingResult.rows[0] || { provider_rating: 0, review_count: 0 };
+
+
+        // Add rating and review count to the providerinfo object
+        providerinfo.rating = ratingData.provider_rating;
+        providerinfo.reviewCount = ratingData.review_count;
+
         res.status(200).json({
             status: "Done",
             message: "One Data Is Here",
-            providerinfo: result.rows,
-            data: getservices.rows
+            providerinfo: [providerinfo],
+            data: servicesResult.rows
         });
 
     } catch (error) {
-
+        console.error("Error fetching provider info:", error);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         });
+    }
+};
 
+const updateProviderLocation = async (req, res) => {
+    const providerId = req.ID;
+    console.log(providerId);
+    const { lat, long } = req.body;
+    console.log(lat, long);
+    if (!lat || !long) {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Please provide both latitude and longitude"
+        });
+    }
+    if (!providerId) {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Please provide the provider ID"
+        });
     }
 
-}
+    try {
+        const updateLocationQuery = `
+            UPDATE ServiceProvider
+            SET Location = POINT($1, $2)
+            WHERE Provider_Id = $3
+            RETURNING provider_id, username, phone, email, bio, date_of_birth, location, image
+        `;
+        const values = [lat, long, providerId];
+
+        const result = await pool.query(updateLocationQuery, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Provider not found"
+            });
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: "Location added successfully",
+            providerinfo: result.rows[0]
+        });
+    } catch (error) {
+        console.error("Error updating provider location:", error);
+        res.status(500).json({
+            status: "Fail",
+            message: "Internal server error"
+        });
+    }
+};
+
+
 
 // const Providerinfo = async (req, res) => {
 //     const providerId = req.ID;
@@ -842,7 +1099,7 @@ module.exports = {
     getOwnerInfo,
     changePassword,
     validateAndTransfer,
-
+    updateProviderLocation,
 
 
 

@@ -68,15 +68,15 @@ class GroomingRepoImpl extends GroomingRepo {
       required DateTime enddate,
       required int length}) async {
     try {
-      print(startdate.toIso8601String());
-      print(enddate.toIso8601String());
-      print(length);
+      final startAdjusted = startdate.add(const Duration(hours: 2)).toUtc();
+      final endAdjusted = enddate.add(const Duration(hours: 2)).toUtc();
+
       await api.setAuthorizationHeader();
       var response = await api.post(
         endPoints: 'Provider/createGroomingSlots',
         data: {
-          "Start_time": startdate.toIso8601String(),
-          "End_time": enddate.toIso8601String(),
+          "Start_time": startAdjusted.toIso8601String(),
+          "End_time": endAdjusted.toIso8601String(),
           "Slot_length": length,
         },
       );
@@ -129,6 +129,27 @@ class GroomingRepoImpl extends GroomingRepo {
         data: {"Price": price, "Grooming_Type": type},
       );
 
+      if (response.statusCode == 200) {
+        return right(true);
+      } else {
+        return left(ServerFailure(response.data['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteType({required int id}) async {
+    try {
+      await api.setAuthorizationHeader();
+      print('object');
+      var response =
+          await api.delete(endPoints: 'Provider/deleteGroomingTypes/$id');
+      print(response);
       if (response.statusCode == 200) {
         return right(true);
       } else {

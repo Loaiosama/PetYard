@@ -41,6 +41,7 @@ class SeeAllUpcomingEvents extends StatelessWidget {
               serviceName: data[index].serviceType ?? "",
               startDate: data[index].startTime ?? DateTime.now(),
               finalPrice: data[index].finalPrice ?? 0.0,
+              reserveId: data[index].reserveId ?? -1,
             );
           },
         )),

@@ -156,6 +156,7 @@ class _OtpFormState extends State<OtpForm> {
             width: 60.w,
             child: TextFormField(
               controller: _controllers[index],
+              keyboardType: TextInputType.number,
               onChanged: (value) => _onChanged(index, value),
               decoration: InputDecoration(
                 fillColor: Colors.grey.shade200,

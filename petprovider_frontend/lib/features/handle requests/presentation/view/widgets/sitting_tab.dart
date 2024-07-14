@@ -57,6 +57,10 @@ class _SittingTabState extends State<SittingTab> {
                 itemCount: state.requests.length,
                 itemBuilder: (context, index) {
                   var request = state.requests[index];
+                  final startTime = (request.startTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
+                  final endTime = (request.endTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 25.0,
@@ -96,7 +100,7 @@ class _SittingTabState extends State<SittingTab> {
                                       },
                                       child: CircleAvatar(
                                         radius: 30.sp,
-                                        backgroundImage: NetworkImage(
+                                        backgroundImage: AssetImage(
                                             'assets/images/profile_pictures/${petState.pet.image}'),
                                       ),
                                     );
@@ -121,14 +125,14 @@ class _SittingTabState extends State<SittingTab> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    DateFormat('EEE d MMM yyyy').format(
-                                        request.startTime ?? DateTime.now()),
+                                    DateFormat('EEE d MMM yyyy')
+                                        .format(startTime),
                                     style: Styles.styles12NormalHalfBlack),
                                 SizedBox(
                                   height: 5.h,
                                 ),
                                 Text(
-                                    "${DateFormat("h:mm a").format(request.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(request.endTime ?? DateTime.now())}",
+                                    "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                     style: Styles.styles12NormalHalfBlack),
                                 SizedBox(
                                   height: 5.h,

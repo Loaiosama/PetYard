@@ -11,11 +11,9 @@ import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/empty_list.dart';
 import 'package:petprovider_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/model/Pet.dart';
-import 'package:petprovider_frontend/features/handle%20requests/data/model/boarding_reservation.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/model/reservation_update.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/repo/boarding_repo/boarding_reservation_repo_imp.dart';
 import 'package:petprovider_frontend/features/handle%20requests/data/repo/handel_req_repo_imp.dart';
-import 'package:petprovider_frontend/features/handle%20requests/presentation/view%20model/apply%20cubit/apply_req_cubit.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view%20model/apply%20cubit/apply_req_states.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view%20model/boarding%20reservation%20cubit/boarding_reservation_cubit.dart';
 import 'package:petprovider_frontend/features/handle%20requests/presentation/view%20model/boarding%20reservation%20cubit/boarding_reservation_state.dart';
@@ -47,7 +45,7 @@ class _BoardingTabState extends State<BoardingTab> {
           if (state is BoardingReservationLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is BoardingReservationFailure) {
-            return Center(child: Text('No reservations for now'));
+            return const Center(child: Text('No reservations for now'));
           } else if (state is BoardingReservationSuccess) {
             if (state.reservations.isNotEmpty) {
               return ListView.builder(
@@ -91,8 +89,8 @@ class _BoardingTabState extends State<BoardingTab> {
                                             Pet pet = petState.pet;
                                             int age = petState.age;
                                             int id = reservation.ownerId;
-                                            print(age);
-                                            print(pet.name);
+                                            // print(age);
+                                            // print(pet.name);
 
                                             int ownerId = reservation
                                                 .ownerId; // Add this line
@@ -105,12 +103,10 @@ class _BoardingTabState extends State<BoardingTab> {
                                                   'ownerId':
                                                       ownerId, // Pass ownerId here
                                                 });
-
-                                            print("b3d el push");
                                           },
                                           child: CircleAvatar(
                                             radius: 30.sp,
-                                            backgroundImage: NetworkImage(
+                                            backgroundImage: AssetImage(
                                                 'assets/images/profile_pictures/${petState.pet.image}'),
                                           ),
                                         );
@@ -282,7 +278,7 @@ class _BoardingTabState extends State<BoardingTab> {
                                                     .copyWith(
                                                         color: Colors.white,
                                                         fontSize: 16),
-                                                color: Color.fromARGB(
+                                                color: const Color.fromARGB(
                                                     255, 230, 25, 11),
                                                 width: 46.w,
                                                 radius: 8.r,

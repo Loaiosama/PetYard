@@ -137,4 +137,27 @@ class SignInRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  Future<Either<Failure, String>> updateProviderLocation({
+    required double lat,
+    required double long,
+  }) async {
+    try {
+      await api.setAuthorizationHeader();
+      var response = await api.put(
+        endPoints: 'Provider/updateLocation',
+        data: {"lat": lat, "long": long},
+      );
+      if (response.data['status'] == 'Success') {
+        return right(response.data['message']);
+      } else {
+        return left(ServerFailure(response.data['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

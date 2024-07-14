@@ -11,7 +11,8 @@ class Providerinfo extends Equatable {
   final DateTime? dateOfBirth;
   final dynamic location;
   final String? image;
-
+  final num? rate;
+  final dynamic reviewCount;
   const Providerinfo({
     this.providerId,
     this.username,
@@ -23,6 +24,8 @@ class Providerinfo extends Equatable {
     this.dateOfBirth,
     this.location,
     this.image,
+    this.rate,
+    this.reviewCount,
   });
 
   factory Providerinfo.fromJson(Map<String, dynamic> json) => Providerinfo(
@@ -38,6 +41,8 @@ class Providerinfo extends Equatable {
             : DateTime.parse(json['date_of_birth'] as String),
         location: json['location'] as dynamic,
         image: json['image'] as String?,
+        rate: json['rating'] as num?,
+        reviewCount: json['reviewCount'] as dynamic,
       );
 
   Map<String, dynamic> toJson() => {
@@ -51,6 +56,8 @@ class Providerinfo extends Equatable {
         'date_of_birth': dateOfBirth?.toIso8601String(),
         'location': location,
         'image': image,
+        'rating': rate,
+        'reviewCount': reviewCount,
       };
 
   @override
@@ -66,6 +73,8 @@ class Providerinfo extends Equatable {
       dateOfBirth,
       location,
       image,
+      rate,
+      reviewCount
     ];
   }
 }

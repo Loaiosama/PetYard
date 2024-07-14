@@ -82,11 +82,45 @@ class CompletedCancelledPendingTabCard extends StatelessWidget {
                           Text(
                             '${DateFormat('EEEE, d MMM').format(boardingStartDate ?? DateTime.now())} | ${DateFormat('EEEE, d MMM').format(boardingEndDate ?? DateTime.now())}',
                             style: Styles.styles12NormalHalfBlack,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         if (service == 'Grooming')
-                          Text(
-                            '',
-                            style: Styles.styles12NormalHalfBlack,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                DateFormat('EEEE, d MMM, yyyy')
+                                    .format(boardingStartDate!),
+                                style: Styles.styles12NormalHalfBlack,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                '${DateFormat('hh:mma').format(boardingStartDate!.add(const Duration(hours: 3)).toUtc())} - '
+                                '${DateFormat('hh:mma').format(boardingEndDate!.add(const Duration(hours: 3)).toUtc())} ',
+                                style: Styles.styles12NormalHalfBlack,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        if (service == 'Walking' || service == 'Sitting')
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                // '-From Wednesday, 08 May 2023',
+                                DateFormat('EEEE, d MMM, yyyy')
+                                    .format(boardingStartDate!),
+                                style: Styles.styles12NormalHalfBlack,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                // '-From Wednesday, 08 May 2023',
+                                '${DateFormat('hh:mma').format(boardingStartDate!.add(const Duration(hours: 3)))} - '
+                                '${DateFormat('hh:mma').format(boardingEndDate!.add(const Duration(hours: 3)))} ',
+                                style: Styles.styles12NormalHalfBlack,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                       ],
                     ),

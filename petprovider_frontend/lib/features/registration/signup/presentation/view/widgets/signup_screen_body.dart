@@ -61,6 +61,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                   hintText: 'Email Address',
                   labelText: 'Email Address',
                   keyboardType: TextInputType.emailAddress,
+                  isEmail: true,
                 ),
                 SizedBox(height: 8.h),
                 SignUpTextFieldColumn(

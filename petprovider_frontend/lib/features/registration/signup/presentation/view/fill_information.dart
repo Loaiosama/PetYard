@@ -175,6 +175,7 @@ class _FillInformationSignUpState extends State<FillInformationSignUp> {
                     controller: phoneNumberController,
                     hintText: '+20 | Phone Number',
                     keyboardType: TextInputType.phone,
+                    isPhone: true,
                   ),
                   heightSizedBox(12),
                   TextFormField(

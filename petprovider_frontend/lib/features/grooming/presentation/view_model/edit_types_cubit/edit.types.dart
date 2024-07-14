@@ -72,6 +72,19 @@ class GroomingTypesCubit extends Cubit<GroomingTypesState> {
         (isSuccess) => emit(EditPriceSuccess(isSuccess: isSuccess)));
   }
 
+  Future<void> deleteGroomingType(int id) async {
+    emit(GroomingTypesLoading());
+    var result = await groomingRepoImpl.deleteType(id: id);
+    result.fold(
+      (failure) {
+        emit(DeleteFailure(errorMessage: failure.errorMessage));
+      },
+      (success) {
+        emit(DeleteSucces(isDelete: success));
+      },
+    );
+  }
+
   @override
   Future<void> close() {
     for (var controller in controllers) {
@@ -134,4 +147,16 @@ class GroomingTypesFailure extends GroomingTypesState {
 
   @override
   List<Object> get props => [errorMessage];
+}
+
+final class DeleteSucces extends GroomingTypesState {
+  final bool isDelete;
+
+  const DeleteSucces({required this.isDelete});
+}
+
+final class DeleteFailure extends GroomingTypesState {
+  final String errorMessage;
+
+  const DeleteFailure({required this.errorMessage});
 }

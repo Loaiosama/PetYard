@@ -25,10 +25,22 @@ final class SignInFailure extends SignInState {
 
 final class SelectServiceLoading extends SignInState {}
 
+// final class SelectServiceSuccess extends SignInState {
+//   final String successMessage;
+
+//   const SelectServiceSuccess({required this.successMessage});
+// }
 final class SelectServiceSuccess extends SignInState {
   final String successMessage;
+  final List<String> selectedServices;
 
-  const SelectServiceSuccess({required this.successMessage});
+  const SelectServiceSuccess({
+    required this.successMessage,
+    required this.selectedServices,
+  });
+
+  @override
+  List<Object> get props => [successMessage, selectedServices];
 }
 
 final class SelectServiceFailure extends SignInState {

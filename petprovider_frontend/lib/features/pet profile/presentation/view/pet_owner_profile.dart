@@ -105,7 +105,7 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
               height: MediaQuery.of(context).size.width * 0.60,
               width: double.infinity,
               child: Image.asset(
-                widget.pet.image ?? 'assets/images/profile_dog2.jpg',
+                'assets/images/profile_pictures/${widget.pet.image}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -250,64 +250,64 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
                                 SizedBox(
                                   height: 15.h,
                                 ),
-                                FutureBuilder<String>(
-                                  future: locationFuture,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const CircularProgressIndicator(
-                                        color: kPrimaryGreen,
-                                      );
-                                    } else if (snapshot.hasError) {
-                                      return Text(
-                                        "Error loading location",
-                                        style: Styles.styles16BoldBlack
-                                            .copyWith(color: Colors.black),
-                                      );
-                                    } else if (snapshot.hasData) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            height: 15.h,
-                                          ),
-                                          Text(
-                                            "Location",
-                                            style: Styles.styles16w600,
-                                          ),
-                                          SizedBox(
-                                            height: 8.h,
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                FontAwesomeIcons.locationPin,
-                                                size: 20,
-                                                color: Colors.red,
-                                              ),
-                                              SizedBox(
-                                                width: 10.w,
-                                              ),
-                                              SizedBox(
-                                                width: 250.w,
-                                                child: Text(
-                                                  snapshot.data!,
-                                                  style: Styles
-                                                      .styles12NormalHalfBlack,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      );
-                                    } else {
-                                      return SizedBox.shrink();
-                                    }
-                                  },
-                                ),
+                                // FutureBuilder<String>(
+                                //   future: locationFuture,
+                                //   builder: (context, snapshot) {
+                                //     if (snapshot.connectionState ==
+                                //         ConnectionState.waiting) {
+                                //       return const CircularProgressIndicator(
+                                //         color: kPrimaryGreen,
+                                //       );
+                                //     } else if (snapshot.hasError) {
+                                //       return Text(
+                                //         "Error loading location",
+                                //         style: Styles.styles16BoldBlack
+                                //             .copyWith(color: Colors.black),
+                                //       );
+                                //     } else if (snapshot.hasData) {
+                                //       return Column(
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.start,
+                                //         children: [
+                                //           SizedBox(
+                                //             height: 15.h,
+                                //           ),
+                                //           Text(
+                                //             "Location",
+                                //             style: Styles.styles16w600,
+                                //           ),
+                                //           SizedBox(
+                                //             height: 8.h,
+                                //           ),
+                                //           Row(
+                                //             children: [
+                                //               const Icon(
+                                //                 FontAwesomeIcons.locationPin,
+                                //                 size: 20,
+                                //                 color: Colors.red,
+                                //               ),
+                                //               SizedBox(
+                                //                 width: 10.w,
+                                //               ),
+                                //               SizedBox(
+                                //                 width: 250.w,
+                                //                 child: Text(
+                                //                   snapshot.data!,
+                                //                   style: Styles
+                                //                       .styles12NormalHalfBlack,
+                                //                   overflow:
+                                //                       TextOverflow.ellipsis,
+                                //                 ),
+                                //               ),
+                                //             ],
+                                //           ),
+                                //         ],
+                                //       );
+                                //     } else {
+                                //       return SizedBox.shrink();
+                                //     }
+                                //   },
+                                // ),
                                 SizedBox(height: 15.h),
                               ],
                             ),
@@ -325,7 +325,7 @@ class _PetOwnerProfileState extends State<PetOwnerProfile> {
               child: CircleAvatar(
                   radius: 45.sp,
                   backgroundImage: AssetImage(
-                      widget.owner.image ?? "assets/images/man.png")),
+                      'assets/images/profile_pictures/${widget.owner.image}')),
             ),
           ],
         ),

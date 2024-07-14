@@ -4,6 +4,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,11 +19,16 @@ import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/green_container_at_top.dart';
+import 'package:petprovider_frontend/core/widgets/petyard_text_button.dart';
 import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
 import 'package:petprovider_frontend/features/home/data/models/profile_info/datum.dart';
 import 'package:petprovider_frontend/features/home/data/repo/home_repo_impl.dart';
-import 'package:petprovider_frontend/features/home/presentation/view%20model/cubit/upcoming_events_cubit.dart';
+import 'package:petprovider_frontend/features/home/presentation/view%20model/upcoming_events/upcoming_events_cubit.dart';
 import 'package:petprovider_frontend/features/home/presentation/view%20model/profile_info_cubit/profile_info_cubit.dart';
+import 'package:petprovider_frontend/features/pet%20walking%20start/data/repo/upcoming_walking_repo.dart';
+import 'package:petprovider_frontend/features/pet%20walking%20start/data/repo/upcoming_walking_repo_imp.dart';
+import 'package:petprovider_frontend/features/pet%20walking%20start/presentation/view%20model/start%20walk%20cubit/start_walk_cubit.dart';
+import 'package:petprovider_frontend/features/pet%20walking%20start/presentation/view%20model/start%20walk%20cubit/start_walk_states.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeScreenBody extends StatelessWidget {
@@ -57,6 +63,15 @@ class HomeScreenBody extends StatelessWidget {
                             services: state.profileInfo.data ?? [],
                           ),
                           // heightSizedBox(16),
+                          PetYardTextButton(
+                            onPressed: () {
+                              GoRouter.of(context)
+                                  .push(Routes.kUpcomingWalkingRequests);
+                            },
+                            text: 'Start Walking Reqeusts',
+                            style: Styles.styles16BoldWhite,
+                            height: 50.h,
+                          ),
                           const UpComingEventsColumn(),
                         ],
                       ),
@@ -404,6 +419,7 @@ class UpComingEventsColumn extends StatelessWidget {
                           state.upcomingEvents[index].endTime ?? DateTime.now(),
                       startDate: state.upcomingEvents[index].startTime ??
                           DateTime.now(),
+                      reserveId: state.upcomingEvents[index].reserveId ?? -1,
                     );
                   },
                 ),
@@ -429,12 +445,14 @@ class UpcomingEventsListItem extends StatelessWidget {
       required this.serviceName,
       required this.startDate,
       required this.endDate,
-      this.finalPrice});
+      this.finalPrice,
+      required this.reserveId});
   final String image;
   final String serviceName;
   final DateTime startDate;
   final DateTime endDate;
   final dynamic finalPrice;
+  final int reserveId;
   @override
   Widget build(BuildContext context) {
     // Determine the icon and date format based on the service name
@@ -459,19 +477,19 @@ class UpcomingEventsListItem extends StatelessWidget {
       } else if (serviceName.toLowerCase() == 'sitting') {
         return DateFormat('EEEE, d MMM, yyyy').format(startDate);
       } else {
-        return '22.06.2024 | 9:30AM';
+        return '';
       }
     }
 
     String getEndDate() {
       if (serviceName.toLowerCase() == 'boarding') {
-        return '-to ${DateFormat('EEEE, d MMM, yyyy').format(startDate)}';
+        return '-to ${DateFormat('EEEE, d MMM, yyyy').format(endDate)}';
       } else if (serviceName.toLowerCase() == 'grooming') {
-        return '${DateFormat('HH:mm').format(startDate)} - ${DateFormat('HH:mm').format(endDate)}';
+        return '${DateFormat('hh:mma').format(startDate.add(const Duration(hours: 3)))} - ${DateFormat('hh:mma').format(endDate.add(const Duration(hours: 3)))}';
       } else if (serviceName.toLowerCase() == 'walking') {
-        return DateFormat('EEEE, d MMM, yyyy').format(startDate);
+        return '${DateFormat('hh:mma').format(startDate.add(const Duration(hours: 3)))} - ${DateFormat('hh:mma').format(endDate.add(const Duration(hours: 3)))}';
       } else if (serviceName.toLowerCase() == 'sitting') {
-        return DateFormat('EEEE, d MMM, yyyy').format(startDate);
+        return '${DateFormat('hh:mma').format(startDate.add(const Duration(hours: 3)))} - ${DateFormat('hh:mma').format(endDate.add(const Duration(hours: 3)))}';
       } else
         // ignore: curly_braces_in_flow_control_structures
         return '';
@@ -528,8 +546,46 @@ class UpcomingEventsListItem extends StatelessWidget {
                 serviceName == 'Walking'
                     ? Column(
                         children: [
-                          TextButton(
-                              onPressed: () {}, child: const Text('Start')),
+                          BlocProvider(
+                            create: (context) => StartWalkingRequestCubit(
+                                UpcomingWalkingRepoImp(
+                                    apiService: ApiService(dio: Dio()))),
+                            child: BlocConsumer<StartWalkingRequestCubit,
+                                StartWalkingRequestState>(
+                              listener: (context, startState) {
+                                if (startState is StartWalkingRequestSuccess) {
+                                  // context.pushNamed(Routes.KTrackWalk, extra: {
+                                  //   'lat': geofenceLatitude,
+                                  //   'long': geofenceLongitude,
+                                  //   'radius': geofenceRadius,
+                                  // });
+                                }
+                              },
+                              builder: (context, state) {
+                                return TextButton(
+                                    onPressed: () {
+                                      BlocProvider.of<StartWalkingRequestCubit>(
+                                              context)
+                                          .startWalkingRequest(reserveId);
+                                    },
+                                    style: TextButton.styleFrom(
+                                        backgroundColor: kPrimaryGreen,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0.r)),
+                                        minimumSize: Size(
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                            MediaQuery.of(context).size.height *
+                                                0.01)),
+                                    child: Text(
+                                      'Start',
+                                      style: Styles.styles16BoldWhite,
+                                    ));
+                              },
+                            ),
+                          ),
+                          heightSizedBox(6),
                           Text(
                             '$finalPrice/EGP',
                             style: Styles.styles12w600,

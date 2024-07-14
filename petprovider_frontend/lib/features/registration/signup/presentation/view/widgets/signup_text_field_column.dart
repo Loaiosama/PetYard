@@ -10,6 +10,8 @@ class SignUpTextFieldColumn extends StatelessWidget {
     this.width = double.infinity,
     this.keyboardType,
     this.isPassword = false,
+    this.isPhone = false,
+    this.isEmail = false,
     this.isObsecure,
     required this.controller,
     this.suffixIcon,
@@ -23,6 +25,8 @@ class SignUpTextFieldColumn extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextEditingController controller;
   final bool? isPassword;
+  final bool? isPhone;
+  final bool? isEmail;
   final bool? isObsecure;
 
   // final FocusNode focusNode;
@@ -35,7 +39,20 @@ class SignUpTextFieldColumn extends StatelessWidget {
         CustomRegistrationTextField(
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'This Field can\'t be empty!';
+              return 'This field can\'t be empty!';
+            }
+            // if (isPassword! && value.length < 8) {
+            //   return 'This field must be at least 8 characters long!';
+            // }
+            if (isPhone! && value.length != 11) {
+              return 'This field must be 11 characters long!';
+            }
+            if (isEmail!) {
+              String pattern = r'^[^@]+@[^@]+\.[^@]+$';
+              RegExp regex = RegExp(pattern);
+              if (!regex.hasMatch(value)) {
+                return 'Please enter a valid email address!';
+              }
             }
             return null;
           },

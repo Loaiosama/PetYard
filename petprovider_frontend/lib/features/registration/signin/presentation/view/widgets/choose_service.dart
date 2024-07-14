@@ -25,7 +25,17 @@ class ChooseService extends StatelessWidget {
               content: Text('service added successfully'),
             ),
           );
-          GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
+          // GoRouter.of(context).go(Routes.kLocationSignUp);
+          // GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
+          bool navigateToLocation =
+              state.selectedServices.contains('Boarding') ||
+                  state.selectedServices.contains('Grooming');
+
+          if (navigateToLocation) {
+            GoRouter.of(context).push(Routes.kLocationSignUp);
+          } else {
+            GoRouter.of(context).push(Routes.kHomeScreen, extra: 0);
+          }
         } else if (state is SelectServiceFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -124,10 +134,34 @@ class ChooseService extends StatelessWidget {
                             }
                             if (selectedTypes.isNotEmpty) {
                               // Call select service function based on number of selections
+                              // for (String type in selectedTypes) {
+                              //   String service = type.replaceAll('Pet ', '');
+                              //   cubit.selectService(service);
+                              // }
+                              // if (selectedTypes.contains('Pet Boarding') ||
+                              //     selectedTypes.contains('Pet Grooming')) {
+                              //   GoRouter.of(context)
+                              //       .push(Routes.kLocationSignUp);
+                              // }
+                              // bool navigateToLocation =
+                              //     selectedTypes.contains('Pet Boarding') ||
+                              //         selectedTypes.contains('Pet Grooming');
+                              List<String> services = [];
+
+                              // Call select service function based on number of selections
                               for (String type in selectedTypes) {
                                 String service = type.replaceAll('Pet ', '');
-                                cubit.selectService(service);
+                                services.add(service);
                               }
+                              cubit.selectService(services);
+
+                              // if (navigateToLocation) {
+                              //   GoRouter.of(context).go(Routes.kLocationSignUp);
+                              // } else {
+                              //   // Future.delayed(Duration(seconds: 1));
+                              //   GoRouter.of(context)
+                              //       .push(Routes.kHomeScreen, extra: 0);
+                              // }
                             } else {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(

@@ -31,16 +31,35 @@ class SignInCubit extends Cubit<SignInState> {
     );
   }
 
-  Future<void> selectService(String type) async {
+  // Future<void> selectService(String type) async {
+  //   emit(SelectServiceLoading());
+  //   await Future.delayed(const Duration(seconds: 1));
+  //   final result = await signInRepo.selectService(type: type);
+
+  //   result.fold(
+  //     (failure) =>
+  //         emit(SelectServiceFailure(errorMessage: failure.errorMessage)),
+  //     (message) => emit(SelectServiceSuccess(successMessage: message)),
+  //   );
+  // }
+  Future<void> selectService(List<String> selectedServices) async {
     emit(SelectServiceLoading());
     await Future.delayed(const Duration(seconds: 1));
-    final result = await signInRepo.selectService(type: type);
 
-    result.fold(
-      (failure) =>
-          emit(SelectServiceFailure(errorMessage: failure.errorMessage)),
-      (message) => emit(SelectServiceSuccess(successMessage: message)),
-    );
+    for (String service in selectedServices) {
+      final result = await signInRepo.selectService(type: service);
+      result.fold(
+        (failure) =>
+            emit(SelectServiceFailure(errorMessage: failure.errorMessage)),
+        (message) {
+          // Emit success with the selected services
+          emit(SelectServiceSuccess(
+            successMessage: message,
+            selectedServices: selectedServices,
+          ));
+        },
+      );
+    }
   }
 
   void clickService(int index) {

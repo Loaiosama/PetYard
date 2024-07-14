@@ -65,8 +65,8 @@ const createGroomingSlots = async (req, res) => {
             const adjustedSlot = {
                 slot_id: slotData.slot_id,
                 provider_id: slotData.provider_id,
-                start_time: new Date(slotData.start_time).toISOString(), 
-                end_time: new Date(slotData.end_time).toISOString(),     
+                start_time: new Date(slotData.start_time).toISOString(),
+                end_time: new Date(slotData.end_time).toISOString(),
             };
 
             // Add +3 hours adjustment
@@ -101,7 +101,7 @@ const createGroomingSlots = async (req, res) => {
 
 const setGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
-    const { groomingType,price } = req.body;
+    const { groomingType, price } = req.body;
 
     try {
         if (!providerId || !groomingType || !price) {
@@ -131,7 +131,7 @@ const setGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type,Price) VALUES ($1, $2,$3)', [providerId, groomingType,price]);
+        await pool.query('INSERT INTO ProviderGroomingTypes (Provider_ID, Grooming_Type,Price) VALUES ($1, $2,$3)', [providerId, groomingType, price]);
 
         res.status(201).json({
             status: "Success",
@@ -145,17 +145,17 @@ const setGroomingTypesForProvider = async (req, res) => {
             status: "Failed",
             message: "Internal server error."
         });
-        }
-    
+    }
+
 };
 
 
 const getGroomingTypesForProvider = async (req, res) => {
     const providerId = req.ID;
- 
+
 
     try {
-        if (!providerId ) {
+        if (!providerId) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing or invalid information."
@@ -172,14 +172,14 @@ const getGroomingTypesForProvider = async (req, res) => {
             });
         }
 
-        const result = await pool.query('SELECT Grooming_Type, Price FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
+        const result = await pool.query('SELECT id, Grooming_Type, Price FROM ProviderGroomingTypes WHERE Provider_ID = $1', [providerId]);
 
         res.status(200).json({
             status: "Success",
             groomingTypes: result.rows
         });
 
-        
+
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
@@ -191,9 +191,9 @@ const getGroomingTypesForProvider = async (req, res) => {
 
 const getGroomingTypesForProvidertoowner = async (req, res) => {
 
-    const owner_id=req.ID;
+    const owner_id = req.ID;
     const providerId = req.params.providerId;
- 
+
 
     try {
 
@@ -231,7 +231,7 @@ const getGroomingTypesForProvidertoowner = async (req, res) => {
             groomingTypes: result.rows
         });
 
-        
+
     } catch (e) {
         console.error("Error: ", e);
         res.status(500).json({
@@ -444,7 +444,7 @@ const getAllGroomingProviders = async (req, res) => {
             JOIN 
                 GroomingServiceSlots gss ON sp.Provider_Id = gss.Provider_ID
         `;
-        
+
         const result = await pool.query(query);
 
         if (result.rows.length === 0) {
@@ -685,10 +685,10 @@ const bookGroomingSlot = async (req, res) => {
 
 
 
-const getGroomingReservations = async (req, res) => { 
+const getGroomingReservations = async (req, res) => {
     const ownerId = req.ID;
     try {
-        if (!ownerId ) {
+        if (!ownerId) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
@@ -723,12 +723,12 @@ const getGroomingReservations = async (req, res) => {
 
 
 const getGroomingReservationsForProvider = async (req, res) => {
-    const providerId  = req.ID;
+    const providerId = req.ID;
 
     try {
 
 
-        if (!providerId ) {
+        if (!providerId) {
             return res.status(400).json({
                 status: "fail",
                 message: "Missing information."
@@ -783,15 +783,15 @@ const getGroomingReservationsForProvider = async (req, res) => {
 
 
 
-const updatePriceOfService = async(req, res) =>{
+const updatePriceOfService = async (req, res) => {
 
     const providerId = req.ID;
 
-    let{Price, Grooming_Type} = req.body;
+    let { Price, Grooming_Type } = req.body;
 
     try {
 
-        if(!providerId || !Price){
+        if (!providerId || !Price) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Missing information"
@@ -801,7 +801,7 @@ const updatePriceOfService = async(req, res) =>{
         const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_ID = $1';
         const providerRes = await pool.query(providerQuery, [providerId]);
 
-        if(providerRes.rows.length === 0){
+        if (providerRes.rows.length === 0) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Provider doesn't exist in database."
@@ -816,25 +816,26 @@ const updatePriceOfService = async(req, res) =>{
             message: "Price updated successfully",
         });
 
-        
+
     } catch (e) {
         console.error("Error:", e);
         res.status(500).json({
             status: "Fail",
             message: "Internal server error"
         })
-        
+
     }
 
 }
 
 const updateGroomingReservationtocomplete = async (req, res) => {
-    const ownerId = req.ID; 
+    const ownerId = req.ID;
     const { Slot_ID } = req.params;
     const { Type } = req.body;
-
+    console.log(Slot_ID);
+    console.log(Type);
     try {
-        
+
         if (!ownerId || !Slot_ID || !Type) {
             return res.status(400).json({ error: 'Missing required parameters' });
         }
@@ -848,16 +849,16 @@ const updateGroomingReservationtocomplete = async (req, res) => {
             });
         }
 
-         // Check if grooming slot exists
-         const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
-         const slotResult = await pool.query(slotQuery, [Slot_ID]);
- 
-         if (slotResult.rows.length === 0) {
-             return res.status(400).json({
-                 status: "fail",
-                 message: "Grooming slot not found."
-             });
-         }
+        // Check if grooming slot exists
+        const slotQuery = 'SELECT * FROM GroomingServiceSlots WHERE Slot_ID = $1';
+        const slotResult = await pool.query(slotQuery, [Slot_ID]);
+
+        if (slotResult.rows.length === 0) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Grooming slot not found."
+            });
+        }
 
         // Update the reservation to complete in the database
         const updateQuery = await pool.query(
@@ -885,10 +886,10 @@ const processedEmails = new Set();
 const checkAndUpdateCompleteReservations = async () => {
     try {
         const currentTime = new Date().toISOString();
-        
+
         // Select grooming slots with End_time less than or equal to the current time and Type as "Accepted"
         const reservations = await pool.query('SELECT * FROM GroomingServiceSlots WHERE End_time <= $1 AND Type = $2', [currentTime, 'Accepted']);
-        
+
         for (const reservation of reservations.rows) {
             // Retrieve provider name for the expired grooming slot
             const providerNameQuery = await pool.query(
@@ -1001,7 +1002,7 @@ const getFees = async (req, res) => {
             message: "Final price calculated successfully.",
             data: { finalPrice }
         });
-        
+
     } catch (e) {
         console.error("Error:", e);
         res.status(500).json({

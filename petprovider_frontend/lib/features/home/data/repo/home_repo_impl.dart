@@ -40,13 +40,16 @@ class HomeRepoImppl extends HomeRepo {
     required DateTime endTime,
   }) async {
     try {
+      final adjustedStartTime = startTime.add(const Duration(days: 1)).toUtc();
+      final adjustedEndTime = endTime.add(const Duration(days: 1)).toUtc();
+
       await api.setAuthorizationHeader();
       var response = await api.post(
         endPoints: 'Provider/CreateSlot/1',
         data: {
           'Price': price,
-          'Start_time': startTime.toIso8601String(),
-          'End_time': endTime.toIso8601String(),
+          'Start_time': adjustedStartTime.toIso8601String(),
+          'End_time': adjustedEndTime.toIso8601String(),
         },
       );
 
@@ -112,6 +115,7 @@ class HomeRepoImppl extends HomeRepo {
       if (response['status'] == 'Success') {
         // print('fas');
         List<UpcomingDatum> eventsList = [];
+        // print(response['data']);
         for (var item in response['data']) {
           // print(item);
           eventsList.add(UpcomingDatum.fromJson(item));
@@ -120,6 +124,29 @@ class HomeRepoImppl extends HomeRepo {
         return right(eventsList);
       } else {
         return left(ServerFailure(response['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  Future<Either<Failure, String>> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      await api.setAuthorizationHeader();
+      var response = await api.put(
+        endPoints: 'Provider/ChangePassword',
+        data: {"oldPassword": oldPassword, "newPassword": newPassword},
+      );
+      if (response.data['status'] == 'Success') {
+        return right(response.data['message']);
+      } else {
+        return left(ServerFailure(response.data['message']));
       }
     } catch (e) {
       if (e is DioException) {

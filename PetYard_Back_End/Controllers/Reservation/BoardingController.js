@@ -797,7 +797,7 @@ const GetAllAccepted = async (req, res) => {
         `;
 
         const groomingReservationsQuery = `
-            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price,gss.Slot_ID,
+            SELECT 'Grooming' AS service_type, gr.Reserve_ID, gr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, gr.Start_time, gr.End_time, gr.Final_Price, gss.Slot_ID,
                    gss.Provider_ID, gr.Owner_ID,
                    sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
                    COALESCE(rv.provider_rating, 0) AS provider_rating, COALESCE(rv.review_count, 0) AS review_count
@@ -1029,7 +1029,7 @@ const GetAllPending = async (req, res) => {
         WHERE gr.Owner_ID = $1 AND gss.Type = 'Pending'
     `;
 
-    const boardingReservationsQuery = `
+        const boardingReservationsQuery = `
         SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
                ss.Provider_ID, r.Owner_ID,
                sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
@@ -1075,21 +1075,19 @@ const GetAllPending = async (req, res) => {
 
 
 
-
-
 const updateCompletedReservations = async (req, res) => {
     const reserve_id = req.params.reserve_id;
     const ownerId = req.ID;
     let { Type } = req.body;
+
+    if (!ownerId || !reserve_id || Type !== 'Completed') {
+        return res.status(400).json({
+            status: "Fail",
+            message: "Info not complete or invalid type."
+        });
+    }
+
     try {
-
-
-        if (!ownerId || !reserve_id) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Info not complete."
-            });
-        }
         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
         const ownerResult = await pool.query(ownerQuery, [ownerId]);
 
@@ -1100,11 +1098,30 @@ const updateCompletedReservations = async (req, res) => {
             });
         }
 
+        const reservationQuery = 'SELECT End_time FROM Reservation WHERE Reserve_ID = $1 AND Owner_ID = $2';
+        const reservationResult = await pool.query(reservationQuery, [reserve_id, ownerId]);
 
+        if (reservationResult.rows.length === 0) {
+            return res.status(404).json({
+                status: "Fail",
+                message: "Reservation not found."
+            });
+        }
 
-        const updateQuery = 'UPDATE Reservation SET Type=$1 WHERE Reserve_ID = $2';
-        await pool.query(updateQuery, [ Type, reserve_id]);
+        const { End_time } = reservationResult.rows[0];
+        const currentTime = new Date();
+        console.log(End_time);
+        console.log(currentTime);
 
+        if (currentTime < new Date(End_time)) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Cannot mark reservation as completed before the end time."
+            });
+        }
+
+        const updateQuery = 'UPDATE Reservation SET Type = $1 WHERE Reserve_ID = $2';
+        await pool.query(updateQuery, [Type, reserve_id]);
 
         res.status(200).json({
             status: "Success",
@@ -1112,14 +1129,57 @@ const updateCompletedReservations = async (req, res) => {
         });
 
     } catch (error) {
-
-        console.error("Error ", error);
+        console.error("Error", error);
         res.status(500).json({
+            status: "Fail",
             message: "Internal server error."
         });
-
     }
 }
+
+// const updateCompletedReservations = async (req, res) => {
+//     const reserve_id = req.params.reserve_id;
+//     const ownerId = req.ID;
+//     let { Type } = req.body;
+//     try {
+
+
+//         if (!ownerId || !reserve_id) {
+//             return res.status(400).json({
+//                 status: "Fail",
+//                 message: "Info not complete."
+//             });
+//         }
+//         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
+//         const ownerResult = await pool.query(ownerQuery, [ownerId]);
+
+//         if (ownerResult.rows.length === 0) {
+//             return res.status(401).json({
+//                 status: "Fail",
+//                 message: "Owner doesn't exist."
+//             });
+//         }
+
+
+
+//         const updateQuery = 'UPDATE Reservation SET Type=$1 WHERE Reserve_ID = $2';
+//         await pool.query(updateQuery, [Type, reserve_id]);
+
+
+//         res.status(200).json({
+//             status: "Success",
+//             message: "Reservation updated successfully"
+//         });
+
+//     } catch (error) {
+
+//         console.error("Error ", error);
+//         res.status(500).json({
+//             message: "Internal server error."
+//         });
+
+//     }
+// }
 
 
 // const GetALLCompleted = async (req, res) => {
@@ -1295,7 +1355,7 @@ const GetALLCompleted = async (req, res) => {
         WHERE gr.Owner_ID = $1 AND gss.Type = 'Completed'
     `;
 
-    const boardingReservationsQuery = `
+        const boardingReservationsQuery = `
         SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
                ss.Provider_ID, r.Owner_ID,
                sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,
@@ -1515,7 +1575,7 @@ const GetAllRejected = async (req, res) => {
         WHERE gr.Owner_ID = $1 AND gss.Type = 'Rejected'
     `;
 
-    const boardingReservationsQuery = `
+        const boardingReservationsQuery = `
         SELECT 'Boarding' AS service_type, r.Reserve_ID, r.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, r.Start_time, r.End_time, r.Final_Price, r.Type,
                ss.Provider_ID, r.Owner_ID,
                sp.username AS provider_name, sp.email AS provider_email, sp.phone AS provider_phone, sp.bio AS provider_bio, sp.image AS provider_image,

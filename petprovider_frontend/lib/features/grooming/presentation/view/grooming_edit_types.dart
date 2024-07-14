@@ -12,209 +12,6 @@ import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/features/grooming/data/repo/grooming_repo_impl.dart';
 import 'package:petprovider_frontend/features/grooming/presentation/view_model/edit_types_cubit/edit.types.dart';
 
-// class EditGroomingTypesTab extends StatelessWidget {
-//   final List<dynamic> initialTypes;
-//   final GroomingRepoImpl groomingRepoImpl;
-
-//   const EditGroomingTypesTab({
-//     Key? key,
-//     required this.initialTypes,
-//     required this.groomingRepoImpl,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-// appBar: AppBar(
-//   automaticallyImplyLeading: false,
-//   title: Text('Edit Grooming Types', style: Styles.styles16BoldBlack),
-//   actions: [
-//     IconButton(
-//       icon: const Icon(Icons.add),
-//       onPressed: () {
-//         _showAddTypeModal(context);
-//       },
-//     ),
-//   ],
-// ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0.w),
-//         child: BlocProvider(
-//           create: (context) =>
-//               GroomingTypesCubit(groomingRepoImpl)..initialize(initialTypes),
-//           child: BlocBuilder<GroomingTypesCubit, GroomingTypesState>(
-//             builder: (context, state) {
-//               if (state is GroomingTypesLoaded ||
-//                   state is GroomingTypesUpdated) {
-//                 final types = state is GroomingTypesLoaded
-//                     ? state.types
-//                     : (state as GroomingTypesUpdated).types;
-//                 return ListView.builder(
-//                   itemCount: types.length,
-//                   itemBuilder: (context, index) {
-//                     final groomingType = types[index];
-//                     return Card(
-//                       color: Colors.grey.shade300,
-//                       margin: EdgeInsets.symmetric(vertical: 8.0.h),
-//                       child: ListTile(
-//                         title: Text(
-//                           groomingType['grooming_type'],
-//                           style: Styles.styles14NormalBlack,
-//                         ),
-//                         subtitle: Text('${groomingType['price']}/EGP'),
-//                         trailing: Row(
-//                           mainAxisSize: MainAxisSize.min,
-//                           children: [
-//                             IconButton(
-//                               icon: const Icon(
-//                                 FontAwesomeIcons.penToSquare,
-//                                 color: kPrimaryGreen,
-//                               ),
-//                               onPressed: () {
-//                                 _showEditTypeModal(context, index);
-//                               },
-//                             ),
-//                             IconButton(
-//                               icon: const Icon(
-//                                 Icons.delete,
-//                                 color: Colors.red,
-//                               ),
-//                               onPressed: () {
-//                                 context
-//                                     .read<GroomingTypesCubit>()
-//                                     .removeGroomingType(index);
-//                               },
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                 );
-//               } else if (state is GroomingTypesLoading) {
-//                 return const Center(child: CircularProgressIndicator());
-//               } else {
-//                 return const Center(child: Text('Something went wrong!'));
-//               }
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _showAddTypeModal(BuildContext context) {
-//     final cubit = context.read<GroomingTypesCubit>();
-//     final state = cubit.state as GroomingTypesLoaded;
-//     final TextEditingController priceController = TextEditingController();
-//     Map<String, dynamic>? selectedType;
-
-//     showModalBottomSheet(
-//       context: context,
-//       builder: (context) {
-//         return Padding(
-//           padding: EdgeInsets.all(16.0.w),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               DropdownButtonFormField<Map<String, dynamic>>(
-//                 items: state.excludedTypes.map((type) {
-//                   return DropdownMenuItem(
-//                     value: type,
-//                     child: Text(type['type']),
-//                   );
-//                 }).toList(),
-//                 onChanged: (value) {
-//                   selectedType = value;
-//                 },
-//                 decoration: const InputDecoration(
-//                   labelText: 'Select Grooming Type',
-//                 ),
-//               ),
-//               TextField(
-//                 controller: priceController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: const InputDecoration(labelText: 'Price'),
-//               ),
-//               SizedBox(height: 16.h),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   if (selectedType != null && priceController.text.isNotEmpty) {
-//                     final price = double.parse(priceController.text);
-//                     print(price);
-//                     print(selectedType);
-//                     // context.read<GroomingTypesCubit>().addGroomingType(
-//                     //       groomingType: selectedType!['type'],
-//                     //       price: price,
-//                     //     );
-//                     cubit.addGroomingType(
-//                         groomingType: selectedType!['type'], price: price);
-//                     Navigator.pop(context);
-//                   }
-//                 },
-//                 child: const Text('Add'),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-
-//   void _showEditTypeModal(BuildContext context, int index) {
-//     final cubit = context.read<GroomingTypesCubit>();
-//     final state = cubit.state as GroomingTypesLoaded;
-//     final groomingType = state.types[index];
-//     final TextEditingController priceController = TextEditingController(
-//       text: groomingType['price'].toString(),
-//     );
-
-//     showModalBottomSheet(
-//       context: context,
-//       builder: (context) {
-//         return Padding(
-//           padding: EdgeInsets.all(16.0.w),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               Text(
-//                 groomingType['grooming_type'],
-//                 style: Styles.styles14NormalBlack,
-//               ),
-//               TextField(
-//                 controller: priceController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: const InputDecoration(labelText: 'Price'),
-//               ),
-//               SizedBox(height: 16.h),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   if (priceController.text.isNotEmpty) {
-//                     final price = double.parse(priceController.text);
-//                     final updatedType = {
-//                       'grooming_type': groomingType['grooming_type'],
-//                       'price': price,
-//                     };
-//                     context
-//                         .read<GroomingTypesCubit>()
-//                         .removeGroomingType(index);
-//                     context.read<GroomingTypesCubit>().addGroomingType(
-//                           groomingType: updatedType['grooming_type'],
-//                           price: updatedType['price'],
-//                         );
-//                     Navigator.pop(context);
-//                   }
-//                 },
-//                 child: const Text('Update'),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
 class EditGroomingTypesTab extends StatelessWidget {
   final List<dynamic> initialTypes;
 
@@ -324,12 +121,60 @@ class EditGroomingTypesTab extends StatelessWidget {
                         );
                       },
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                    BlocListener<GroomingTypesCubit, GroomingTypesState>(
+                      listener: (context, state) {
+                        if (state is DeleteSucces) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('Grooming type deleted successfully')),
+                          );
+                          GoRouter.of(context)
+                              .push(Routes.kHomeScreen, extra: 0);
+                        } else if (state is DeleteFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Failed to delete grooming type: ${state.errorMessage}')),
+                          );
+                        }
+                      },
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          var cubit =
+                              BlocProvider.of<GroomingTypesCubit>(context);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Confirm Delete'),
+                                content: const Text(
+                                    'Are you sure you want to delete this grooming type?'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Delete'),
+                                    onPressed: () {
+                                      // Navigator.of(context).pop();
+                                      cubit.deleteGroomingType(
+                                          initialTypes[index]['id']);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
-                      onPressed: () {},
                     ),
                   ],
                 ),

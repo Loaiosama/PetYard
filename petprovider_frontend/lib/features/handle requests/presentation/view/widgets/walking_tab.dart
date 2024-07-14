@@ -107,9 +107,8 @@ class _WalkingTabState extends State<WalkingTab> {
                                           },
                                           child: CircleAvatar(
                                             radius: 30.sp,
-                                            backgroundImage: NetworkImage(
-                                              petState.pet.image ??
-                                                  "assets/images/profile_dog2.jpg",
+                                            backgroundImage: AssetImage(
+                                              'assets/images/profile_pictures/${petState.pet.image}',
                                             ),
                                           ),
                                         );

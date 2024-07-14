@@ -94,7 +94,7 @@ class _GroomingTabState extends State<GroomingTab> {
                                           },
                                           child: CircleAvatar(
                                             radius: 30.sp,
-                                            backgroundImage: NetworkImage(
+                                            backgroundImage: AssetImage(
                                               'assets/images/profile_pictures/${petState.pet.image}',
                                             ),
                                           ),

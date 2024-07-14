@@ -128,7 +128,7 @@ class BoardingSlotsTab extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('${info[index].slotId}'),
+                                    // Text('${info[index].slotId}'),
                                     Row(
                                       children: [
                                         Text(

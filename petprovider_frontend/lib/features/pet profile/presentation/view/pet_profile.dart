@@ -55,7 +55,7 @@ class PetProfile extends StatelessWidget {
               height: MediaQuery.of(context).size.width * 0.60,
               width: double.infinity,
               child: Image.asset(
-                pet.image ?? 'assets/images/profile_dog2.jpg',
+                'assets/images/profile_pictures/${pet.image}',
                 fit: BoxFit.cover,
               ),
             ),

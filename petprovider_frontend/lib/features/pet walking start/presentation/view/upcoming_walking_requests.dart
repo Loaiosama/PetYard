@@ -22,6 +22,10 @@ class UpcomingWalkingRequests extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Start Walking Requests'),
+        centerTitle: true,
+      ),
       body: BlocProvider(
         create: (context) => UpcomingWalkingCubit(
           UpcomingWalkingRepoImp(apiService: ApiService(dio: Dio())),
@@ -37,10 +41,14 @@ class UpcomingWalkingRequests extends StatelessWidget {
                 itemCount: state.requests.length,
                 itemBuilder: (context, index) {
                   final request = state.requests[index];
+                  final startTime = (request.startTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
+                  final endTime = (request.endTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 25.0,
-                      vertical: 40.0,
+                      vertical: 10.0,
                     ),
                     child: Material(
                       color: Colors.white,
@@ -53,9 +61,8 @@ class UpcomingWalkingRequests extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 30.sp,
-                              backgroundImage: NetworkImage(
-                                request.petImage ??
-                                    "assets/images/profile_dog2.jpg",
+                              backgroundImage: AssetImage(
+                                'assets/images/profile_pictures/${request.petImage}',
                               ),
                             ),
                             SizedBox(
@@ -72,7 +79,7 @@ class UpcomingWalkingRequests extends StatelessWidget {
                                   height: 5.h,
                                 ),
                                 Text(
-                                    "${DateFormat("h:mm a").format(request.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(request.endTime ?? DateTime.now())}",
+                                    "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                     style: Styles.styles12NormalHalfBlack),
                                 SizedBox(
                                   height: 5.h,
@@ -98,12 +105,6 @@ class UpcomingWalkingRequests extends StatelessWidget {
                                       is StartWalkingRequestLoading) {
                                     return const CircularProgressIndicator(
                                       color: kPrimaryGreen,
-                                    );
-                                  } else if (startState
-                                      is StartWalkingRequestFailure) {
-                                    return const Icon(
-                                      Icons.error,
-                                      color: Colors.red,
                                     );
                                   } else {
                                     return PetYardTextButton(
@@ -135,6 +136,11 @@ class UpcomingWalkingRequests extends StatelessWidget {
                                       'long': request.geofenceLongitude,
                                       'radius': request.geofenceRadius,
                                     });
+                                  } else if (startState
+                                      is StartWalkingRequestFailure) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(startState.message)));
                                   }
                                 },
                               ),

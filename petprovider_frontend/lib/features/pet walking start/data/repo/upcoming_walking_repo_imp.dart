@@ -14,24 +14,16 @@ class UpcomingWalkingRepoImp extends UpcomingWalkingRepo {
   Future<Either<Failure, List<WalkingRequest>>>
       fetchUpcomingWalkingRequests() async {
     try {
-      print("ana abl token upcomig");
       await apiService.setAuthorizationHeader();
-      print("ana b3d token ");
       var response =
           await apiService.get(endpoint: "Provider/UpcomingRequestsForWalking");
-      print("ana b3d response up coming");
       for (var item in response['data']) {
-        print("ana gwa el for");
         var req = WalkingRequest.fromJson(item);
-        print("ana b3d el req");
         requests.add(req);
       }
-      print("ana abl el right");
       return Right(requests);
     } catch (e) {
-      print("ana gwa el e");
       if (e is DioException) {
-        print("ana gwa e 2");
         return left(ServerFailure.fromDioError(e));
       }
       return left(ServerFailure(e.toString()));

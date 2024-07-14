@@ -2,9 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:petprovider_frontend/core/constants/constants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petprovider_frontend/core/utils/helpers/spacing.dart';
 import 'package:petprovider_frontend/core/utils/networking/api_service.dart';
+import 'package:petprovider_frontend/core/utils/routing/routes.dart';
 import 'package:petprovider_frontend/core/utils/theming/colors.dart';
 import 'package:petprovider_frontend/core/utils/theming/styles.dart';
 import 'package:petprovider_frontend/core/widgets/green_container_at_top.dart';
@@ -53,7 +54,7 @@ class ProfileScreenBody extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                '0.0',
+                                '${info?.rate ?? 0.0}',
                                 style: Styles.styles14NormalBlack,
                               ),
                               widthSizedBox(6),
@@ -69,7 +70,7 @@ class ProfileScreenBody extends StatelessWidget {
                               ),
                               const Spacer(),
                               Text(
-                                '0 Reviews',
+                                '(${info?.reviewCount ?? '0'}) reviews',
                                 style: Styles.styles12NormalHalfBlack,
                               ),
                             ],
@@ -115,72 +116,72 @@ class ProfileScreenBody extends StatelessWidget {
                               ),
                             ),
                           ),
-                          heightSizedBox(12),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Material(
-                              color: Colors.white,
-                              elevation: 2.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0.r),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(16.0.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Location',
-                                      style: Styles.styles16w600,
-                                    ),
-                                    heightSizedBox(6),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Street:',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                        widthSizedBox(8),
-                                        Text(
-                                          'Gza\'er Square',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                      ],
-                                    ),
-                                    heightSizedBox(6),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'City:',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                        widthSizedBox(8),
-                                        Text(
-                                          'Maadi',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                      ],
-                                    ),
-                                    heightSizedBox(6),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Country:',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                        widthSizedBox(8),
-                                        Text(
-                                          'Egypt',
-                                          style: Styles.styles14NormalBlack,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          heightSizedBox(12),
+                          heightSizedBox(20),
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   child: Material(
+                          //     color: Colors.white,
+                          //     elevation: 2.0,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(10.0.r),
+                          //     ),
+                          //     child: Padding(
+                          //       padding: EdgeInsets.all(16.0.w),
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           Text(
+                          //             'Location',
+                          //             style: Styles.styles16w600,
+                          //           ),
+                          //           heightSizedBox(6),
+                          //           Row(
+                          //             children: [
+                          //               Text(
+                          //                 'Street:',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //               widthSizedBox(8),
+                          //               Text(
+                          //                 'Gza\'er Square',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //             ],
+                          //           ),
+                          //           heightSizedBox(6),
+                          //           Row(
+                          //             children: [
+                          //               Text(
+                          //                 'City:',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //               widthSizedBox(8),
+                          //               Text(
+                          //                 'Maadi',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //             ],
+                          //           ),
+                          //           heightSizedBox(6),
+                          //           Row(
+                          //             children: [
+                          //               Text(
+                          //                 'Country:',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //               widthSizedBox(8),
+                          //               Text(
+                          //                 'Egypt',
+                          //                 style: Styles.styles14NormalBlack,
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // heightSizedBox(12),
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -202,7 +203,8 @@ class ProfileScreenBody extends StatelessWidget {
                                     icon: Icon(Icons.arrow_forward_ios,
                                         size: 16.sp),
                                     onPressed: () {
-                                      // Handle settings button press
+                                      GoRouter.of(context)
+                                          .push(Routes.kSettings);
                                     },
                                   ),
                                 ],
@@ -216,16 +218,18 @@ class ProfileScreenBody extends StatelessWidget {
                   ],
                 ),
                 Positioned(
-                  bottom: MediaQuery.of(context).size.height * 0.70 - 110.0,
+                  bottom: MediaQuery.of(context).size.height * 0.50 - 90.0,
                   left: MediaQuery.of(context).size.width * 0.5 - 65.0,
                   child: Container(
                     width: 120.0.w,
                     height: 120.0.h,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         // color: kSecondaryColor,
                         image: DecorationImage(
-                          image: AssetImage('assets/images/image.png'),
+                          image: AssetImage(
+                              'assets/images/profile_pictures/${info?.image ?? 'default.png'}'),
+                          fit: BoxFit.cover,
                         )),
                   ),
                 ),

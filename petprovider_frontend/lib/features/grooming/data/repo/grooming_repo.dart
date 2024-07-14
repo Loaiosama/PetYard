@@ -14,4 +14,5 @@ abstract class GroomingRepo {
   Future<Either<Failure, List<GroomingDatum>>> getGroomingSlots();
   Future<Either<Failure, bool>> updatePriceForService(
       {required double price, required String type});
+  Future<Either<Failure, bool>> deleteType({required int id});
 }
