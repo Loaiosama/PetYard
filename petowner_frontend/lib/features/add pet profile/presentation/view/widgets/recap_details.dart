@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 // import 'package:petowner_frontend/core/utils/theming/colors.dart';
@@ -135,13 +136,18 @@ class _RecapDetailsState extends State<RecapDetails> {
                     RecapItem(
                       iconData: Icons.cake_rounded,
                       primaryText: 'Date of Birth',
-                      secondaryText: widget.petModel.dateOfBirth.toString(),
+                      secondaryText: DateFormat('EEEE, d MMM, yyyy')
+                          .format(widget.petModel.dateOfBirth ?? DateTime.now())
+                          .toString(),
                     ),
                     SizedBox(height: 20.h),
                     RecapItem(
                       iconData: Icons.home_outlined,
                       primaryText: 'Adoption Date',
-                      secondaryText: widget.petModel.adoptionDate.toString(),
+                      secondaryText: DateFormat('EEEE, d MMM, yyyy')
+                          .format(
+                              widget.petModel.adoptionDate ?? DateTime.now())
+                          .toString(),
                     ),
                     SizedBox(height: 20.h),
                     BlocProvider(

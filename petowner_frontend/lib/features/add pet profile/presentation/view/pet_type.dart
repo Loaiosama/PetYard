@@ -21,25 +21,22 @@ class ChooseType extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Image.asset(
-                "assets/images/yellow_dog2.jpg",
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.4,
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+            // Positioned(
+            //   top: 0,
+            //   left: 0,
+            //   right: 0,
+            //   child: Image.asset(
+            //     "assets/images/yellow_dog2.jpg",
+            //     fit: BoxFit.cover,
+            //     width: MediaQuery.of(context).size.width,
+            //     height: MediaQuery.of(context).size.height * 0.4,
+            //   ),
+            // ),
+            Center(
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.60,
+                height: MediaQuery.of(context).size.height * 0.80,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(243, 245, 240, 1),
+                  // color: Color.fromRGBO(243, 245, 240, 1),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(26),
                     topRight: Radius.circular(26),

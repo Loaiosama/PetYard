@@ -8,7 +8,6 @@ import 'package:petowner_frontend/core/constants/constants.dart';
 import 'package:petowner_frontend/core/utils/helpers/spacing.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
-import 'package:petowner_frontend/core/utils/theming/colors.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/home/data/repo/home_repo_impl.dart';
 import 'package:petowner_frontend/features/home/presentation/view/widgets/pet_carer_card.dart';
@@ -67,18 +66,20 @@ class ServiceProvidersBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.85,
-                child: SearchTextField(
-                  onChanged: (p0) {},
-                ),
-              ),
-              const SizedBox(width: 10),
-              BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
-                builder: (context, state) {
-                  return InkWell(
+          BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
+            builder: (context, state) {
+              return Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: SearchTextField(
+                      onChanged: (p0) {
+                        context.read<HomeProvidersCubit>().searchProviders(p0);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  InkWell(
                     onTap: () {},
                     child: Tooltip(
                       message: 'More',
@@ -94,7 +95,7 @@ class ServiceProvidersBody extends StatelessWidget {
                                 .read<HomeProvidersCubit>()
                                 .fetchProvidersSortedByRating(
                                     rating: result, serviceName: serviceName);
-                            print('Selected rating filter: > $result');
+                            // print('Selected rating filter: > $result');
                           }
                         },
                         itemBuilder: (BuildContext context) =>
@@ -116,10 +117,10 @@ class ServiceProvidersBody extends StatelessWidget {
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
-            ],
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 20),
           BlocBuilder<HomeProvidersCubit, HomeProvidersState>(
@@ -227,7 +228,7 @@ class ProviderListItem extends StatelessWidget {
   final String serviceName;
   final String image;
   final num? rating;
-  final dynamic? count;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Padding(

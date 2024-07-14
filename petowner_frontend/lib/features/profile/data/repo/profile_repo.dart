@@ -8,7 +8,6 @@ abstract class ProfileRepo {
   Future<bool> updateOwnerInfo({
     required String firstName,
     required String lastName,
-    required String pass,
     required String email,
     required String phoneNumber,
     required DateTime dateOfBirth,

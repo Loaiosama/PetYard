@@ -11,7 +11,7 @@ class ProviderSorted extends Equatable {
   final DateTime? dateOfBirth;
   final dynamic location;
   final String? image;
-  final double? averageRating;
+  final num? averageRating;
   final String? reviewCount;
   final List<Service>? services;
 

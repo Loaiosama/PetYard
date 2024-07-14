@@ -10,6 +10,8 @@ class HomeProvidersCubit extends Cubit<HomeProvidersState> {
   HomeProvidersCubit(this.homeRepo) : super(HomeProvidersInitial());
 
   final HomeRepo homeRepo;
+  List<Provider> allProviders = [];
+  List<Provider> filteredProviders = [];
 
   Future<void> getAllProvidersOfService({required String serviceName}) async {
     emit(HomeProvidersLoading());
@@ -17,12 +19,12 @@ class HomeProvidersCubit extends Cubit<HomeProvidersState> {
         await homeRepo.fetchAllProvidersOfService(serviceName: serviceName);
 
     result.fold(
-      (failure) => emit(
-        HomeProvidersFailure(failure.errorMessage),
-      ),
-      (providers) => emit(
-        HomeProvidersSuccess(providersList: providers),
-      ),
+      (failure) => emit(HomeProvidersFailure(failure.errorMessage)),
+      (providers) {
+        allProviders = providers;
+        filteredProviders = providers;
+        emit(HomeProvidersSuccess(providersList: providers));
+      },
     );
   }
 
@@ -48,5 +50,24 @@ class HomeProvidersCubit extends Cubit<HomeProvidersState> {
       (providersList) =>
           emit(RecommendedProvidersSuccess(providersList: providersList)),
     );
+  }
+
+  void searchProviders(String query) {
+    if (query.isEmpty) {
+      // If the search query is empty, show all providers.
+      filteredProviders = List.from(allProviders);
+      emit(HomeProvidersSuccess(providersList: filteredProviders));
+      return;
+    }
+
+    final searchLower = query.toLowerCase().trim();
+
+    filteredProviders = allProviders.where((provider) {
+      final username = provider.data?[0].username ?? '';
+      final usernameLower = username.toLowerCase().trim();
+      return usernameLower.contains(searchLower);
+    }).toList();
+    emit(HomeProvidersLoading());
+    emit(HomeProvidersSuccess(providersList: filteredProviders));
   }
 }

@@ -20,6 +20,9 @@ class GroomingSummaryTab extends StatelessWidget {
     required this.types,
     required this.startTime,
     this.endTime,
+    required this.providerImage,
+    required this.rating,
+    this.count,
   });
   final String providerName;
   final DateTime? date;
@@ -29,6 +32,9 @@ class GroomingSummaryTab extends StatelessWidget {
   final double fees;
   final String selectedPetName;
   final List<Service> service;
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -148,6 +154,9 @@ class GroomingSummaryTab extends StatelessWidget {
         ProviderProfileCard(
           services: service,
           providerName: providerName,
+          count: count,
+          rating: rating,
+          image: providerImage,
         ),
         heightSizedBox(14),
         Text(

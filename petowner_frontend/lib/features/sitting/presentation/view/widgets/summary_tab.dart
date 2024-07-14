@@ -58,11 +58,11 @@ class Summary extends StatelessWidget {
                     height: 3.h,
                   ),
                   Text(
-                    '- From ${DateFormat('EEE , d , MMM ,yyyy ,hh:mm:ss a').format(startTime ?? DateTime.now())}',
+                    '- From ${DateFormat('EEE, d, MMM ,yyyy, hh:mm a').format(startTime ?? DateTime.now())}',
                     style: Styles.styles12NormalHalfBlack,
                   ),
                   Text(
-                    '- To ${DateFormat('EEE , d ,MMM,YYYY,hh:mm:ss a').format(endTime ?? DateTime.now())}',
+                    '- To ${DateFormat('EEE, d, MMM, yyyy, hh:mm a').format(endTime ?? DateTime.now())}',
                     style: Styles.styles12NormalHalfBlack,
                   ),
                 ],

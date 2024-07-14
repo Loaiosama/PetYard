@@ -19,9 +19,9 @@ List<Map<String, dynamic>> homeServicesMap = [
     'title': 'Pet Boarding',
     'service': 'Boarding',
   },
-  {
-    'image': 'assets/svgs/home_healthcare.svg',
-    'title': 'Health Care',
-    'service': 'Health Care',
-  },
+  // {
+  //   'image': 'assets/svgs/home_healthcare.svg',
+  //   'title': 'Health Care',
+  //   'service': 'Health Care',
+  // },
 ];

@@ -24,11 +24,17 @@ class GroomingHomeScreen extends StatefulWidget {
     required this.providerId,
     required this.providerName,
     required this.services,
+    required this.providerImage,
+    required this.rating,
+    this.count,
   });
   final String providerName;
   final String serviceName;
   final int providerId;
   final List<Service> services;
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   State<GroomingHomeScreen> createState() => _GroomingHomeScreenState();
 }
@@ -114,6 +120,9 @@ class _GroomingHomeScreenState extends State<GroomingHomeScreen> {
             types: types,
             startTime: startTime ?? DateTime.now(),
             endTime: endTime ?? DateTime.now(),
+            providerImage: widget.providerImage,
+            rating: widget.rating,
+            count: widget.count,
           ),
         ),
       ];
@@ -230,6 +239,9 @@ class _GroomingHomeScreenState extends State<GroomingHomeScreen> {
                               'endTime': endTime,
                               'date': date,
                               'serviceName': widget.serviceName,
+                              'image': widget.providerImage,
+                              'rating': widget.rating,
+                              'count': widget.count,
                             });
                           } else if (state is ReserveSlotFailure) {
                             GoRouter.of(context)

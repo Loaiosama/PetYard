@@ -63,8 +63,9 @@ class _DatePickerState extends State<DatePicker> {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2040),
+      firstDate: DateTime(2000),
+      // lastDate: DateTime(2040),
+      lastDate: DateTime.now(),
       builder: (context, child) => Theme(
         data: ThemeData().copyWith(
           colorScheme: const ColorScheme.light(

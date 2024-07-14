@@ -27,6 +27,7 @@ class ProviderInfoRepo {
       // Parse the response into ProviderInfoModel
       var providerInfo = ProviderInfoModel.fromJson(response);
       // print(providerInfo.data!.username);
+      // print(providerInfo.data!.location!.x);
       return right(providerInfo);
     } catch (e) {
       if (e is DioException) {

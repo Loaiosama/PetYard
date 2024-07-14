@@ -81,8 +81,8 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                   CircleAvatar(
                                     radius: 30.sp,
                                     backgroundImage: AssetImage(
-                                        widget.req.image ??
-                                            "assets/images/profile_dog2.jpg"),
+                                      'assets/images/profile_pictures/${app.providerImage}',
+                                    ),
                                   ),
                                   SizedBox(
                                     width: 10.w,
@@ -116,7 +116,7 @@ class _WalkingApplicationsState extends State<WalkingApplications> {
                                                 Styles.styles12NormalHalfBlack,
                                           ),
                                           SizedBox(
-                                            width: 25.w,
+                                            width: 20.w,
                                           ),
                                           Text(
                                             "${app.reviewCount} reviews",

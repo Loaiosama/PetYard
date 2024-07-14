@@ -70,8 +70,11 @@ class PetBreedScreenState extends State<PetBreedScreen> {
             heightSizedBox(10),
             Column(
               children: [
-                SearchTextField(
-                  onChanged: filterBreeds,
+                Padding(
+                  padding: EdgeInsets.only(right: 16.0.w),
+                  child: SearchTextField(
+                    onChanged: filterBreeds,
+                  ),
                 ),
               ],
             ),

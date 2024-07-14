@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
+import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/styles.dart';
 import 'package:petowner_frontend/features/profile/data/repo/profile_repo_impl.dart';
 import 'package:petowner_frontend/features/profile/presentation/view_model/profile%20cubit/owner_info_cubit.dart';
@@ -52,11 +54,13 @@ class HomeAppBar extends StatelessWidget {
           ),
           child: Center(
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                GoRouter.of(context).push(Routes.kUpcomingTracking);
+              },
               icon: Tooltip(
-                message: 'Notifications',
+                message: 'Track Location',
                 child: Icon(
-                  Icons.notifications_none_outlined,
+                  Icons.track_changes,
                   color: Colors.black,
                   size: 22.sp,
                 ),

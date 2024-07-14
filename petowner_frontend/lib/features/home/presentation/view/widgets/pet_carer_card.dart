@@ -100,7 +100,7 @@ class RatingRowWidget extends StatelessWidget {
     this.count,
   });
 
-  final double? rating;
+  final num? rating;
   final dynamic count;
 
   @override
@@ -140,10 +140,13 @@ class ServiceListModal extends StatelessWidget {
           ...?provider.services?.map((service) => ListTile(
                 title: Text(service.type ?? 'N/A'),
                 onTap: () {
-                  GoRouter.of(context).push(Routes.kProviderProfile, extra: {
-                    'id': provider.providerId,
-                    'serviceName': service.type,
-                  });
+                  if (service.type == 'Boarding' ||
+                      service.type == 'Grooming') {
+                    GoRouter.of(context).push(Routes.kProviderProfile, extra: {
+                      'id': provider.providerId,
+                      'serviceName': service.type,
+                    });
+                  }
                 },
               )),
         ],

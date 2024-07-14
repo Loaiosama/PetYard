@@ -62,6 +62,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                   hintText: '+20 | Phone Number',
                   labelText: 'Phone Number',
                   keyboardType: TextInputType.phone,
+                  isPhone: true,
                 ),
                 SizedBox(height: 8.h),
                 SignUpTextFieldColumn(
@@ -69,6 +70,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                   hintText: 'Email Address',
                   labelText: 'Email Address',
                   keyboardType: TextInputType.emailAddress,
+                  isEmail: true,
                 ),
                 SizedBox(height: 8.h),
                 SignUpTextFieldColumn(
@@ -135,10 +137,12 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                             SnackBar(content: Text(state.errorMessage)));
                       } else if (state is SignUpSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('SignUp Successful')),
+                          const SnackBar(
+                              content: Text('Please Enter Validaition code')),
                         );
                         // Navigate to the home screen
-                        GoRouter.of(context).push(Routes.kSigninScreen);
+                        GoRouter.of(context).push(Routes.kValidationCode,
+                            extra: emailAddressController.text);
                       }
                     },
                   ),

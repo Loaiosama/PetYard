@@ -55,7 +55,7 @@ class ActivePetProfileSection extends StatelessWidget {
                       children: [
                         Row(
                           children: List.generate(
-                            1,
+                            petsLength,
                             (index) => InkWell(
                               onTap: () {
                                 context.pushNamed(Routes.kPetInformation,

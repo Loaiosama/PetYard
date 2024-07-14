@@ -102,7 +102,6 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
   Future<void> updateOwnerInformation({
     required String firstName,
     required String lastName,
-    required String pass,
     required String email,
     required String phoneNumber,
     required DateTime dateOfBirth,
@@ -114,7 +113,6 @@ class PersonalInformationCubit extends Cubit<PersonalInformationState> {
       bool isSuccess = await profileRepo.updateOwnerInfo(
         firstName: firstName,
         lastName: lastName,
-        pass: pass,
         email: email,
         phoneNumber: phoneNumber,
         dateOfBirth: dateOfBirth,

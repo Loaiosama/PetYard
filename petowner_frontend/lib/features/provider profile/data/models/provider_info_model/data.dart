@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/location.dart';
 
 class Data extends Equatable {
   final int? providerId;
@@ -7,7 +8,7 @@ class Data extends Equatable {
   final String? email;
   final String? bio;
   final DateTime? dateOfBirth;
-  final dynamic location;
+  final Location? location;
   final String? image;
   final int? age; // Added age field
 
@@ -32,7 +33,9 @@ class Data extends Equatable {
         dateOfBirth: json['date_of_birth'] == null
             ? null
             : DateTime.parse(json['date_of_birth'] as String),
-        location: json['location'] as dynamic,
+        location: json['location'] == null
+            ? null
+            : Location.fromJson(json['location'] as Map<String, dynamic>),
         image: json['image'] as String?,
         age: json['age'] as int?, // Added age field
       );
@@ -44,7 +47,7 @@ class Data extends Equatable {
         'email': email,
         'bio': bio,
         'date_of_birth': dateOfBirth?.toIso8601String(),
-        'location': location,
+        'location': location?.toJson(),
         'image': image,
         'age': age, // Added age field
       };

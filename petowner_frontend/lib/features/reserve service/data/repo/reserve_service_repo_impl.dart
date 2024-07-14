@@ -90,12 +90,14 @@ class ReserveServiceRepoImpl extends ReserveServiceRepo {
       required int petID}) async {
     try {
       await apiService.setAuthorizationHeader();
+      final adjustedStartTime = startDate.add(const Duration(days: 1)).toUtc();
+      final adjustedEndTime = endDate.add(const Duration(days: 1)).toUtc();
       // print('hellooo');
       var response = await apiService.post(data: {
         "Slot_ID": slotID,
         "Pet_ID": petID,
-        "Start_time": startDate.toIso8601String(),
-        "End_time": endDate.toIso8601String(),
+        "Start_time": adjustedStartTime.toIso8601String(),
+        "End_time": adjustedEndTime.toIso8601String(),
       }, endPoints: 'Petowner/ReserveSlot');
 
       // print(response.statusCode);

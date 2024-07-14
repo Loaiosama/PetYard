@@ -28,4 +28,19 @@ class SignUpCubit extends Cubit<SignUpState> {
         (failure) => emit(SignUpFailure(errorMessage: failure.errorMessage)),
         (success) => emit(SignUpSuccess(status: success)));
   }
+
+  Future<void> validateCode({
+    required String email,
+    required String validationCode,
+  }) async {
+    emit(ValidationLoading());
+    var result = await signUpRepo.validationCode(
+      email: email,
+      validationCode: validationCode,
+    );
+    result.fold(
+      (failure) => emit(ValidationFailure(errorMessage: failure.errorMessage)),
+      (success) => emit(ValidationSuccess(isValid: success)),
+    );
+  }
 }

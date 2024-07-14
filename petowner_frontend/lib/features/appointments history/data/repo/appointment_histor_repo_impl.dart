@@ -62,7 +62,7 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
       var response = await apiService.get(endpoint: 'PetOwner/GetALLCompleted');
       // print(response);
       for (var item in response['data']) {
-        print(item);
+        // print(item);
         var datum = Datum.fromJson(item);
         var completedModel = Completedmodel(
           status: response['status'],
@@ -71,7 +71,7 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
         );
         completedReservations.add(completedModel);
       }
-      print(completedReservations);
+      // print(completedReservations);
       return right(completedReservations);
     } catch (e) {
       if (e is DioException) {
@@ -150,6 +150,118 @@ class AppointmentHistoryImpl extends AppointmentHistoryRepo {
 
       bool result = false;
       if (response.statusCode == 201) {
+        result = true;
+      }
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markAsDoneBoarding({
+    required int reserveId,
+    required String type,
+  }) async {
+    try {
+      await apiService.setAuthorizationHeader();
+      var response = await apiService.put(
+        endPoints: 'Petowner/updateCompletedReservations/$reserveId',
+        data: {
+          "Type": "Completed",
+        },
+      );
+
+      bool result = false;
+      if (response.statusCode == 200) {
+        result = true;
+      }
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markAsDoneGrooming({
+    required int reserveId,
+  }) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.put(
+        endPoints: 'Petowner/updateGroomingReservationToComplete/$reserveId',
+        data: {
+          "Type": "Completed",
+        },
+      );
+
+      bool result = false;
+      if (response.statusCode == 200) {
+        result = true;
+      }
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markAsDoneSitting({
+    required int reserveId,
+    required int providerId,
+  }) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.put(
+        endPoints: 'Petowner/completedApplication',
+        data: {
+          "Reserve_ID": reserveId,
+          "Provider_ID": providerId,
+        },
+      );
+
+      bool result = false;
+      if (response.statusCode == 200) {
+        result = true;
+      }
+      return right(result);
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> markAsDoneWalking({
+    required int reserveId,
+    required int providerId,
+  }) async {
+    try {
+      await apiService.setAuthorizationHeader();
+
+      var response = await apiService.put(
+        endPoints: 'Petowner/Completed',
+        data: {
+          "Reserve_ID": reserveId,
+          "Provider_ID": providerId,
+        },
+      );
+
+      bool result = false;
+      if (response.statusCode == 200) {
         result = true;
       }
       return right(result);

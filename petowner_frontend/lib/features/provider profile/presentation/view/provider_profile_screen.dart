@@ -48,38 +48,38 @@ class ProviderProfileScreen extends StatelessWidget {
                     size: 18.0.sp,
                   ),
                 ),
-                actions: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    margin: EdgeInsets.only(right: 10.0.w),
-                    decoration: BoxDecoration(
-                      // shape: BoxShape.rectangle,
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.2),
-                        style: BorderStyle.solid,
-                        width: 0.8,
-                      ),
-                      borderRadius: BorderRadius.circular(10.0.r),
-                    ),
-                    child: Center(
-                      child: IconButton(
-                        onPressed: () {
-                          // print(id);
-                          // print(serviceName);
-                        },
-                        icon: Tooltip(
-                          message: 'More',
-                          child: Icon(
-                            Icons.more_horiz,
-                            color: Colors.black,
-                            size: 22.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+                // actions: [
+                //   Container(
+                //     height: 40,
+                //     width: 40,
+                //     margin: EdgeInsets.only(right: 10.0.w),
+                //     decoration: BoxDecoration(
+                //       // shape: BoxShape.rectangle,
+                //       border: Border.all(
+                //         color: Colors.black.withOpacity(0.2),
+                //         style: BorderStyle.solid,
+                //         width: 0.8,
+                //       ),
+                //       borderRadius: BorderRadius.circular(10.0.r),
+                //     ),
+                //     child: Center(
+                //       child: IconButton(
+                //         onPressed: () {
+                //           // print(id);
+                //           // print(serviceName);
+                //         },
+                //         icon: Tooltip(
+                //           message: 'More',
+                //           child: Icon(
+                //             Icons.more_horiz,
+                //             color: Colors.black,
+                //             size: 22.sp,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                // ],
               ),
               body: ProviderProfileBody(
                 id: id,
@@ -95,6 +95,8 @@ class ProviderProfileScreen extends StatelessWidget {
                 userName: state.providerInfoModel.data!.username ?? 'No name.',
                 rating: state.providerInfoModel.rating ?? 0.0,
                 count: state.providerInfoModel.count ?? 0,
+                lat: state.providerInfoModel.data!.location?.x ?? 0.0,
+                long: state.providerInfoModel.data!.location?.y ?? 0.0,
               ),
             );
           } else if (state is ProviderInfoLoading) {

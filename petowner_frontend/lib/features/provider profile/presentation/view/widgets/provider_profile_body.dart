@@ -1,4 +1,3 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +26,8 @@ class ProviderProfileBody extends StatelessWidget {
     required this.image,
     required this.rating,
     required this.count,
+    required this.lat,
+    required this.long,
   });
   final int id;
   final String serviceName;
@@ -39,6 +40,8 @@ class ProviderProfileBody extends StatelessWidget {
   final String image;
   final num rating;
   final dynamic count;
+  final double lat;
+  final double long;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,7 +92,10 @@ class ProviderProfileBody extends StatelessWidget {
                           phoneNumber: phoneNumber,
                           userName: userName,
                         ),
-                        const LocationTabColumn(),
+                        LocationTabColumn(
+                          lat: lat,
+                          long: long,
+                        ),
                         ReviewsTabColumn(
                           providerId: id,
                         ),
@@ -105,6 +111,9 @@ class ProviderProfileBody extends StatelessWidget {
             services: services,
             id: id,
             providerName: userName,
+            providerImage: image,
+            rating: rating,
+            count: count,
           ),
         ],
       ),
@@ -118,11 +127,17 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
       required this.serviceName,
       required this.id,
       required this.providerName,
-      required this.services});
+      required this.services,
+      required this.providerImage,
+      required this.rating,
+      this.count});
   final String serviceName;
   final int id;
   final String providerName;
   final List<Service> services;
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -143,6 +158,9 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
                         'providerId': id,
                         'providerName': providerName,
                         'services': services,
+                        'image': providerImage,
+                        'rating': rating,
+                        'count': count,
                       },
                     );
                   } else if (serviceName == 'Grooming') {
@@ -153,6 +171,9 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
                         'providerId': id,
                         'providerName': providerName,
                         'services': services,
+                        'image': providerImage,
+                        'rating': rating,
+                        'count': count,
                       },
                     );
                   }
@@ -167,28 +188,28 @@ class MakeAppointmentButtonsRow extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              height: 54.h,
-              // width: MediaQuery.of(context).size.width * 0.14,
-              decoration: BoxDecoration(
-                color: kPrimaryGreen,
-                borderRadius: BorderRadius.circular(10.0.r),
-              ),
-              child: IconButton(
-                onPressed: () {},
-                icon: Tooltip(
-                  message: 'Send a message to $providerName.',
-                  child: Icon(
-                    FluentIcons.chat_20_regular,
-                    color: Colors.white,
-                    size: 28.0.sp,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Expanded(
+          //   flex: 1,
+          //   child: Container(
+          //     height: 54.h,
+          //     // width: MediaQuery.of(context).size.width * 0.14,
+          //     decoration: BoxDecoration(
+          //       color: kPrimaryGreen,
+          //       borderRadius: BorderRadius.circular(10.0.r),
+          //     ),
+          //     child: IconButton(
+          //       onPressed: () {},
+          //       icon: Tooltip(
+          //         message: 'Send a message to $providerName.',
+          //         child: Icon(
+          //           FluentIcons.chat_20_regular,
+          //           color: Colors.white,
+          //           size: 28.0.sp,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

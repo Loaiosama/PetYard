@@ -22,14 +22,19 @@ class ReservationSuccess extends StatelessWidget {
       required this.serviceName,
       this.startTime,
       this.date,
-      this.endTime});
+      this.endTime,
+      required this.providerImage,
+      required this.rating,
+      this.count});
   final List<Service> services;
   final String providerName;
   final String serviceName;
   final DateTime? startTime;
   final DateTime? date;
   final DateTime? endTime;
-
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +46,9 @@ class ReservationSuccess extends StatelessWidget {
         date: date,
         endTime: endTime,
         startTime: startTime,
+        providerImage: providerImage,
+        rating: rating,
+        count: count,
       )),
     );
   }
@@ -54,13 +62,19 @@ class ReservationSuccessBody extends StatelessWidget {
       required this.serviceName,
       this.startTime,
       this.date,
-      this.endTime});
+      this.endTime,
+      required this.providerImage,
+      required this.rating,
+      this.count});
   final List<Service> services;
   final String providerName;
   final String serviceName;
   final DateTime? startTime;
   final DateTime? date;
   final DateTime? endTime;
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -90,11 +104,17 @@ class ReservationSuccessBody extends StatelessWidget {
           heightSizedBox(4),
           Align(
             alignment: Alignment.center,
-            child: Text(
-              'We will contact you soon to let you know whether mohamed accepted your request or not.',
-              textAlign: TextAlign.center,
-              style: Styles.styles12NormalHalfBlack,
-            ),
+            child: serviceName == 'Boarding'
+                ? Text(
+                    'We will contact you soon to let you know whether $providerName accepted your request or not.',
+                    textAlign: TextAlign.center,
+                    style: Styles.styles12NormalHalfBlack,
+                  )
+                : Text(
+                    'Your booking with $providerName confirmed successfully.',
+                    textAlign: TextAlign.center,
+                    style: Styles.styles12NormalHalfBlack,
+                  ),
           ),
           heightSizedBox(40),
           Text(
@@ -194,6 +214,9 @@ class ReservationSuccessBody extends StatelessWidget {
           ProviderProfileCard(
             services: services,
             providerName: providerName,
+            image: providerImage,
+            rating: rating,
+            count: count,
           ),
           const Spacer(),
           PetYardTextButton(

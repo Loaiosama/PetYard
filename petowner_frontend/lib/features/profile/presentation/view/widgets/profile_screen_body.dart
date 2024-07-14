@@ -46,7 +46,7 @@ class ProfileScreenBody extends StatelessWidget {
                           heightSizedBox(8),
                           Column(
                             children: List.generate(
-                              3,
+                              routes.length,
                               (index) => Column(
                                 children: [
                                   ProfileOptionsCard(

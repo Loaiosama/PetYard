@@ -263,6 +263,12 @@ class CompletedTabColumn extends StatelessWidget {
                           state.completedReservations[0].data![0].finalPrice ??
                               0.0,
                       status: 'completed',
+                      groomingStartTime: state.completedReservations[index]
+                              .data?[0].startTime ??
+                          DateTime.now(),
+                      groomingEndTime:
+                          state.completedReservations[index].data?[0].endTime ??
+                              DateTime.now(),
                     );
                   },
                 )
@@ -303,6 +309,11 @@ class UpcomingTabColumn extends StatelessWidget {
                       // providerID: state.acceptedReservations[index].data?[0]
                       //         .providerId ??
                       //     -1,
+                      petId: state.acceptedReservations[index].data?[0].petId ??
+                          -1,
+                      reserveId: state
+                              .acceptedReservations[index].data?[0].reserveId ??
+                          -1,
                       slotPrice: state.acceptedReservations[index].data?[0]
                               .finalPrice ??
                           0.0,
@@ -330,6 +341,9 @@ class UpcomingTabColumn extends StatelessWidget {
                       providerID: state.acceptedReservations[index].data?[0]
                               .providerId ??
                           -1,
+                      slotId:
+                          state.acceptedReservations[index].data?[0].slotId ??
+                              -1,
                     );
                   },
                 )
@@ -337,7 +351,9 @@ class UpcomingTabColumn extends StatelessWidget {
         } else if (state is AcceptedAppointmentFailure) {
           return Center(child: Text(state.errorMessage));
         } else {
-          return const Text('oops!');
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
       },
     );

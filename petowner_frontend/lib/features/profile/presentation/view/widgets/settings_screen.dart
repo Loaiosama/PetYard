@@ -52,14 +52,14 @@ class SettingsScreen extends StatelessWidget {
               ),
               onTap: () => signOut(context),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
               leading: Icon(Icons.lock_reset, color: Colors.blue, size: 24.sp),
               title: Text(
                 'Reset Password',
                 style: Styles.styles16w600,
               ),
-              onTap: () => resetPassword(context),
+              onTap: () => GoRouter.of(context).push(Routes.kResetPassword),
             ),
           ],
         ),

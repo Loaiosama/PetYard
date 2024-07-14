@@ -48,6 +48,10 @@ class ServiceApplications extends StatelessWidget {
                       itemCount: state.requests.length,
                       itemBuilder: (context, index) {
                         var req = state.requests[index];
+                        final startTime = (req.startTime ?? DateTime.now())
+                            .add(const Duration(hours: 3));
+                        final endTime = (req.endTime ?? DateTime.now())
+                            .add(const Duration(hours: 3));
                         return Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 25.0.w, vertical: 10.0.h),
@@ -61,8 +65,8 @@ class ServiceApplications extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                       radius: 30.sp,
-                                      backgroundImage:
-                                          AssetImage(req.image ?? " ")),
+                                      backgroundImage: AssetImage(
+                                          'assets/images/profile_pictures/${req.image}')),
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -81,9 +85,8 @@ class ServiceApplications extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 6.0.w),
                                         child: Text(
-                                            DateFormat('EEE d MMM yyyy').format(
-                                                req.startTime ??
-                                                    DateTime.now()),
+                                            DateFormat('EEE d MMM yyyy')
+                                                .format(startTime),
                                             style:
                                                 Styles.styles12NormalHalfBlack),
                                       ),
@@ -93,7 +96,7 @@ class ServiceApplications extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 6.0.w),
                                         child: Text(
-                                            "${DateFormat("h:mm a").format(req.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(req.endTime ?? DateTime.now())}",
+                                            "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                             style:
                                                 Styles.styles12NormalHalfBlack),
                                       ),
@@ -170,7 +173,7 @@ class ServiceApplications extends StatelessWidget {
                     color: kPrimaryGreen,
                   );
                 } else if (state is WalkingRequestsFailure) {
-                  print(state.message);
+                  // print(state.message);
                   return const Icon(
                     Icons.error,
                     color: Colors.red,
@@ -181,6 +184,10 @@ class ServiceApplications extends StatelessWidget {
                       itemCount: state.walkingRequests.length,
                       itemBuilder: (context, index) {
                         var req = state.walkingRequests[index];
+                        final startTime = (req.startTime ?? DateTime.now())
+                            .add(const Duration(hours: 3));
+                        final endTime = (req.endTime ?? DateTime.now())
+                            .add(const Duration(hours: 3));
                         return Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 25.0.w, vertical: 10.0.h),
@@ -194,8 +201,8 @@ class ServiceApplications extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                       radius: 30.sp,
-                                      backgroundImage:
-                                          AssetImage(req.image ?? " ")),
+                                      backgroundImage: AssetImage(
+                                          'assets/images/profile_pictures/${req.image}')),
                                   SizedBox(
                                     width: 10.w,
                                   ),
@@ -214,9 +221,8 @@ class ServiceApplications extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 6.0.w),
                                         child: Text(
-                                            DateFormat('EEE d MMM yyyy').format(
-                                                req.startTime ??
-                                                    DateTime.now()),
+                                            DateFormat('EEE d MMM yyyy')
+                                                .format(startTime),
                                             style:
                                                 Styles.styles12NormalHalfBlack),
                                       ),
@@ -226,7 +232,7 @@ class ServiceApplications extends StatelessWidget {
                                       Padding(
                                         padding: EdgeInsets.only(left: 6.0.w),
                                         child: Text(
-                                            "${DateFormat("h:mm a").format(req.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(req.endTime ?? DateTime.now())}",
+                                            "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                             style:
                                                 Styles.styles12NormalHalfBlack),
                                       ),

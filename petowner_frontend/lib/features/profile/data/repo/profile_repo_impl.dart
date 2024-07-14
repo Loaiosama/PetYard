@@ -113,7 +113,6 @@ class ProfileRepoImpl extends ProfileRepo {
   Future<bool> updateOwnerInfo({
     required String firstName,
     required String lastName,
-    required String pass,
     required String email,
     required String phoneNumber,
     required DateTime dateOfBirth,
@@ -126,7 +125,6 @@ class ProfileRepoImpl extends ProfileRepo {
         data: {
           'firstName': firstName,
           'lastName': lastName,
-          'pass': pass,
           'email': email,
           'phoneNumber': phoneNumber,
           'dateOfBirth': dateOfBirth.toIso8601String(),
@@ -140,6 +138,29 @@ class ProfileRepoImpl extends ProfileRepo {
         throw ServerFailure.fromDioError(e);
       }
       throw ServerFailure(e.toString());
+    }
+  }
+
+  Future<Either<Failure, String>> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      await apiService.setAuthorizationHeader();
+      var response = await apiService.put(
+        endPoints: 'PetOwner/ChangePassword',
+        data: {"oldPassword": oldPassword, "newPassword": newPassword},
+      );
+      if (response.data['status'] == 'Success') {
+        return right(response.data['message']);
+      } else {
+        return left(ServerFailure(response.data['message']));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
     }
   }
 }

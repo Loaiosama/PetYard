@@ -78,3 +78,59 @@ final class AddRatingFailure extends AppointmentsHistoryState {
 
   const AddRatingFailure({required this.errorMessage});
 }
+
+final class MarkAsDoneBoardingLoading extends AppointmentsHistoryState {}
+
+final class MarkAsDoneBoardingSuccess extends AppointmentsHistoryState {
+  final bool isSuccess;
+
+  const MarkAsDoneBoardingSuccess({required this.isSuccess});
+}
+
+final class MarkAsDoneBoardingFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const MarkAsDoneBoardingFailure({required this.errorMessage});
+}
+
+final class MarkAsDoneGroomingLoading extends AppointmentsHistoryState {}
+
+final class MarkAsDoneGroomingSuccess extends AppointmentsHistoryState {
+  final bool isSuccess;
+
+  const MarkAsDoneGroomingSuccess({required this.isSuccess});
+}
+
+final class MarkAsDoneGroomingFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const MarkAsDoneGroomingFailure({required this.errorMessage});
+}
+
+final class MarkAsDoneSittingLoading extends AppointmentsHistoryState {}
+
+final class MarkAsDoneSittingSuccess extends AppointmentsHistoryState {
+  final bool isSuccess;
+
+  const MarkAsDoneSittingSuccess({required this.isSuccess});
+}
+
+final class MarkAsDoneSittingFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const MarkAsDoneSittingFailure({required this.errorMessage});
+}
+
+final class MarkAsDoneWalkingLoading extends AppointmentsHistoryState {}
+
+final class MarkAsDoneWalkingSuccess extends AppointmentsHistoryState {
+  final bool isSuccess;
+
+  const MarkAsDoneWalkingSuccess({required this.isSuccess});
+}
+
+final class MarkAsDoneWalkingFailure extends AppointmentsHistoryState {
+  final String errorMessage;
+
+  const MarkAsDoneWalkingFailure({required this.errorMessage});
+}

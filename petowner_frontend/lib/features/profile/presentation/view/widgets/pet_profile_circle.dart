@@ -30,7 +30,8 @@ class PetProfileCircle extends StatelessWidget {
               shape: BoxShape.circle,
               image: !isAddNew
                   ? DecorationImage(
-                      image: AssetImage('assets/images/$petImage'),
+                      image: AssetImage(
+                          'assets/images/profile_pictures/$petImage'),
                       fit: BoxFit.cover,
                     )
                   : null,

@@ -124,52 +124,52 @@ class AboutTabColumn extends StatelessWidget {
             ],
           ),
           heightSizedBox(18),
-          Text(
-            'Bookings',
-            style: Styles.styles14w600,
-          ),
-          heightSizedBox(8),
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.purple,
-                radius: 6.r,
-              ),
-              widthSizedBox(8),
-              Text(
-                '20 Completed bookings',
-                style: Styles.styles12NormalHalfBlack,
-              ),
-            ],
-          ),
-          heightSizedBox(5),
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: kBlue,
-                radius: 6.r,
-              ),
-              widthSizedBox(8),
-              Text(
-                '10 Repeated Customers',
-                style: Styles.styles12NormalHalfBlack,
-              ),
-            ],
-          ),
-          heightSizedBox(5),
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.greenAccent,
-                radius: 6.r,
-              ),
-              widthSizedBox(8),
-              Text(
-                '6 Repeated bookings',
-                style: Styles.styles12NormalHalfBlack,
-              ),
-            ],
-          ),
+          // Text(
+          //   'Bookings',
+          //   style: Styles.styles14w600,
+          // ),
+          // heightSizedBox(8),
+          // Row(
+          //   children: [
+          //     CircleAvatar(
+          //       backgroundColor: Colors.purple,
+          //       radius: 6.r,
+          //     ),
+          //     widthSizedBox(8),
+          //     Text(
+          //       '20 Completed bookings',
+          //       style: Styles.styles12NormalHalfBlack,
+          //     ),
+          //   ],
+          // ),
+          // heightSizedBox(5),
+          // Row(
+          //   children: [
+          //     CircleAvatar(
+          //       backgroundColor: kBlue,
+          //       radius: 6.r,
+          //     ),
+          //     widthSizedBox(8),
+          //     Text(
+          //       '10 Repeated Customers',
+          //       style: Styles.styles12NormalHalfBlack,
+          //     ),
+          //   ],
+          // ),
+          // heightSizedBox(5),
+          // Row(
+          //   children: [
+          //     CircleAvatar(
+          //       backgroundColor: Colors.greenAccent,
+          //       radius: 6.r,
+          //     ),
+          //     widthSizedBox(8),
+          //     Text(
+          //       '6 Repeated bookings',
+          //       style: Styles.styles12NormalHalfBlack,
+          //     ),
+          //   ],
+          // ),
           /* 
           Should we add more info here and database like 
           Distance willing to travel,

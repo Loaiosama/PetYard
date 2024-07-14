@@ -43,6 +43,10 @@ class UpcomingTracking extends StatelessWidget {
                 itemCount: state.requests.length,
                 itemBuilder: (context, index) {
                   final request = state.requests[index];
+                  final startTime = (request.startTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
+                  final endTime = (request.endTime ?? DateTime.now())
+                      .add(const Duration(hours: 3));
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 25.0,
@@ -59,9 +63,8 @@ class UpcomingTracking extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 30.sp,
-                              backgroundImage: NetworkImage(
-                                request.petImage ??
-                                    "assets/images/profile_dog2.jpg",
+                              backgroundImage: AssetImage(
+                                'assets/images/profile_pictures/${request.petImage}',
                               ),
                             ),
                             SizedBox(
@@ -71,14 +74,14 @@ class UpcomingTracking extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    DateFormat('EEE d MMM yyyy').format(
-                                        request.startTime ?? DateTime.now()),
+                                    DateFormat('EEE d MMM yyyy')
+                                        .format(startTime),
                                     style: Styles.styles12NormalHalfBlack),
                                 SizedBox(
                                   height: 5.h,
                                 ),
                                 Text(
-                                    "${DateFormat("h:mm a").format(request.startTime ?? DateTime.now())} | ${DateFormat("h:mm a").format(request.endTime ?? DateTime.now())}",
+                                    "${DateFormat("h:mm a").format(startTime)} | ${DateFormat("h:mm a").format(endTime)}",
                                     style: Styles.styles12NormalHalfBlack),
                                 SizedBox(
                                   height: 5.h,
@@ -103,12 +106,6 @@ class UpcomingTracking extends StatelessWidget {
                                   if (startState is TrackWalkingLoading) {
                                     return const CircularProgressIndicator(
                                       color: kPrimaryGreen,
-                                    );
-                                  } else if (startState
-                                      is TrackWalkingFailure) {
-                                    return const Icon(
-                                      Icons.error,
-                                      color: Colors.red,
                                     );
                                   } else {
                                     return PetYardTextButton(
@@ -139,6 +136,13 @@ class UpcomingTracking extends StatelessWidget {
                                       'long': request.geofenceLongitude,
                                       'radius': request.geofenceRadius,
                                     });
+                                  } else if (startState
+                                      is TrackWalkingFailure) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(startState.message),
+                                      ),
+                                    );
                                   }
                                 },
                               ),
@@ -152,8 +156,8 @@ class UpcomingTracking extends StatelessWidget {
               );
             } else if (state is UpcomingWalkingFailure) {
               print(state.message);
-              return const Center(
-                child: Icon(Icons.error),
+              return Center(
+                child: Text(state.message),
               );
             }
             return const Center(child: Text('No Requests'));

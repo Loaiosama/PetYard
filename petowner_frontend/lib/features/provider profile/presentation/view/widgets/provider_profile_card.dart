@@ -34,7 +34,7 @@ class ProviderProfileCard extends StatelessWidget {
             image: DecorationImage(
               image: AssetImage(
                   // 'assets/images/1.png',
-                  '${Constants.profilePictures}/$image'
+                  'assets/images/profile_pictures/$image'
                   // '${Constants.providersImage}\\$image',
                   ),
               fit: BoxFit.cover,
@@ -71,7 +71,7 @@ class ProviderProfileCard extends StatelessWidget {
             ),
             heightSizedBox(8),
             RatingRowWidget(
-              rating: rating!.toDouble(),
+              rating: rating?.toDouble() ?? 0.0,
               count: count,
             ),
           ],

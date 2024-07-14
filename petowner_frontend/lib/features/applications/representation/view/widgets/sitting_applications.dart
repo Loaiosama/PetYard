@@ -79,8 +79,7 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                   CircleAvatar(
                                     radius: 30.sp,
                                     backgroundImage: AssetImage(
-                                      widget.req.image ??
-                                          "assets/images/profile_dog2.jpg",
+                                      'assets/images/profile_pictures/${app.providerImage}',
                                     ),
                                   ),
                                   SizedBox(

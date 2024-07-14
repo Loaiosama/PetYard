@@ -66,19 +66,19 @@ class HomeBanner extends StatelessWidget {
                         ),
                       ),
                       heightSizedBox(11),
-                      TextButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
-                        child: Text(
-                          'Find Nearby',
-                          //blue accent or grey
-                          style: Styles.styles18MediumWhite.copyWith(
-                              color: Colors.black.withOpacity(0.7),
-                              fontSize: 14.sp),
-                        ),
-                      ),
+                      // TextButton(
+                      //   onPressed: () {},
+                      //   style: TextButton.styleFrom(
+                      //     backgroundColor: Colors.white,
+                      //   ),
+                      //   child: Text(
+                      //     'Find Nearby',
+                      //     //blue accent or grey
+                      //     style: Styles.styles18MediumWhite.copyWith(
+                      //         color: Colors.black.withOpacity(0.7),
+                      //         fontSize: 14.sp),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

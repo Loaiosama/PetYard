@@ -46,4 +46,30 @@ class SignUpRepo {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  Future<Either<Failure, bool>> validationCode({
+    required String email,
+    required String validationCode,
+  }) async {
+    try {
+      var response = await api.post(
+        endPoints: 'PetOwner/validateCode',
+        data: {
+          "email": email,
+          "validationCode": validationCode,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return right(true);
+      } else {
+        return left(ServerFailure('Failed to validate code'));
+      }
+    } catch (e) {
+      if (e is DioException) {
+        return left(ServerFailure.fromDioError(e));
+      }
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }

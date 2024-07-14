@@ -7,7 +7,7 @@ class SittingApplication {
   String? applicationDate;
   String? providerName;
   String? providerImage;
-  int? providerRating;
+  num? providerRating;
   String? reviewCount;
 
   SittingApplication(

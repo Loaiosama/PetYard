@@ -10,6 +10,7 @@ class Datum extends Equatable {
   final DateTime? adoptionDate;
   final double? weight;
   final String? image;
+  final String? bio;
   final int? ownerId;
 
   const Datum({
@@ -23,24 +24,25 @@ class Datum extends Equatable {
     this.weight,
     this.image,
     this.ownerId,
+    this.bio,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        petId: json['pet_id'] as int?,
-        type: json['type'] as String?,
-        name: json['name'] as String?,
-        gender: json['gender'] as String?,
-        breed: json['breed'] as String?,
-        dateOfBirth: json['date_of_birth'] == null
-            ? null
-            : DateTime.parse(json['date_of_birth'] as String),
-        adoptionDate: json['adoption_date'] == null
-            ? null
-            : DateTime.parse(json['adoption_date'] as String),
-        weight: (json['weight'] as num?)?.toDouble(),
-        image: json['image'] as String?,
-        ownerId: json['owner_id'] as int?,
-      );
+      petId: json['pet_id'] as int?,
+      type: json['type'] as String?,
+      name: json['name'] as String?,
+      gender: json['gender'] as String?,
+      breed: json['breed'] as String?,
+      dateOfBirth: json['date_of_birth'] == null
+          ? null
+          : DateTime.parse(json['date_of_birth'] as String),
+      adoptionDate: json['adoption_date'] == null
+          ? null
+          : DateTime.parse(json['adoption_date'] as String),
+      weight: (json['weight'] as num?)?.toDouble(),
+      image: json['image'] as String?,
+      ownerId: json['owner_id'] as int?,
+      bio: json['bio'] as String?);
 
   Map<String, dynamic> toJson() => {
         'pet_id': petId,
@@ -53,6 +55,7 @@ class Datum extends Equatable {
         'weight': weight,
         'image': image,
         'owner_id': ownerId,
+        'bio': bio,
       };
 
   @override
@@ -68,6 +71,7 @@ class Datum extends Equatable {
       weight,
       image,
       ownerId,
+      bio,
     ];
   }
 }

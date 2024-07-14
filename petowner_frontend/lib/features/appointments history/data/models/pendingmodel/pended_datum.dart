@@ -15,7 +15,7 @@ class PendedDatum extends Equatable {
   final String? providerBio;
   final String? providerImage;
   final String? serviceType;
-  final int? providerRating;
+  final num? providerRating;
   final dynamic reviewCount;
 
   const PendedDatum({
@@ -56,7 +56,7 @@ class PendedDatum extends Equatable {
         providerBio: json['provider_bio'] as String?,
         providerImage: json['provider_image'] as String?,
         serviceType: json['service_type'] as String?,
-        providerRating: json['provider_rating'] as int?,
+        providerRating: json['provider_rating'] as num?,
         reviewCount: json['review_count'] as dynamic,
       );
 

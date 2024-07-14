@@ -60,7 +60,7 @@ class PetInfromationScreenBody extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.39,
                   width: double.infinity,
                   child: Image.asset(
-                    'assets/images/${state.petModel.data![0].image}',
+                    'assets/images/profile_pictures/${state.petModel.data![0].image}',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -177,12 +177,12 @@ class PetInfromationScreenBody extends StatelessWidget {
                                   ),
                                   heightSizedBox(16),
                                   Text(
-                                    'About Maxi',
+                                    'About ${state.petModel.data?[0].name}',
                                     style: Styles.styles14w600,
                                   ),
                                   heightSizedBox(8),
                                   Text(
-                                    'About my pet.',
+                                    state.petModel.data?[0].bio ?? '',
                                     style: Styles.styles12NormalHalfBlack,
                                   ),
                                   heightSizedBox(16),

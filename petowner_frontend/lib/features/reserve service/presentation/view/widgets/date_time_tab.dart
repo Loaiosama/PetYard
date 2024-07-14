@@ -322,7 +322,8 @@ class PetListItem extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
                         image: DecorationImage(
-                          image: AssetImage('assets/images/$image'),
+                          image: AssetImage(
+                              'assets/images/profile_pictures/$image'),
                           fit: BoxFit.cover,
                         ),
                       ),

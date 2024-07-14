@@ -65,4 +65,65 @@ class AppointmentsHistoryCubit extends Cubit<AppointmentsHistoryState> {
         (failure) => emit(AddRatingFailure(errorMessage: failure.errorMessage)),
         (success) => emit(AddRatingSuccess(isSuccess: success)));
   }
+
+  Future markAsDoneBoarding({
+    required int reserveId,
+    required String type,
+  }) async {
+    emit(MarkAsDoneBoardingLoading());
+    var result = await appointmentHistoryRepo.markAsDoneBoarding(
+      reserveId: reserveId,
+      type: type,
+    );
+    result.fold(
+      (failure) =>
+          emit(MarkAsDoneBoardingFailure(errorMessage: failure.errorMessage)),
+      (success) => emit(MarkAsDoneBoardingSuccess(isSuccess: success)),
+    );
+  }
+
+  Future markAsDoneGrooming({
+    required int reserveId,
+  }) async {
+    emit(MarkAsDoneGroomingLoading());
+    var result =
+        await appointmentHistoryRepo.markAsDoneGrooming(reserveId: reserveId);
+    result.fold(
+      (failure) =>
+          emit(MarkAsDoneGroomingFailure(errorMessage: failure.errorMessage)),
+      (success) => emit(MarkAsDoneGroomingSuccess(isSuccess: success)),
+    );
+  }
+
+  Future markAsDoneSitting({
+    required int reserveId,
+    required int providerId,
+  }) async {
+    emit(MarkAsDoneSittingLoading());
+    var result = await appointmentHistoryRepo.markAsDoneSitting(
+      reserveId: reserveId,
+      providerId: providerId,
+    );
+    result.fold(
+      (failure) =>
+          emit(MarkAsDoneSittingFailure(errorMessage: failure.errorMessage)),
+      (success) => emit(MarkAsDoneSittingSuccess(isSuccess: success)),
+    );
+  }
+
+  Future markAsDoneWalking({
+    required int reserveId,
+    required int providerId,
+  }) async {
+    emit(MarkAsDoneWalkingLoading());
+    var result = await appointmentHistoryRepo.markAsDoneWalking(
+      reserveId: reserveId,
+      providerId: providerId,
+    );
+    result.fold(
+      (failure) =>
+          emit(MarkAsDoneWalkingFailure(errorMessage: failure.errorMessage)),
+      (success) => emit(MarkAsDoneWalkingSuccess(isSuccess: success)),
+    );
+  }
 }

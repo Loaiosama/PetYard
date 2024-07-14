@@ -12,4 +12,17 @@ abstract class AppointmentHistoryRepo {
   Future<Either<Failure, List<Pendingmodel>>> fetchPendingReservations();
   Future<Either<Failure, bool>> addRatingAndReview(
       {required int providerId, required double rate, required String review});
+  Future<Either<Failure, bool>> markAsDoneBoarding(
+      {required int reserveId, required String type});
+  Future<Either<Failure, bool>> markAsDoneWalking({
+    required int reserveId,
+    required int providerId,
+  });
+  Future<Either<Failure, bool>> markAsDoneSitting({
+    required int reserveId,
+    required int providerId,
+  });
+  Future<Either<Failure, bool>> markAsDoneGrooming({
+    required int reserveId,
+  });
 }

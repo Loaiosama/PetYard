@@ -393,6 +393,9 @@ class PetListItem extends StatelessWidget {
               height: 60.h,
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image:
+                          AssetImage('assets/images/profile_pictures/$image')),
                   border: Border.all(
                     color: isSelected ? kPrimaryGreen : Colors.transparent,
                   )),

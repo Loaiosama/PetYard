@@ -104,135 +104,128 @@ class PersonalInformationScreen extends StatelessWidget {
                       ),
                     ),
                     heightSizedBox(20),
-                    !cubit.isEdit
-                        ? TextButton(
+                    // !cubit.isEdit
+                    //     ? TextButton(
+                    //         onPressed: () {},
+                    //         style: TextButton.styleFrom(
+                    //           minimumSize: const Size(double.infinity, 60),
+                    //           shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(10.0),
+                    //             side: const BorderSide(
+                    //               color: kPrimaryGreen,
+                    //               width: 2.0,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         child: Text(
+                    //           'Delete Account!',
+                    //           style: Styles.styles18RegularBlack.copyWith(
+                    //               color: kPrimaryGreen, fontSize: 16.sp),
+                    //         ),
+                    //       )
+                    //     :
+                    BlocConsumer<PersonalInformationCubit,
+                        PersonalInformationState>(
+                      listener: (context, state) {
+                        if (state is UpdateOwnerInformationFailure) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Something went wrong!',
+                                    style: Styles.styles14NormalBlack
+                                        .copyWith(color: Colors.red),
+                                  ),
+                                  content: Text(
+                                    'Failed to update account info.',
+                                    style: Styles.styles12RegularOpacityBlack,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        GoRouter.of(context)
+                                            .push(Routes.kHomeScreen, extra: 4);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        } else if (state is UpdateOwnerInformationSuccess) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Done!',
+                                    style: Styles.styles14NormalBlack
+                                        .copyWith(color: Colors.green),
+                                  ),
+                                  content: Text(
+                                    'Info Updated Successfully.',
+                                    style: Styles.styles12RegularOpacityBlack,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        GoRouter.of(context)
+                                            .push(Routes.kHomeScreen, extra: 4);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              });
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is UpdateOwnerInformationLoading) {
+                          return TextButton(
                             onPressed: () {},
                             style: TextButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 60),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              backgroundColor: kPrimaryGreen,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                side: const BorderSide(
-                                  color: kPrimaryGreen,
-                                  width: 2.0,
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              minimumSize: Size(double.infinity, 60.h),
+                            ),
+                            child: Center(
+                              child: SizedBox(
+                                height: 20.sp,
+                                width: 20.sp,
+                                child: const CircularProgressIndicator(
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'Delete Account!',
-                              style: Styles.styles18RegularBlack.copyWith(
-                                  color: kPrimaryGreen, fontSize: 16.sp),
-                            ),
-                          )
-                        : BlocConsumer<PersonalInformationCubit,
-                            PersonalInformationState>(
-                            listener: (context, state) {
-                              if (state is UpdateOwnerInformationFailure) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                          'Something went wrong!',
-                                          style: Styles.styles14NormalBlack
-                                              .copyWith(color: Colors.red),
-                                        ),
-                                        content: Text(
-                                          'Failed to update account info.',
-                                          style: Styles
-                                              .styles12RegularOpacityBlack,
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              GoRouter.of(context).push(
-                                                  Routes.kHomeScreen,
-                                                  extra: 4);
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              } else if (state
-                                  is UpdateOwnerInformationSuccess) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                          'Done!',
-                                          style: Styles.styles14NormalBlack
-                                              .copyWith(color: Colors.green),
-                                        ),
-                                        content: Text(
-                                          'Info Updated Successfully.',
-                                          style: Styles
-                                              .styles12RegularOpacityBlack,
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              GoRouter.of(context).push(
-                                                  Routes.kHomeScreen,
-                                                  extra: 4);
-                                            },
-                                            child: const Text('OK'),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
-                            },
-                            builder: (context, state) {
-                              if (state is UpdateOwnerInformationLoading) {
-                                return TextButton(
-                                  onPressed: () {},
-                                  style: TextButton.styleFrom(
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: kPrimaryGreen,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                    ),
-                                    minimumSize: Size(double.infinity, 60.h),
-                                  ),
-                                  child: Center(
-                                    child: SizedBox(
-                                      height: 20.sp,
-                                      width: 20.sp,
-                                      child: const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return PetYardTextButton(
-                                onPressed: () {
-                                  // cubit.save();
-                                  String formattedDate =
-                                      DateFormat('yyyy-MM-dd').format(
-                                    DateFormat('dd-MM-yyyy')
-                                        .parse(cubit.dateController.text),
-                                  );
+                          );
+                        }
+                        return PetYardTextButton(
+                          onPressed: () {
+                            // cubit.save();
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd').format(
+                              DateFormat('dd-MM-yyyy')
+                                  .parse(cubit.dateController.text),
+                            );
 
-                                  cubit.updateOwnerInformation(
-                                    firstName: cubit.fNameController.text,
-                                    lastName: cubit.lNameController.text,
-                                    pass:
-                                        '123', // Assuming pass is a required field
-                                    email: cubit.emailController.text,
-                                    phoneNumber:
-                                        cubit.phoneNumberController.text,
-                                    dateOfBirth: DateTime.parse(formattedDate),
-                                  );
-                                },
-                                text: 'Save',
-                                style: Styles.styles18MediumWhite
-                                    .copyWith(fontSize: 16.sp),
-                              );
-                            },
-                          ),
+                            cubit.updateOwnerInformation(
+                              firstName: cubit.fNameController.text,
+                              lastName: cubit.lNameController.text,
+                              // Assuming pass is a required field
+                              email: cubit.emailController.text,
+                              phoneNumber: cubit.phoneNumberController.text,
+                              dateOfBirth: DateTime.parse(formattedDate),
+                            );
+                          },
+                          text: 'Save',
+                          style: Styles.styles18MediumWhite
+                              .copyWith(fontSize: 16.sp),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

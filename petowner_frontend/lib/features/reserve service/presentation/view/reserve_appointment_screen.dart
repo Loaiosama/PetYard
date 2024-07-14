@@ -25,11 +25,17 @@ class BookAppointment extends StatefulWidget {
     required this.providerId,
     required this.providerName,
     required this.services,
+    required this.providerImage,
+    required this.rating,
+    this.count,
   });
   final String providerName;
   final String serviceName;
   final int providerId;
   final List<Service> services;
+  final String providerImage;
+  final num rating;
+  final dynamic count;
   @override
   State<BookAppointment> createState() => _BookAppointmentState();
 }
@@ -91,11 +97,27 @@ class _BookAppointmentState extends State<BookAppointment> {
             startDate: startDate ?? DateTime.now(),
             endDate: endDate ?? DateTime.now(),
             providerName: widget.providerName,
+            image: widget.providerImage,
+            rating: widget.rating,
+            count: widget.count,
           ),
         ),
       ];
 
   // Validate if the required fields are selected
+  // bool _validateFields() {
+  //   bool isValid = true;
+  //   if (startDate == null ||
+  //       endDate == null ||
+  //       selectedPet == null ||
+  //       selectedPet!.isEmpty) {
+  //     isValid = false;
+  //   } else if (endDate!.isBefore(startDate!)) {
+  //     isValid = false;
+  //   }
+  //   return isValid;
+  // }
+
   bool _validateFields() {
     bool isValid = true;
     if (startDate == null ||
@@ -105,8 +127,16 @@ class _BookAppointmentState extends State<BookAppointment> {
       isValid = false;
     } else if (endDate!.isBefore(startDate!)) {
       isValid = false;
+    } else if (_isSameDay(startDate!, endDate!)) {
+      isValid = false;
     }
     return isValid;
+  }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   @override
@@ -208,6 +238,9 @@ class _BookAppointmentState extends State<BookAppointment> {
                               'endTime': endDate,
                               'serviceName': widget.serviceName,
                               'date': DateTime.now(),
+                              'image': widget.providerImage,
+                              'rating': widget.rating,
+                              'count': widget.count,
                             });
                           } else if (state is ReserveSlotFailure) {
                             GoRouter.of(context)
@@ -225,6 +258,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                               debugPrint('selected = $selectedPet');
                               debugPrint('pet id = $selectedPetID');
                               debugPrint('slot id = $slotId');
+                              // print(widget.providerImage);
                               if (_currentStep == steps().length - 2) {
                                 var reserve = ReserveServiceRepoImpl(
                                     apiService: ApiService(dio: Dio()));

@@ -8,7 +8,6 @@ import 'package:petowner_frontend/core/utils/routing/routing_animation.dart';
 import 'package:petowner_frontend/core/widgets/reservation_failure.dart';
 import 'package:petowner_frontend/core/widgets/reservation_success.dart';
 import 'package:petowner_frontend/features/Requests/representation/view/choose_request.dart';
-import 'package:petowner_frontend/features/chat%20old/presentation/view/chat_screen.dart';
 import 'package:petowner_frontend/features/chat/data/repo/chat_service.dart';
 import 'package:petowner_frontend/features/chat/presentation/view/chat.dart';
 import 'package:petowner_frontend/features/chat/presentation/view_model/test/cubit/chathistory_cubit.dart';
@@ -22,16 +21,19 @@ import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/pet_info.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/pet_type.dart';
 import 'package:petowner_frontend/features/add%20pet%20profile/presentation/view/recap.dart';
+import 'package:petowner_frontend/features/pet%20walking%20track/presentation/view/upcoming_tracking.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/location_screen.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/personal_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/pet_information.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/profile_screen.dart';
+import 'package:petowner_frontend/features/profile/presentation/view/reset_password.dart';
 import 'package:petowner_frontend/features/profile/presentation/view/widgets/settings_screen.dart';
 import 'package:petowner_frontend/features/provider%20profile/data/models/provider_info_model/data.dart';
 import 'package:petowner_frontend/features/provider%20profile/presentation/view/provider_profile_screen.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/forgot_password.dart';
 import 'package:petowner_frontend/features/registration/signin/presentation/view/signin.dart';
 import 'package:petowner_frontend/features/registration/signup/presentation/view/signup.dart';
+import 'package:petowner_frontend/features/registration/signup/presentation/view/widgets/validation_code.dart';
 import 'package:petowner_frontend/features/reserve%20service/presentation/view/reserve_appointment_screen.dart';
 import 'package:petowner_frontend/features/sitting/data/model/sitting_request%20.dart';
 import 'package:petowner_frontend/features/sitting/presentation/view/pet_sitting.dart';
@@ -208,6 +210,9 @@ abstract class AppRouter {
           final String serviceName = extras['serviceName'] as String;
           final String providerName = extras['providerName'] as String;
           final List<Service> services = extras['services'] as List<Service>;
+          final String providerImage = extras['image'] as String;
+          final num rating = extras['rating'] as num;
+          final dynamic count = extras['count'] as dynamic;
           return transitionGoRoute(
             context: context,
             state: state,
@@ -216,6 +221,9 @@ abstract class AppRouter {
               serviceName: serviceName,
               providerId: providerId,
               providerName: providerName,
+              providerImage: providerImage,
+              rating: rating,
+              count: count,
             ),
           );
         },
@@ -230,6 +238,9 @@ abstract class AppRouter {
           final String serviceName = extras['serviceName'] as String;
           final String providerName = extras['providerName'] as String;
           final List<Service> services = extras['services'] as List<Service>;
+          final String providerImage = extras['image'] as String;
+          final num rating = extras['rating'] as num;
+          final dynamic count = extras['count'] as dynamic;
           return transitionGoRoute(
             context: context,
             state: state,
@@ -238,6 +249,9 @@ abstract class AppRouter {
               serviceName: serviceName,
               providerId: providerId,
               providerName: providerName,
+              providerImage: providerImage,
+              rating: rating,
+              count: count,
             ),
           );
         },
@@ -295,16 +309,22 @@ abstract class AppRouter {
           final DateTime startTime = extras['startTime'] as DateTime;
           final DateTime endTime = extras['endTime'] as DateTime;
           final DateTime date = extras['date'] as DateTime;
+          final String providerImage = extras['image'] as String;
+          final num rating = extras['rating'] as num;
+          final dynamic count = extras['count'] as dynamic;
           return transitionGoRoute(
             context: context,
             state: state,
             child: ReservationSuccess(
+              providerImage: providerImage,
               providerName: providerName,
               services: services,
               serviceName: serviceName,
               date: date,
               endTime: endTime,
               startTime: startTime,
+              rating: rating,
+              count: count,
             ),
           );
         },
@@ -479,6 +499,41 @@ abstract class AppRouter {
                   radius: radius,
                 ));
           }),
+      GoRoute(
+          name: Routes.kValidationCode,
+          path: Routes.kValidationCode,
+          pageBuilder: (context, state) {
+            final String email = state.extra as String;
+            return transitionGoRoute(
+              context: context,
+              state: state,
+              child: ValidationCodeScreen(
+                email: email,
+              ),
+            );
+          }),
+      GoRoute(
+        name: Routes.kUpcomingTracking,
+        path: Routes.kUpcomingTracking,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const UpcomingTracking(),
+          );
+        },
+      ),
+      GoRoute(
+        name: Routes.kResetPassword,
+        path: Routes.kResetPassword,
+        pageBuilder: (context, state) {
+          return transitionGoRoute(
+            context: context,
+            state: state,
+            child: const ChangePasswordScreen(),
+          );
+        },
+      ),
     ],
   );
 }
