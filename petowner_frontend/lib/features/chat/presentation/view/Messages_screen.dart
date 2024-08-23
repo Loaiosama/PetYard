@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:petowner_frontend/core/utils/networking/api_service.dart';
 import 'package:petowner_frontend/core/utils/routing/routes.dart';
 import 'package:petowner_frontend/core/utils/theming/colors.dart';
@@ -27,34 +28,6 @@ class MessagesScreen extends StatelessWidget {
               color: Colors.black),
         ),
         centerTitle: true,
-        actions: [
-          Container(
-            height: 40,
-            width: 40,
-            margin: EdgeInsets.only(right: 10.0.w),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black.withOpacity(0.2),
-                style: BorderStyle.solid,
-                width: 0.8,
-              ),
-              borderRadius: BorderRadius.circular(10.0.r),
-            ),
-            child: Center(
-              child: IconButton(
-                onPressed: () {},
-                icon: Tooltip(
-                  message: 'Create new message',
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.black,
-                    size: 22.sp,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
       ),
       body: const MessagesScreenBody(),
     );
@@ -69,7 +42,7 @@ class MessagesScreenBody extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           ChatCubit(ChatService(apiService: ApiService(dio: Dio())))
-            ..fetchChats(), // Replace '2' with the actual providerId
+            ..fetchChats(),
       child: Column(
         children: [
           SizedBox(height: 20.h),
@@ -87,6 +60,8 @@ class MessageItemListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCubit, List<Chat>>(
       builder: (context, chats) {
+        chats.sort((chat1, chat2) =>
+            chat2.data!.first.time!.compareTo(chat1.data!.first.time!));
         if (chats.isEmpty) {
           return const Center(child: Text('No chats available'));
         }
@@ -118,7 +93,7 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print(chat.role);
+        // print(chat.role);
         GoRouter.of(context).push(Routes.kChatScreen, extra: {
           "senderId": chat.senderId,
           "receiverId": chat.receiverId,
@@ -130,7 +105,7 @@ class MessageItem extends StatelessWidget {
         });
       },
       borderRadius: BorderRadius.circular(4.0.r),
-      splashColor: Colors.green.withOpacity(0.2),
+      splashColor: kPrimaryGreen.withOpacity(0.2),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0.w),
         child: Row(
@@ -140,8 +115,9 @@ class MessageItem extends StatelessWidget {
               height: 80.h,
               width: 70.w,
               decoration: BoxDecoration(
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/profile_pictures/y.jpg'),
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/images/profile_pictures/${chat.image ?? 'default.png'}'),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -152,9 +128,7 @@ class MessageItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  chat.role == 'serviceProvider'
-                      ? 'Service Provider'
-                      : 'Mohamed',
+                  chat.name ?? 'no name',
                   style:
                       TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
                 ),
@@ -163,7 +137,7 @@ class MessageItem extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: Text(
                     // 'Chat between ${chat.senderId} and ${chat.receiverId}',
-                    'Chat between you and Mohamed ',
+                    '${chat.lastMessage}',
                     style: TextStyle(fontSize: 12.sp, color: Colors.black54),
                   ),
                 ),
@@ -175,24 +149,11 @@ class MessageItem extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  '10:11pm', // This should be the timestamp of the last message
+                  DateFormat('HH:mm').format(chat
+                      .time!), // This should be the timestamp of the last message
                   style: TextStyle(fontSize: 12.sp, color: Colors.black54),
                 ),
                 SizedBox(height: 20.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: kPrimaryGreen,
-                    borderRadius: BorderRadius.circular(6.0.r),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 4.0.h, horizontal: 6.0.w),
-                    child: const Text(
-                      '  ', // This should be the number of unread messages
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
               ],
             ),
           ],

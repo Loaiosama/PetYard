@@ -41,9 +41,9 @@ class SignUpTextFieldColumn extends StatelessWidget {
             if (value == null || value.isEmpty) {
               return 'This field can\'t be empty!';
             }
-            // if (isPassword! && value.length < 8) {
-            //   return 'This field must be at least 8 characters long!';
-            // }
+            if (isPassword! && value.length < 8) {
+              return 'This field must be at least 8 characters long!';
+            }
             if (isPhone! && value.length != 11) {
               return 'This field must be 11 characters long!';
             }

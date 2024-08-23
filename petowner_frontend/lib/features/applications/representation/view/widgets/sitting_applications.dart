@@ -158,7 +158,8 @@ class _SittingApplicationsState extends State<SittingApplications> {
                                             if (status == "Accepted") {
                                               return Text(
                                                 "Accepted",
-                                                style: Styles.styles18BoldBlack
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Styles.styles14w600
                                                     .copyWith(
                                                         color: Colors.green),
                                               );

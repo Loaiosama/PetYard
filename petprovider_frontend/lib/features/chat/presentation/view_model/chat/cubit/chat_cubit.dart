@@ -11,14 +11,15 @@ class ChatCubit extends Cubit<List<Chat>> {
   void fetchChats() async {
     try {
       final chats = await _chatService.getAllChats();
-      // emit(chats);
+      print('Fetched Chats: $chats'); // Debugging line
+
       chats.fold(
-        (l) => null,
+        (l) => print('Error: $l'), // Debugging line
         (r) => emit(r),
       );
     } catch (error) {
+      print('Exception: $error'); // Debugging line
       emit([]);
-      // print('Error fetching chats: $error');
     }
   }
 }

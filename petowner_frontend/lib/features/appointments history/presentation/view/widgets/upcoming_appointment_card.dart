@@ -239,27 +239,34 @@ class UpcomingAppointmentCard extends StatelessWidget {
                       ],
                     ),
                     heightSizedBox(20),
-                    (state is MarkAsDoneBoardingLoading ||
-                            state is MarkAsDoneGroomingLoading ||
-                            state is MarkAsDoneSittingLoading ||
-                            state is MarkAsDoneWalkingLoading)
-                        ? LoadingButton(
-                            height: 50.h,
-                          )
-                        : PetYardTextButton(
-                            onPressed: () async {
-                              markAsDone(context);
-                              await Future.delayed(const Duration(seconds: 2));
-                              cubit.fetchAcceptedReservations();
-                            },
-                            height: 50.h,
-                            radius: 14.0.r,
-                            text: 'Mark as done',
-                            style: Styles.styles14w600.copyWith(
-                              color: Colors.white,
-                              fontSize: 11.sp,
+                    if ((groomingEndTime != null &&
+                            groomingEndTime!.isBefore(DateTime.now())) ||
+                        (boardingEndDate != null &&
+                            boardingEndDate!.isBefore(DateTime.now())) ||
+                        (groomingEndTime != null &&
+                            groomingEndTime!.isBefore(DateTime.now())))
+                      (state is MarkAsDoneBoardingLoading ||
+                              state is MarkAsDoneGroomingLoading ||
+                              state is MarkAsDoneSittingLoading ||
+                              state is MarkAsDoneWalkingLoading)
+                          ? LoadingButton(
+                              height: 50.h,
+                            )
+                          : PetYardTextButton(
+                              onPressed: () async {
+                                markAsDone(context);
+                                await Future.delayed(
+                                    const Duration(seconds: 2));
+                                cubit.fetchAcceptedReservations();
+                              },
+                              height: 50.h,
+                              radius: 14.0.r,
+                              text: 'Mark as done',
+                              style: Styles.styles14w600.copyWith(
+                                color: Colors.white,
+                                fontSize: 11.sp,
+                              ),
                             ),
-                          ),
                   ],
                 ),
               ),

@@ -63,7 +63,9 @@ class ProfileScreenBody extends StatelessWidget {
                                   5,
                                   (index) => Icon(
                                     Icons.star,
-                                    color: Colors.yellow,
+                                    color: (info?.rate?.toInt() ?? 0) > index
+                                        ? Colors.yellow
+                                        : Colors.grey,
                                     size: 20.sp,
                                   ),
                                 ),

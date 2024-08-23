@@ -61,7 +61,7 @@ class ChooseService extends StatelessWidget {
                   const FirstSection(
                     title: 'Welcome!',
                     subTitle:
-                        'Choose one or more services you want to provide. And don\'t worry, you can always add more services later.',
+                        'Choose one or more services you want to provide. Services chosen cannot be modified later.',
                   ),
                   SizedBox(height: 20.h),
                   Expanded(

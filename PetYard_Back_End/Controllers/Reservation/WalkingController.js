@@ -90,7 +90,7 @@ const makeWalkingRequest = async (req, res) => {
 
 
 const applyForWalkingRequest = async (req, res) => {
-    const serviceProviderId = req.ID; 
+    const serviceProviderId = req.ID; // Assuming the ID of the service provider is extracted from the token
     const { reservationId } = req.body;
 
     try {
@@ -143,14 +143,14 @@ const applyForWalkingRequest = async (req, res) => {
 
 
         const currentTime = Date.now();
-        expirationTime = currentTime+ (6 * 60 * 60 * 1000);
+        expirationTime = currentTime + (6 * 60 * 60 * 1000);
 
         // Insert data into the WalkingApplication table
         const insertApplicationQuery = `
             INSERT INTO WalkingApplication (Provider_ID, Reserve_ID,expirationTime) 
             VALUES ($1, $2,$3)
             RETURNING *`;
-        const insertApplicationRes = await pool.query(insertApplicationQuery, [serviceProviderId, reservationId,expirationTime]);
+        const insertApplicationRes = await pool.query(insertApplicationQuery, [serviceProviderId, reservationId, expirationTime]);
 
         // Sending email notification to the owner
         const ownerQuery = 'SELECT * FROM Petowner WHERE Owner_Id = $1';
@@ -269,7 +269,7 @@ const GetPendingWalkingRequests = async (req, res) => {
                 message: "Please provide owner ID."
             });
         }
-        
+
         const ownerQuery = "SELECT * FROM Petowner WHERE Owner_Id = $1";
         const ownerRes = await pool.query(ownerQuery, [ownerId]);
 
@@ -397,7 +397,7 @@ const GetWalkingApplications = async (req, res) => {
 
 
 
-/*
+
 
 const getAllPendingRequests = async (req, res) => {
     const providerId = req.ID;
@@ -436,74 +436,13 @@ const getAllPendingRequests = async (req, res) => {
         `;
         const requestRes = await pool.query(requestQuery, ['Pending', providerId]);
 
-        res.status(200).json({
-            status: "Success",
-            message: "Pending walking requests retrieved successfully.",
-            data: requestRes.rows
-        });
-
-    } catch (e) {
-        console.error("Error: ", e);
-        res.status(500).json({
-            status: "Fail",
-            message: "Internal server error"
-        });
-    }
-};
-*/
-
-const getAllPendingRequests = async (req, res) => {
-    const providerId = req.ID;
-
-    try {
-        if (!providerId) {
-            return res.status(400).json({
+        /*if (requestRes.rows.length === 0) {
+            return res.status(404).json({
                 status: "Fail",
-                message: "Provider ID not provided."
+                message: "No pending walking requests found"
             });
-        }
+        }*/
 
-        const queryProvider = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const resultProvider = await pool.query(queryProvider, [providerId]);
-
-        if (resultProvider.rows.length === 0) {
-            return res.status(401).json({
-                status: "Fail",
-                message: "User doesn't exist."
-            });
-        }
-
-        // Query to check for time conflicts
-        const conflictQuery = `
-            SELECT 1
-            FROM WalkingRequest wr
-            WHERE wr.Provider_ID = $1
-            AND (wr.Status = 'Accepted' OR wr.Status = 'In Progress')
-            AND wr.Start_time < $2
-            AND wr.End_time > $3
-        `;
-
-        // Query to get all pending requests
-        const requestQuery = `
-            SELECT DISTINCT wr.*, gf.center_latitude, gf.center_longitude, p.Name AS pet_name, p.Image AS pet_image
-            FROM WalkingRequest wr
-            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
-            LEFT JOIN Pet p ON wr.Pet_ID = p.Pet_Id
-            WHERE wr.Status = $1
-            AND NOT EXISTS (
-                SELECT 1
-                FROM WalkingApplication wa
-                WHERE wa.Reserve_ID = wr.Reserve_ID
-                AND wa.Provider_ID = $2
-            )
-            AND NOT EXISTS (
-                ${conflictQuery.replace('$1', '$2').replace('$2', 'wr.Start_time').replace('$3', 'wr.End_time')}
-            )
-            ORDER BY wr.start_time
-        `;
-
-        const requestRes = await pool.query(requestQuery, ['Pending', providerId]);
-        
         res.status(200).json({
             status: "Success",
             message: "Pending walking requests retrieved successfully.",
@@ -594,12 +533,12 @@ const rejectApplication = async (req, res) => {
             The PetYard Team
         `;
 
-     
-         await sendemail.sendemail({
-           email: providerResult.rows[0].email,
+
+        await sendemail.sendemail({
+            email: providerResult.rows[0].email,
             subject: 'Pet Walking Application Rejected 🐾',
             message
-         });
+        });
 
         res.status(200).json({
             status: "Success",
@@ -669,10 +608,10 @@ const acceptApplication = async (req, res) => {
             });
         }
 
-           // Update the WalkingRequest to set the status to 'Accepted' and the provider
+        // Update the WalkingRequest to set the status to 'Accepted' and the provider
         const updateRequestQuery = 'UPDATE WalkingRequest SET Status = $1, Provider_ID = $2 WHERE Reserve_ID = $3';
-       await pool.query(updateRequestQuery, ['Accepted', Provider_ID, Reserve_ID]);
-   
+        await pool.query(updateRequestQuery, ['Accepted', Provider_ID, Reserve_ID]);
+
         const updateApplicationQuery = 'UPDATE WalkingApplication SET Application_Status = $1 WHERE Reserve_ID = $2 AND Provider_ID = $3';
         await pool.query(updateApplicationQuery, ['Accepted', Reserve_ID, Provider_ID]);
 
@@ -703,11 +642,11 @@ const acceptApplication = async (req, res) => {
         `;
 
         // Uncomment and replace with your actual email sending function
-         await sendemail.sendemail({
-             email: providerResult.rows[0].email,
-             subject: 'Pet Walking Application Accepted 🐾',
-             message
-         });
+        await sendemail.sendemail({
+            email: providerResult.rows[0].email,
+            subject: 'Pet Walking Application Accepted 🐾',
+            message
+        });
 
         res.status(200).json({
             status: "Success",
@@ -811,7 +750,7 @@ const checkAndUpdateExpiredReservations = async () => {
             // Retrieve reservation details
             const reservationQuery = await pool.query('SELECT * FROM WalkingRequest WHERE Reserve_ID = $1', [reservation.reserve_id]);
             const reservationDetails = reservationQuery.rows[0];
-         
+
             // Retrieve owner details
             const ownerQuery = await pool.query('SELECT * FROM Petowner WHERE Owner_Id = $1', [reservationDetails.owner_id]);
             const name = ownerQuery.rows[0].first_name;
@@ -911,10 +850,10 @@ setInterval(checkAndUpdateAllPendingRequestToRejectForProvider, 6000);
 const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
     try {
         const selectAll = await pool.query('SELECT * FROM WalkingRequest WHERE Status = $1', ['Pending']);
-        
+
         for (const reservation of selectAll.rows) {
             const currentTime = new Date().toISOString();
-            
+
             if (currentTime >= reservation.start_time.toISOString()) {
                 await pool.query('UPDATE WalkingRequest SET Status = $1 WHERE Reserve_ID = $2 AND Owner_ID = $3', ['Rejected', reservation.reserve_id, reservation.owner_id]);
 
@@ -925,7 +864,7 @@ const checkAndUpdateAllPendingRequestToRejectForPetowner = async () => {
                 const owner = ownerRes.rows[0];
                 const name = owner.first_name;
                 const email = owner.email;
-               
+
 
                 const message = `
                 🐾 Pet Walking Request Update 🐾
@@ -981,7 +920,7 @@ const checkAndUpdateCompleteReservations = async () => {
                 `SELECT * FROM ServiceProvider WHERE Provider_Id=$1`,
                 [reservation.provider_id]
             );
-           
+
             const providerName = providerNameQuery.rows[0].username;
 
             // Notify user to open the app and update the reservation status
@@ -1134,7 +1073,7 @@ const completedApplication = async (req, res) => {
         });
     }
 };
-/*
+
 const UpcomingRequests = async (req, res) => {
     const providerId = req.ID;
 
@@ -1191,67 +1130,7 @@ const UpcomingRequests = async (req, res) => {
             message: "Internal server error."
         });
     }
-};*/
-const UpcomingRequests = async (req, res) => {
-    const providerId = req.ID;
-
-    try {
-        if (!providerId) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Provider ID not provided."
-            });
-        }
-
-        // Check if the provider exists
-        const providerQuery = 'SELECT * FROM ServiceProvider WHERE Provider_Id = $1';
-        const providerResult = await pool.query(providerQuery, [providerId]);
-
-        if (providerResult.rows.length === 0) {
-            return res.status(401).json({
-                status: "Fail",
-                message: "Provider doesn't exist."
-            });
-        }
-
-        // Query to retrieve walking requests along with geofence information
-        const walkingRequestsQuery = `
-            SELECT 'Walking' AS service_type, wr.Reserve_ID, wr.Pet_ID, p.Name AS Pet_Name, p.Image AS Pet_Image, wr.Start_time, wr.End_time, wr.Final_Price, wr.Status,
-                   po.First_name AS owner_first_name, po.Last_name AS owner_last_name, po.Email AS owner_email, po.Phone AS owner_phone, po.Location AS owner_location, po.Image AS owner_image,
-                   gf.Center_Latitude AS geofence_latitude, gf.Center_Longitude AS geofence_longitude, gf.Radius AS geofence_radius
-            FROM WalkingRequest wr
-            JOIN Petowner po ON wr.Owner_ID = po.Owner_Id
-            JOIN Pet p ON wr.Pet_ID = p.Pet_ID
-            LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
-            WHERE wr.Provider_ID = $1 
-              AND (wr.Status = 'Accepted' OR wr.Status = 'In Progress')
-              AND wr.End_time > NOW()
-        `;
-
-        const walkingRequests = await pool.query(walkingRequestsQuery, [providerId]);
-
-        // Combine results
-        const requests = [
-            ...walkingRequests.rows,
-        ];
-
-        // Sort by Start_time in ascending order
-        requests.sort((a, b) => new Date(a.Start_time) - new Date(b.Start_time));
-
-        res.status(200).json({
-            status: "Success",
-            message: "Upcoming requests retrieved.",
-            data: requests
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({
-            status: "Fail",
-            message: "Internal server error."
-        });
-    }
 };
-
 
 
 const UpcomingOwnerRequests = async (req, res) => {
@@ -1301,7 +1180,6 @@ const UpcomingOwnerRequests = async (req, res) => {
             LEFT JOIN Geofence gf ON wr.Reserve_ID = gf.Reserve_ID
             WHERE wr.Owner_ID = $1 
               AND (wr.Status = 'Accepted' OR wr.Status = 'In Progress')
-              AND wr.End_time > NOW()
         `;
 
         const walkingRequestsResult = await pool.query(walkingRequestsQuery, [ownerId]);
@@ -1335,7 +1213,8 @@ const trackWalkingRequest = async (req, res) => {
     const { Reserve_ID } = req.params;
 
     try {
-        
+        console.log(ownerId);
+        console.log(Reserve_ID);
         if (!ownerId || !Reserve_ID) {
             return res.status(400).json({
                 status: "fail",
@@ -1388,5 +1267,5 @@ module.exports = {
     startWalk,
     UpcomingOwnerRequests,
     trackWalkingRequest
-   
+
 }

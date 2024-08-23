@@ -17,19 +17,20 @@ class ChatService {
     try {
       await apiService.setAuthorizationHeader();
       var response = await apiService.get(endpoint: 'Provider/getAllChats');
-      print(response);
+      // print('API Response: $response'); // Debugging line
+
       if (response['Status'] == 'Success') {
         for (var item in response['data']) {
-          // print(item);
+          // print('Parsing item: $item'); // Debugging line
           var datum = ChatDatum.fromJson(item);
+          // print('object');
           var chat = Chat(
             data: [datum],
             status: response['Status'],
           );
-          // print(chat);
           allChats.add(chat);
         }
-        print(allChats);
+        // print('Parsed Chats: $allChats'); // Debugging line
         return right(allChats);
       } else {
         return left(

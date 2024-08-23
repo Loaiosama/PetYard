@@ -42,9 +42,14 @@ class ProviderChatScreenState extends State<ProviderChatScreen> {
     channel.stream.listen(
       (message) {
         final parsedMessage = jsonDecode(message);
-        setState(() {
-          _messages.add(parsedMessage);
-        });
+        // setState(() {
+        //   _messages.add(parsedMessage);
+        // });
+        if (parsedMessage['text'].isNotEmpty) {
+          setState(() {
+            _messages.add(parsedMessage);
+          });
+        }
       },
       onError: (error) {
         // print('WebSocket error: $error');
